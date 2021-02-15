@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94225DA85D500F61A26 /* AppDelegate.swift */; };
-		A5A5B94525DA85D500F61A26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94425DA85D500F61A26 /* SceneDelegate.swift */; };
 		A5A5B94725DA85D500F61A26 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94625DA85D500F61A26 /* ViewController.swift */; };
 		A5A5B94A25DA85D500F61A26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94825DA85D500F61A26 /* Main.storyboard */; };
 		A5A5B94C25DA85D600F61A26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94B25DA85D600F61A26 /* Assets.xcassets */; };
@@ -18,7 +17,6 @@
 /* Begin PBXFileReference section */
 		A5A5B93F25DA85D500F61A26 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5A5B94225DA85D500F61A26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A5A5B94425DA85D500F61A26 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A5A5B94625DA85D500F61A26 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A5A5B94925DA85D500F61A26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A5A5B94B25DA85D600F61A26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -57,7 +55,6 @@
 			isa = PBXGroup;
 			children = (
 				A5A5B94225DA85D500F61A26 /* AppDelegate.swift */,
-				A5A5B94425DA85D500F61A26 /* SceneDelegate.swift */,
 				A5A5B94625DA85D500F61A26 /* ViewController.swift */,
 				A5A5B94825DA85D500F61A26 /* Main.storyboard */,
 				A5A5B94B25DA85D600F61A26 /* Assets.xcassets */,
@@ -139,7 +136,6 @@
 			files = (
 				A5A5B94725DA85D500F61A26 /* ViewController.swift in Sources */,
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
-				A5A5B94525DA85D500F61A26 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +285,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
 				INFOPLIST_FILE = ChatApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -296,7 +293,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -308,6 +305,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
 				INFOPLIST_FILE = ChatApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,7 +313,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
