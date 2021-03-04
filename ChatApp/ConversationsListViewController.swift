@@ -24,6 +24,10 @@ class ConversationsListViewController: UIViewController {
         
 //        just for testing:
         onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "How are you?", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "I am great. And you?", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "Super!", isFromMe: false))
 //        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
         onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
         let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
@@ -75,10 +79,18 @@ enum MessageType : Int, CaseIterable {
 extension ConversationsListViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == MessageType.online.rawValue {
-            let conversationVC = ConversationViewController()
-            conversationVC.conversation = onlineConversations[indexPath.row]
+            let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
             navigationController?.pushViewController(conversationVC, animated: true)
         }
+    }
+    
+    func getConversationViewController(for conversation: Conversation) -> ConversationViewController {
+        guard let conversationVC = storyboard?.instantiateViewController(withIdentifier: "ConversationVC") as? ConversationViewController else {
+            fatalError("Couldn't load conversation view controller")
+        }
+
+        conversationVC.conversation = conversation
+        return conversationVC
     }
 }
 
@@ -93,7 +105,8 @@ extension ConversationsListViewController: UITableViewDataSource {
                 cell.configure(name: onlineConversations[indexPath.row].user.getName(), message: nil, date: nil, online: true, hasUnreadMessages: false)
             }
             
-            cell.backgroundColor = UIColor(red: 228, green: 232, blue: 0, alpha: 0.3) // бледно жёлтый
+            cell.backgroundColor = UIColor(red: 228/255, green: 232/255, blue: 43/255, alpha: 1) // бледно жёлтый
+            cell.isUserInteractionEnabled = true
         case MessageType.history.rawValue:
             if let lastMessage = historyConversations[indexPath.row].getLastMessage() {
                 cell.configure(name: historyConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: false, hasUnreadMessages: onlineConversations[indexPath.row].hasUnreadMessages())
@@ -101,6 +114,7 @@ extension ConversationsListViewController: UITableViewDataSource {
                 cell.configure(name: historyConversations[indexPath.row].user.getName(), message: nil, date: nil, online: false, hasUnreadMessages: false)
             }
             cell.backgroundColor = .white
+            cell.isUserInteractionEnabled = false
         default:
             break
         }

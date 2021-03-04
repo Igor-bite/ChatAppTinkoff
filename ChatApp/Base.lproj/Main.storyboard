@@ -28,17 +28,39 @@
         <!--Conversation View Controller-->
         <scene sceneID="XGc-rK-RWY">
             <objects>
-                <viewController id="neg-Qa-rum" customClass="ConversationViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ConversationVC" id="neg-Qa-rum" customClass="ConversationViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PjO-5J-i3B">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="gQp-sr-ZhY">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="633"/>
+                            </tableView>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="57F-6f-sQV">
+                                <rect key="frame" x="0.0" y="633" width="375" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="ssp-pg-egF"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="gQp-sr-ZhY" firstAttribute="leading" secondItem="ssp-pg-egF" secondAttribute="leading" id="Hx2-s3-AJ3"/>
+                            <constraint firstItem="57F-6f-sQV" firstAttribute="top" secondItem="gQp-sr-ZhY" secondAttribute="bottom" id="P5a-eK-dhu"/>
+                            <constraint firstItem="gQp-sr-ZhY" firstAttribute="top" secondItem="ssp-pg-egF" secondAttribute="top" id="P7Q-cP-3s3"/>
+                            <constraint firstItem="57F-6f-sQV" firstAttribute="bottom" secondItem="ssp-pg-egF" secondAttribute="bottom" id="Rmv-U8-ls3"/>
+                            <constraint firstItem="57F-6f-sQV" firstAttribute="trailing" secondItem="ssp-pg-egF" secondAttribute="trailing" id="e5e-tm-eCH"/>
+                            <constraint firstItem="ssp-pg-egF" firstAttribute="trailing" secondItem="gQp-sr-ZhY" secondAttribute="trailing" id="jjw-pB-ZHw"/>
+                            <constraint firstItem="57F-6f-sQV" firstAttribute="leading" secondItem="ssp-pg-egF" secondAttribute="leading" id="xnO-sU-i5j"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="gQp-sr-ZhY" id="u7w-A9-dyn"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wny-11-jhG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1700" y="74"/>
+            <point key="canvasLocation" x="1700" y="73.313343328335833"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="cIn-gO-e2h">
