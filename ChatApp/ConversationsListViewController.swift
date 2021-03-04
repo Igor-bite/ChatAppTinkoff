@@ -73,7 +73,13 @@ enum MessageType : Int, CaseIterable {
 }
 
 extension ConversationsListViewController : UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == MessageType.online.rawValue {
+            let conversationVC = ConversationViewController()
+            conversationVC.conversation = onlineConversations[indexPath.row]
+            navigationController?.pushViewController(conversationVC, animated: true)
+        }
+    }
 }
 
 extension ConversationsListViewController: UITableViewDataSource {

@@ -25,6 +25,21 @@
             </objects>
             <point key="canvasLocation" x="807.20000000000005" y="74.212893553223395"/>
         </scene>
+        <!--Conversation View Controller-->
+        <scene sceneID="XGc-rK-RWY">
+            <objects>
+                <viewController id="neg-Qa-rum" customClass="ConversationViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="PjO-5J-i3B">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="ssp-pg-egF"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wny-11-jhG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1700" y="74"/>
+        </scene>
         <!--Profile View Controller-->
         <scene sceneID="cIn-gO-e2h">
             <objects>
@@ -126,7 +141,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3JA-ez-AaQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2182" y="74"/>
+            <point key="canvasLocation" x="3266" y="74"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hfz-nE-jOR">

@@ -14,6 +14,7 @@
 		A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */; };
 		A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */; };
 		A5D666F325F14F4900FC4AA0 /* ConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */; };
+		A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */; };
 		A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationTableViewCell.xib; sourceTree = "<group>"; };
+		A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,6 +64,7 @@
 			children = (
 				A5A5B94225DA85D500F61A26 /* AppDelegate.swift */,
 				A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */,
+				A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */,
 				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
 				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
 				A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */,
@@ -146,6 +149,7 @@
 			files = (
 				A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */,
 				A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */,
+				A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */,
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,
 			);
