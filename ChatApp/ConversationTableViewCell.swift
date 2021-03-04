@@ -28,7 +28,7 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
     @IBOutlet weak var lastMessageLabel: UILabel?
     @IBOutlet weak var dateLabel: UILabel?
     
-    func configure(name: String, message: String?, date: Date, online: Bool, hasUnreadMessages: Bool) {
+    func configure(name: String?, message: String?, date: Date?, online: Bool, hasUnreadMessages: Bool) {
         self.name = name
         self.message = message
         self.date = date
