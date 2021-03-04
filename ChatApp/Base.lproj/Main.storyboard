@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Marina Dudarenko" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nQ3-ew-Ew4">
-                                <rect key="frame" x="85.5" y="339" width="204.5" height="29"/>
+                                <rect key="frame" x="16" y="339" width="343" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="29" id="FxV-8a-yp8"/>
                                 </constraints>
@@ -26,7 +26,7 @@
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UX/UI designer, web-designer Moscow, Russia" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nef-97-idk">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UX/UI designer, web-designer Moscow, Russia" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nef-97-idk">
                                 <rect key="frame" x="67.5" y="388" width="240" height="42.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <nil key="textColor"/>
@@ -84,10 +84,13 @@
                         <viewLayoutGuide key="safeArea" id="V3o-Ff-Lti"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Nef-97-idk" firstAttribute="trailing" secondItem="ed5-aY-cP7" secondAttribute="trailing" id="435-MI-mVW"/>
                             <constraint firstItem="nQ3-ew-Ew4" firstAttribute="centerY" secondItem="NLq-Jo-654" secondAttribute="centerY" constant="20" id="CwQ-gM-lIy"/>
                             <constraint firstItem="Nef-97-idk" firstAttribute="leading" secondItem="Hcx-5l-lV0" secondAttribute="leading" id="Fda-vO-Z20"/>
                             <constraint firstItem="ed5-aY-cP7" firstAttribute="top" relation="greaterThanOrEqual" secondItem="V3o-Ff-Lti" secondAttribute="top" constant="10" id="GVw-ce-HDo"/>
+                            <constraint firstItem="nQ3-ew-Ew4" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Hms-gd-sFb"/>
                             <constraint firstItem="Nef-97-idk" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="Oqu-k8-mPy"/>
+                            <constraint firstItem="V3o-Ff-Lti" firstAttribute="trailing" secondItem="nQ3-ew-Ew4" secondAttribute="trailing" constant="16" id="Tpi-SY-6mL"/>
                             <constraint firstItem="nQ3-ew-Ew4" firstAttribute="top" secondItem="ed5-aY-cP7" secondAttribute="bottom" constant="20" id="Wtq-MS-FvB"/>
                             <constraint firstItem="ed5-aY-cP7" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="dwk-7L-cIm"/>
                             <constraint firstItem="lp3-3o-tmW" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="nZ6-iO-5a2"/>

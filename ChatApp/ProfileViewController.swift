@@ -24,13 +24,16 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
      */
     
+    let editButtonCornerRadius: CGFloat = 14
+    let userImageViewCornerRadius: CGFloat = 120
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NSLog("\nView did load : \(#function)")
 
-        editButtonView?.layer.cornerRadius = 14
+        editButtonView?.layer.cornerRadius = editButtonCornerRadius
         
-        userImageView?.layer.cornerRadius = 120
+        userImageView?.layer.cornerRadius = userImageViewCornerRadius
         
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
         userImageView?.addGestureRecognizer(userImageRec)
