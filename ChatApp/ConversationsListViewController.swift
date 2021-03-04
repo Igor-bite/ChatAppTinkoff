@@ -10,8 +10,8 @@ import UIKit
 class ConversationsListViewController: UIViewController {
     let navControllerTitle: String = "Tinkoff Chat"
     
-    var onlineConversations: [Conversation] = [Conversation(user: User(name: "John", isOnline: true)), Conversation(user: User(name: "William", isOnline: true))]
-    var historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika", isOnline: false)),  Conversation(user: User(name: "Polly", isOnline: false))]
+    var onlineConversations: [Conversation] = [Conversation(user: User(name: "John", isOnline: true)), Conversation(user: User(name: "William", isOnline: true)), Conversation(user: User(name: "Ben", isOnline: true)), Conversation(user: User(name: "Mikhail", isOnline: true)), Conversation(user: User(name: "Igor", isOnline: true)), Conversation(user: User(name: "Petr", isOnline: true)), Conversation(user: User(name: "Ilon", isOnline: true)), Conversation(user: User(name: "Craig", isOnline: true)), Conversation(user: User(name: "Cook", isOnline: true)), Conversation(user: User(name: "Kirill", isOnline: true))]
+    var historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika", isOnline: false)),  Conversation(user: User(name: "Polly", isOnline: false)), Conversation(user: User(name: "Roza", isOnline: false)),  Conversation(user: User(name: "Sergei", isOnline: false)), Conversation(user: User(name: "Pavel", isOnline: false)),  Conversation(user: User(name: "Liza", isOnline: false)), Conversation(user: User(name: "Betty", isOnline: false)),  Conversation(user: User(name: "Claudia", isOnline: false)), Conversation(user: User(name: "Anna", isOnline: false)),  Conversation(user: User(name: "Pierre", isOnline: false))]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +24,36 @@ class ConversationsListViewController: UIViewController {
         
 //        just for testing:
         onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+//        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
+        onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
+        let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
+        onlineConversations[3].gotMessage(message: Message(text: "How are you?", isFromMe: false, date: date1))
+        onlineConversations[4].gotMessage(message: Message(text: "Hello", isFromMe: false))
+//        onlineConversations[5].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+        onlineConversations[6].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        onlineConversations[7].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+        onlineConversations[8].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        let date2 = Date(timeInterval: TimeInterval(-60*60*24*10-5), since: Date())
+        onlineConversations[9].gotMessage(message: Message(text: "How are you?", isFromMe: true, date: date2))
+        
         historyConversations[0].gotMessage(message: Message(text: "Bye", isFromMe: false))
-        historyConversations[1].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
+        historyConversations[1].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
+        let date3 = Date(timeInterval: TimeInterval(-60*60*24*3-5), since: Date())
+        historyConversations[2].gotMessage(message: Message(text: "Bye", isFromMe: false, date: date3))
+        historyConversations[3].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
+        historyConversations[4].gotMessage(message: Message(text: "Bye", isFromMe: false))
+        historyConversations[5].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
+        historyConversations[6].gotMessage(message: Message(text: "Bye", isFromMe: true))
+        historyConversations[7].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
+        let date4 = Date(timeInterval: TimeInterval(-60*60*24-5), since: Date())
+        historyConversations[8].gotMessage(message: Message(text: "Bye", isFromMe: true, date: date4))
+        historyConversations[9].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
 //        just for testing:
     }
     
     @objc func showProfile(_ sender: Any) {
-        let popup : ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileVC") as! ProfileViewController
-        self.present(popup, animated: true, completion: nil)
+        let profileVC : ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileVC") as! ProfileViewController
+        self.present(profileVC, animated: true, completion: nil)
     }
     
     private let cellIdentifier = String(describing: ConversationTableViewCell.self)
@@ -61,7 +82,7 @@ extension ConversationsListViewController: UITableViewDataSource {
         switch indexPath.section {
         case MessageType.online.rawValue:
             if let lastMessage = onlineConversations[indexPath.row].getLastMessage() {
-                cell.configure(name: onlineConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: true, hasUnreadMessages: !lastMessage.isRead)
+                cell.configure(name: onlineConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: true, hasUnreadMessages: onlineConversations[indexPath.row].hasUnreadMessages())
             } else {
                 cell.configure(name: onlineConversations[indexPath.row].user.getName(), message: nil, date: nil, online: true, hasUnreadMessages: false)
             }
@@ -69,7 +90,7 @@ extension ConversationsListViewController: UITableViewDataSource {
             cell.backgroundColor = UIColor(red: 228, green: 232, blue: 0, alpha: 0.3) // бледно жёлтый
         case MessageType.history.rawValue:
             if let lastMessage = historyConversations[indexPath.row].getLastMessage() {
-                cell.configure(name: historyConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: false, hasUnreadMessages: !lastMessage.isRead)
+                cell.configure(name: historyConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: false, hasUnreadMessages: onlineConversations[indexPath.row].hasUnreadMessages())
             } else {
                 cell.configure(name: historyConversations[indexPath.row].user.getName(), message: nil, date: nil, online: false, hasUnreadMessages: false)
             }
@@ -129,6 +150,20 @@ class Conversation {
     func gotMessage(message: Message) {
         messages.append(message)
     }
+    
+    func lastMessageWasRead() {
+        messages.last?.hasBeenRead()
+    }
+    
+    func hasUnreadMessages() -> Bool {
+        guard let lastIsRead = getLastMessage()?.isRead else { return false }
+        if lastIsRead {
+            return false
+        } else {
+            return true
+        }
+        
+    }
 }
 
 class Message {
@@ -146,6 +181,21 @@ class Message {
         } else {
             isRead = true // не уверен(исправить в след дз)
         }
+    }
+    
+    init(text: String, isFromMe: Bool, date: Date) {
+        self.text = text
+        self.date = date
+        self.isFromMe = isFromMe
+        if isFromMe {
+            isRead = false
+        } else {
+            isRead = true // не уверен(исправить в след дз)
+        }
+    }
+    
+    func hasBeenRead() {
+        isRead = true
     }
 }
 

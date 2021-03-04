@@ -51,8 +51,8 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
         }
         let dateFormatter = DateFormatter()
         guard let date = date else { return }
-        let calend = Calendar.current
-        if (calend.isDateInYesterday(date)) {
+        let yesterday = Date()-60*60*24
+        if (date <= yesterday) {
             dateFormatter.dateFormat = "dd MMM"
         } else {
             dateFormatter.dateFormat = "HH:mm"
