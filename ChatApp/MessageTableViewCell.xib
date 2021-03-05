@@ -21,8 +21,8 @@
                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2JB-ZV-LgW">
                         <rect key="frame" x="50" y="11" width="299" height="88"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qsg-94-Mrs">
-                                <rect key="frame" x="128.5" y="33.5" width="42" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qsg-94-Mrs">
+                                <rect key="frame" x="129" y="34" width="41.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -30,6 +30,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Qsg-94-Mrs" firstAttribute="width" relation="greaterThanOrEqual" secondItem="2JB-ZV-LgW" secondAttribute="width" multiplier="0.8" id="72T-Wv-Gua"/>
                             <constraint firstItem="Qsg-94-Mrs" firstAttribute="centerY" secondItem="2JB-ZV-LgW" secondAttribute="centerY" id="VoJ-EX-6rk"/>
                             <constraint firstItem="Qsg-94-Mrs" firstAttribute="centerX" secondItem="2JB-ZV-LgW" secondAttribute="centerX" id="ciR-Js-ikW"/>
                         </constraints>
@@ -38,6 +39,7 @@
                 <constraints>
                     <constraint firstItem="2JB-ZV-LgW" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="D5C-Ux-tdT"/>
                     <constraint firstItem="2JB-ZV-LgW" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.8" id="fnc-NA-3Jn"/>
+                    <constraint firstItem="2JB-ZV-LgW" firstAttribute="width" relation="lessThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.75" id="j8U-NW-Kh6"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
