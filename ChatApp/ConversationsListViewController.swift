@@ -81,6 +81,7 @@ extension ConversationsListViewController : UITableViewDelegate {
         if indexPath.section == MessageType.online.rawValue {
             let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
             navigationController?.pushViewController(conversationVC, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
