@@ -10,8 +10,8 @@ import UIKit
 class ConversationsListViewController: UIViewController {
     let navControllerTitle: String = "Tinkoff Chat"
     
-    var onlineConversations: [Conversation] = [Conversation(user: User(name: "John", isOnline: true)), Conversation(user: User(name: "William", isOnline: true)), Conversation(user: User(name: "Ben", isOnline: true)), Conversation(user: User(name: "Mikhail", isOnline: true)), Conversation(user: User(name: "Igor", isOnline: true)), Conversation(user: User(name: "Petr", isOnline: true)), Conversation(user: User(name: "Ilon", isOnline: true)), Conversation(user: User(name: "Craig", isOnline: true)), Conversation(user: User(name: "Cook", isOnline: true)), Conversation(user: User(name: "Kirill", isOnline: true))]
-    var historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika", isOnline: false)),  Conversation(user: User(name: "Polly", isOnline: false)), Conversation(user: User(name: "Roza", isOnline: false)),  Conversation(user: User(name: "Sergei", isOnline: false)), Conversation(user: User(name: "Pavel", isOnline: false)),  Conversation(user: User(name: "Liza", isOnline: false)), Conversation(user: User(name: "Betty", isOnline: false)),  Conversation(user: User(name: "Claudia", isOnline: false)), Conversation(user: User(name: "Anna", isOnline: false)),  Conversation(user: User(name: "Pierre", isOnline: false))]
+    let onlineConversations: [Conversation] = [Conversation(user: User(name: "John", isOnline: true)), Conversation(user: User(name: "William", isOnline: true)), Conversation(user: User(name: "Ben", isOnline: true)), Conversation(user: User(name: "Mikhail", isOnline: true)), Conversation(user: User(name: "Igor", isOnline: true)), Conversation(user: User(name: "Petr", isOnline: true)), Conversation(user: User(name: "Ilon", isOnline: true)), Conversation(user: User(name: "Craig", isOnline: true)), Conversation(user: User(name: "Cook", isOnline: true)), Conversation(user: User(name: "Kirill", isOnline: true))]
+    let historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika", isOnline: false)),  Conversation(user: User(name: "Polly", isOnline: false)), Conversation(user: User(name: "Roza", isOnline: false)),  Conversation(user: User(name: "Sergei", isOnline: false)), Conversation(user: User(name: "Pavel", isOnline: false)),  Conversation(user: User(name: "Liza", isOnline: false)), Conversation(user: User(name: "Betty", isOnline: false)),  Conversation(user: User(name: "Claudia", isOnline: false)), Conversation(user: User(name: "Anna", isOnline: false)),  Conversation(user: User(name: "Pierre", isOnline: false))]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,8 +82,16 @@ enum MessageType : Int, CaseIterable {
 
 extension ConversationsListViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
         if indexPath.section == MessageType.online.rawValue {
             let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
+            for conv in onlineConversations {
+                print(conv.user.getName())
+            }
+            print(indexPath.row)
+            print(onlineConversations[indexPath.row].user.getName())
+            print("---------------------")
+            
             navigationController?.pushViewController(conversationVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
         }
@@ -93,7 +101,7 @@ extension ConversationsListViewController : UITableViewDelegate {
         guard let conversationVC = storyboard?.instantiateViewController(withIdentifier: "ConversationVC") as? ConversationViewController else {
             fatalError("Couldn't load conversation view controller")
         }
-
+        
         conversationVC.conversation = conversation
         return conversationVC
     }
