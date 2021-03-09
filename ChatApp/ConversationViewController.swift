@@ -20,6 +20,13 @@ class ConversationViewController: UIViewController {
         
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
         tableView?.dataSource = self
+        
+        tableView?.allowsSelection = false
+        if let numOfMessages = conversation?.messages.count {
+            if numOfMessages > 0 {
+                tableView?.scrollToRow(at: IndexPath(row: numOfMessages - 1, section: 0), at: .bottom, animated: true)
+            }
+        }
     }
 }
 

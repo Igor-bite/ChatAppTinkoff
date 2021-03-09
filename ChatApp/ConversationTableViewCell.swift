@@ -50,7 +50,10 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
             lastMessageLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         }
         let dateFormatter = DateFormatter()
-        guard let date = date else { return }
+        guard let date = date else {
+            dateLabel?.text = ""
+            return
+        }
         let yesterday = Date()-60*60*24
         if (date <= yesterday) {
             dateFormatter.dateFormat = "dd MMM"
