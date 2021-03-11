@@ -26,8 +26,11 @@ class ThemesViewController: UIViewController {
     var currentTheme: Theme = getSavedTheme()
     
     @IBOutlet weak var classicThemeView: UIView?
+    @IBOutlet weak var classicMessagesView: UIView?
     @IBOutlet weak var dayThemeView: UIView?
+    @IBOutlet weak var dayMessagesView: UIView?
     @IBOutlet weak var nightThemeView: UIView?
+    @IBOutlet weak var nightMessagesView: UIView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,9 +38,9 @@ class ThemesViewController: UIViewController {
         title = "Settings"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(restoreSettings))
         
-        makeRoundCorners(for: classicThemeView)
-        makeRoundCorners(for: dayThemeView)
-        makeRoundCorners(for: nightThemeView)
+        makeRoundCorners(for: classicMessagesView)
+        makeRoundCorners(for: dayMessagesView)
+        makeRoundCorners(for: nightMessagesView)
         
         let gestureRecognizerClassic = UITapGestureRecognizer(target: self, action: #selector(changeToClassic))
         classicThemeView?.addGestureRecognizer(gestureRecognizerClassic)
@@ -47,17 +50,15 @@ class ThemesViewController: UIViewController {
         
         let gestureRecognizerNight = UITapGestureRecognizer(target: self, action: #selector(changeToNight))
         nightThemeView?.addGestureRecognizer(gestureRecognizerNight)
+        
+        selectThemeView(theme: lastTheme)
     }
     
     func makeRoundCorners(for view: UIView?) {
-        if let subviews = view?.subviews {
-            for subview in subviews {
-                if subview.tag == 1 {
-                    subview.layer.cornerRadius = 14
-                    for sub in subview.subviews {
-                        sub.layer.cornerRadius = 10
-                    }
-                }
+        if let view = view {
+            view.layer.cornerRadius = 14
+            for subview in view.subviews {
+                subview.layer.cornerRadius = 7
             }
         }
     }
@@ -66,27 +67,65 @@ class ThemesViewController: UIViewController {
         switch lastTheme {
         case .classic:
             print("classic theme chosen")
+            changeToClassic()
         case .day:
             print("day theme chosen")
+            changeToDay()
         case .night:
             print("night theme chosen")
+            changeToNight()
         }
+        saveSettings()
         navigationController?.popViewController(animated: true)
     }
     
     func saveSettings() {
-        userDefaultsManager.setValue(currentTheme, forKey: themeKeyIdentifier)
+        userDefaultsManager.setValue(currentTheme.rawValue, forKey: themeKeyIdentifier)
+    }
+    
+    func selectThemeView(theme: Theme) {
+        deselectAllThemeViews()
+        let themeView: UIView?
+        switch theme {
+        case .classic:
+            themeView = classicMessagesView
+        case .day:
+            themeView = dayMessagesView
+        case .night:
+            themeView = nightMessagesView
+        }
+        guard let view = themeView else { return }
+        view.layer.borderWidth = 3
+        view.layer.borderColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1).cgColor
+    }
+    
+    func deselectAllThemeViews() {
+        classicMessagesView?.layer.borderWidth = 0
+        dayMessagesView?.layer.borderWidth = 0
+        nightMessagesView?.layer.borderWidth = 0
     }
     
     @objc func changeToClassic() {
         print("classic theme chosen")
+        self.view.backgroundColor = UIColor(named: "classicColor")
+        selectThemeView(theme: .classic)
+        currentTheme = .classic
+        saveSettings()
     }
     
     @objc func changeToDay() {
         print("day theme chosen")
+        self.view.backgroundColor = UIColor(named: "dayColor")
+        selectThemeView(theme: .day)
+        currentTheme = .day
+        saveSettings()
     }
     
     @objc func changeToNight() {
         print("night theme chosen")
+        self.view.backgroundColor = UIColor(named: "nightColor")
+        selectThemeView(theme: .night)
+        currentTheme = .night
+        saveSettings()
     }
 }

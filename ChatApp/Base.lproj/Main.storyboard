@@ -363,8 +363,11 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="classicMessagesView" destination="55u-RP-DzD" id="wOt-vY-tMa"/>
                         <outlet property="classicThemeView" destination="slm-zt-OGu" id="VtI-Li-8Mz"/>
+                        <outlet property="dayMessagesView" destination="O16-vV-a4a" id="MOI-by-k5Z"/>
                         <outlet property="dayThemeView" destination="ewD-hJ-eDa" id="uA0-hc-Mcj"/>
+                        <outlet property="nightMessagesView" destination="Jtg-7s-sfZ" id="Uru-Ew-VSi"/>
                         <outlet property="nightThemeView" destination="LJD-Oh-I91" id="tH9-o3-P51"/>
                     </connections>
                 </viewController>
