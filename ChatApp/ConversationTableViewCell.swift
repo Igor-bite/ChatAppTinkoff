@@ -48,6 +48,8 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
         
         if (hasUnreadMessages) {
             lastMessageLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        } else {
+            lastMessageLabel?.font = UIFont.systemFont(ofSize: 17)
         }
         let dateFormatter = DateFormatter()
         guard let date = date else {

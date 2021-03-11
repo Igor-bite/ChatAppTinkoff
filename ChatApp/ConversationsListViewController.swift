@@ -82,15 +82,8 @@ enum MessageType : Int, CaseIterable {
 
 extension ConversationsListViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
         if indexPath.section == MessageType.online.rawValue {
             let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
-            for conv in onlineConversations {
-                print(conv.user.getName())
-            }
-            print(indexPath.row)
-            print(onlineConversations[indexPath.row].user.getName())
-            print("---------------------")
             
             navigationController?.pushViewController(conversationVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
