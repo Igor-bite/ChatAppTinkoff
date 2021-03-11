@@ -49,6 +49,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A56F761325FA1D3A0080AC1F /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */,
+				A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */,
+				A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */,
+			);
+			path = Conversation;
+			sourceTree = "<group>";
+		};
+		A56F761525FA1D510080AC1F /* ListOfConversations */ = {
+			isa = PBXGroup;
+			children = (
+				A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */,
+				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
+				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
+			);
+			path = ListOfConversations;
+			sourceTree = "<group>";
+		};
 		A5A5B93625DA85D500F61A26 = {
 			isa = PBXGroup;
 			children = (
@@ -69,18 +89,14 @@
 			isa = PBXGroup;
 			children = (
 				A5A5B94225DA85D500F61A26 /* AppDelegate.swift */,
-				A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */,
-				A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */,
-				A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */,
-				A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */,
-				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
-				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
+				A56F761525FA1D510080AC1F /* ListOfConversations */,
+				A56F761325FA1D3A0080AC1F /* Conversation */,
 				A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */,
+				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
 				A5A5B94825DA85D500F61A26 /* Main.storyboard */,
 				A5A5B94B25DA85D600F61A26 /* Assets.xcassets */,
 				A5A5B94D25DA85D600F61A26 /* LaunchScreen.storyboard */,
 				A5A5B95025DA85D600F61A26 /* Info.plist */,
-				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
 			);
 			path = ChatApp;
 			sourceTree = "<group>";

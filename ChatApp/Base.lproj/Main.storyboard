@@ -60,7 +60,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wny-11-jhG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1700" y="73.313343328335833"/>
+            <point key="canvasLocation" x="1692" y="73"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="cIn-gO-e2h">
@@ -178,7 +178,22 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3JA-ez-AaQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3264.8000000000002" y="73.313343328335833"/>
+            <point key="canvasLocation" x="318" y="-689"/>
+        </scene>
+        <!--Themes View Controller-->
+        <scene sceneID="6KB-4a-qzS">
+            <objects>
+                <viewController id="PA2-0C-VaR" customClass="ThemesViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ol2-zn-DQy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="gkH-DN-XwL"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="n4G-ow-FuF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1348" y="-690"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hfz-nE-jOR">
