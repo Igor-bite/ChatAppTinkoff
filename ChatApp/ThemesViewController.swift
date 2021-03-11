@@ -13,9 +13,15 @@ enum Theme: String {
     case night = "night"
 }
 
+let themeKeyIdentifier = "theme"
+
+func getSavedTheme() -> Theme {
+    return Theme(rawValue: UserDefaults.standard.string(forKey: themeKeyIdentifier) ?? "classic") ?? Theme.classic
+}
+
 class ThemesViewController: UIViewController {
-    let lastTheme: Theme = Theme(rawValue: UserDefaults.standard.string(forKey: "theme") ?? "classic") ?? Theme.classic
-    var currentTheme: Theme = Theme(rawValue: UserDefaults.standard.string(forKey: "theme") ?? "classic") ?? Theme.classic
+    let lastTheme: Theme = getSavedTheme()
+    var currentTheme: Theme = getSavedTheme()
 
     override func viewDidLoad() {
         super.viewDidLoad()

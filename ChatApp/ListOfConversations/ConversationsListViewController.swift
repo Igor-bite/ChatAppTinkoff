@@ -19,6 +19,8 @@ class ConversationsListViewController: UIViewController {
         title = navControllerTitle
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(showProfile))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "gear"), style: .plain, target: self, action: #selector(showThemePicker))
+        navigationItem.leftBarButtonItem?.tintColor = .darkGray
         
         view.addSubview(tableView)
         
@@ -62,6 +64,11 @@ class ConversationsListViewController: UIViewController {
     @objc func showProfile(_ sender: Any) {
         let profileVC : ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileVC") as! ProfileViewController
         self.present(profileVC, animated: true, completion: nil)
+    }
+    
+    @objc func showThemePicker(_ sender: Any) {
+        let themesVC : ThemesViewController = self.storyboard?.instantiateViewController(withIdentifier: "ThemesVC") as! ThemesViewController
+        navigationController?.pushViewController(themesVC, animated: true)
     }
     
     private let cellIdentifier = String(describing: ConversationTableViewCell.self)
