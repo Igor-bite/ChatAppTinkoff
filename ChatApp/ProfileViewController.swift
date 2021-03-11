@@ -29,6 +29,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         NSLog("\nView did load : \(#function)")
 
         editButtonView?.layer.cornerRadius = editButtonCornerRadius
@@ -38,15 +39,19 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
         userImageView?.addGestureRecognizer(userImageRec)
         
-        guard let frame = editButtonView?.frame else { return }
-        print(frame)
+//        guard let frame = editButtonView?.frame else { return }
+//        print(frame)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         NSLog("\nView did appear : \(#function)")
-        guard let frame = editButtonView?.frame else { return }
-        print(frame) // frame отличается, так как изначально во время метода viewDidLoad создаётся интерфейс для iPhoneSE(2nd generation), так как он указан в storyboard, но симулятор запускается на iPhone 11 Pro с другим разрешением экрана, соответственно мы получаем новое значение origin для сохранения констрейнтов и положения кнопки. То есть на момент вызова метода viewDidLoad наш view еще не добавлен на UIWindow, соответственно корректной информации по размерам получить мы не можем.
+//        guard let frame = editButtonView?.frame else { return }
+        //print(frame) // frame отличается, так как изначально во время метода viewDidLoad создаётся интерфейс для iPhoneSE(2nd generation), так как он указан в storyboard, но симулятор запускается на iPhone 11 Pro с другим разрешением экрана, соответственно мы получаем новое значение origin для сохранения констрейнтов и положения кнопки. То есть на момент вызова метода viewDidLoad наш view еще не добавлен на UIWindow, соответственно корректной информации по размерам получить мы не можем.
+    }
+    
+    @IBAction func closeProfile(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func userImageTapped(_ sender: UITapGestureRecognizer) {
