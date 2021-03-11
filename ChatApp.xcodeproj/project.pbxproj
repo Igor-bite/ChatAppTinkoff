@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
 		A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94225DA85D500F61A26 /* AppDelegate.swift */; };
 		A5A5B94A25DA85D500F61A26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94825DA85D500F61A26 /* Main.storyboard */; };
 		A5A5B94C25DA85D600F61A26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94B25DA85D600F61A26 /* Assets.xcassets */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		A5A5B93F25DA85D500F61A26 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5A5B94225DA85D500F61A26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5A5B94925DA85D500F61A26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				A5A5B94B25DA85D600F61A26 /* Assets.xcassets */,
 				A5A5B94D25DA85D600F61A26 /* LaunchScreen.storyboard */,
 				A5A5B95025DA85D600F61A26 /* Info.plist */,
+				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
 			);
 			path = ChatApp;
 			sourceTree = "<group>";
@@ -160,6 +163,7 @@
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,
 				A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */,
+				A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
