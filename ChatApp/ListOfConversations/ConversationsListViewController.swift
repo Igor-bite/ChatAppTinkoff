@@ -14,7 +14,6 @@ class ConversationsListViewController: UIViewController {
     let historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika", isOnline: false)),  Conversation(user: User(name: "Polly", isOnline: false)), Conversation(user: User(name: "Roza", isOnline: false)),  Conversation(user: User(name: "Sergei", isOnline: false)), Conversation(user: User(name: "Pavel", isOnline: false)),  Conversation(user: User(name: "Liza", isOnline: false)), Conversation(user: User(name: "Betty", isOnline: false)),  Conversation(user: User(name: "Claudia", isOnline: false)), Conversation(user: User(name: "Anna", isOnline: false)),  Conversation(user: User(name: "Pierre", isOnline: false))]
     
     var theme: Theme = .classic
-    var handler: ((Theme) -> ())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +82,17 @@ class ConversationsListViewController: UIViewController {
     @objc func showThemePicker(_ sender: Any) {
         let themesVC : ThemesViewController = self.storyboard?.instantiateViewController(withIdentifier: "ThemesVC") as! ThemesViewController
         themesVC.conversationsVC = self
+        
+        themesVC.handler = { [weak self] (theme) in
+            switch theme {
+            case .classic:
+                self?.changeToClassic()
+            case .day:
+                self?.changeToDay()
+            case .night:
+                self?.changeToNight()
+            }
+        }
         navigationController?.pushViewController(themesVC, animated: true)
     }
     

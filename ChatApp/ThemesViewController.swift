@@ -24,7 +24,9 @@ func getSavedTheme() -> Theme {
 class ThemesViewController: UIViewController {
     let lastTheme: Theme = getSavedTheme()
     var currentTheme: Theme = getSavedTheme()
-    weak var conversationsVC: ConversationsListViewController?
+    weak var conversationsVC: ConversationsListViewController? // Если не прописать weak у delegate, то у нас появится цикл. Делегат ссылается на предущий экран, а тот на нынешний.
+//    ConversationsListViewController создает ThemesViewController, а затем устанавливает себя в качестве делегата ThemesViewController.
+    var handler: ((Theme) -> ())? //    Если не прописать weak self в замыкании, то у нас будет сильная ссылка на предыдущий контроллер в этом контроллере (замыкании), а в предыдущем ссылка на замыкание
     
     @IBOutlet weak var classicThemeView: UIView?
     @IBOutlet weak var classicMessagesView: UIView?
@@ -81,6 +83,7 @@ class ThemesViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         changeDelegateTheme()
+//        handler!(currentTheme)
     }
     
     func saveSettings() {
