@@ -24,6 +24,7 @@ func getSavedTheme() -> Theme {
 class ThemesViewController: UIViewController {
     let lastTheme: Theme = getSavedTheme()
     var currentTheme: Theme = getSavedTheme()
+    weak var conversationsVC: ConversationsListViewController?
     
     @IBOutlet weak var classicThemeView: UIView?
     @IBOutlet weak var classicMessagesView: UIView?
@@ -66,17 +67,20 @@ class ThemesViewController: UIViewController {
     @objc func restoreSettings() {
         switch lastTheme {
         case .classic:
-            print("classic theme chosen")
             changeToClassic()
         case .day:
-            print("day theme chosen")
             changeToDay()
         case .night:
-            print("night theme chosen")
             changeToNight()
         }
         saveSettings()
         navigationController?.popViewController(animated: true)
+        changeDelegateTheme()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        changeDelegateTheme()
     }
     
     func saveSettings() {
@@ -106,7 +110,6 @@ class ThemesViewController: UIViewController {
     }
     
     @objc func changeToClassic() {
-        print("classic theme chosen")
         self.view.backgroundColor = UIColor(named: "classicColor")
         selectThemeView(theme: .classic)
         currentTheme = .classic
@@ -114,7 +117,6 @@ class ThemesViewController: UIViewController {
     }
     
     @objc func changeToDay() {
-        print("day theme chosen")
         self.view.backgroundColor = UIColor(named: "dayColor")
         selectThemeView(theme: .day)
         currentTheme = .day
@@ -122,10 +124,20 @@ class ThemesViewController: UIViewController {
     }
     
     @objc func changeToNight() {
-        print("night theme chosen")
         self.view.backgroundColor = UIColor(named: "nightColor")
         selectThemeView(theme: .night)
         currentTheme = .night
         saveSettings()
+    }
+    
+    func changeDelegateTheme() {
+        switch currentTheme {
+        case .classic:
+            conversationsVC?.changeToClassic()
+        case .day:
+            conversationsVC?.changeToDay()
+        case .night:
+            conversationsVC?.changeToNight()
+        }
     }
 }

@@ -23,7 +23,7 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
     var date: Date?
     var online: Bool = false
     var hasUnreadMessages: Bool = false
-    
+        
     @IBOutlet weak var nameLabel: UILabel?
     @IBOutlet weak var lastMessageLabel: UILabel?
     @IBOutlet weak var dateLabel: UILabel?
