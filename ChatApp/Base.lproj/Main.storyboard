@@ -164,12 +164,13 @@
                             <constraint firstItem="lp3-3o-tmW" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="nZ6-iO-5a2"/>
                             <constraint firstItem="V3o-Ff-Lti" firstAttribute="bottom" secondItem="lp3-3o-tmW" secondAttribute="bottom" constant="30" id="neB-OR-kWM"/>
                             <constraint firstItem="Nef-97-idk" firstAttribute="top" secondItem="nQ3-ew-Ew4" secondAttribute="bottom" constant="20" id="onn-EJ-yUn"/>
-                            <constraint firstItem="Mmf-Cm-uN5" firstAttribute="leading" secondItem="0ym-aU-4cm" secondAttribute="trailing" constant="175.5" id="ss4-9H-Pkw"/>
+                            <constraint firstItem="Mmf-Cm-uN5" firstAttribute="leading" relation="lessThanOrEqual" secondItem="0ym-aU-4cm" secondAttribute="trailing" constant="175.5" id="ss4-9H-Pkw"/>
                             <constraint firstItem="Mmf-Cm-uN5" firstAttribute="centerY" secondItem="0ym-aU-4cm" secondAttribute="centerY" id="zzC-1J-34Y"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="editButtonView" destination="lp3-3o-tmW" id="vnA-1n-yaf"/>
+                        <outlet property="profileLabel" destination="0ym-aU-4cm" id="cf5-hH-aaU"/>
                         <outlet property="userDetailsLabel" destination="Nef-97-idk" id="EXJ-jT-Lnn"/>
                         <outlet property="userImage" destination="Hcx-5l-lV0" id="JJA-w6-qWr"/>
                         <outlet property="userImageLabel" destination="eGb-uo-O7c" id="eWR-8w-rLq"/>

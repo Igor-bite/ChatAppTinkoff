@@ -26,7 +26,7 @@ class ThemesViewController: UIViewController {
     var currentTheme: Theme = getSavedTheme()
     weak var conversationsVC: ConversationsListViewController? // Если не прописать weak у delegate, то у нас появится цикл. Делегат ссылается на предущий экран, а тот на нынешний.
 //    ConversationsListViewController создает ThemesViewController, а затем устанавливает себя в качестве делегата ThemesViewController.
-    var handler: ((Theme) -> ())? //    Если не прописать weak self в замыкании, то у нас будет сильная ссылка на предыдущий контроллер в этом контроллере (замыкании), а в предыдущем ссылка на замыкание
+    var handler: ((Theme) -> ())? // Если не прописать weak self в замыкании, то у нас будет сильная ссылка на предыдущий контроллер в этом контроллере (замыкании), а в предыдущем ссылка на замыкание
     
     @IBOutlet weak var classicThemeView: UIView?
     @IBOutlet weak var classicMessagesView: UIView?
@@ -114,6 +114,8 @@ class ThemesViewController: UIViewController {
     
     @objc func changeToClassic() {
         self.view.backgroundColor = UIColor(named: "classicColor")
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
         selectThemeView(theme: .classic)
         currentTheme = .classic
         saveSettings()
@@ -121,6 +123,8 @@ class ThemesViewController: UIViewController {
     
     @objc func changeToDay() {
         self.view.backgroundColor = UIColor(named: "dayColor")
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
         selectThemeView(theme: .day)
         currentTheme = .day
         saveSettings()
@@ -128,6 +132,8 @@ class ThemesViewController: UIViewController {
     
     @objc func changeToNight() {
         self.view.backgroundColor = UIColor(named: "nightColor")
+        navigationController?.navigationBar.barTintColor = .black
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         selectThemeView(theme: .night)
         currentTheme = .night
         saveSettings()
