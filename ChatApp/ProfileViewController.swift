@@ -100,6 +100,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userNameLabel?.textColor = .black
         userDetailsLabel?.textColor = .black
         profileLabel?.textColor = .black
+        editButtonView?.backgroundColor = .white
     }
     
     func changeToDay() {
@@ -107,6 +108,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userNameLabel?.textColor = .black
         userDetailsLabel?.textColor = .black
         profileLabel?.textColor = .black
+        editButtonView?.backgroundColor = .white
     }
     
     func changeToNight() {
@@ -114,6 +116,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userNameLabel?.textColor = .white
         userDetailsLabel?.textColor = .white
         profileLabel?.textColor = .white
+        editButtonView?.backgroundColor = .gray
     }
     
     
