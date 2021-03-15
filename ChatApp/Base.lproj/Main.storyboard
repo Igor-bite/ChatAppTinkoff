@@ -70,21 +70,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Marina Dudarenko" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nQ3-ew-Ew4">
-                                <rect key="frame" x="16" y="348.5" width="343" height="29"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="29" id="FxV-8a-yp8"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UX/UI designer, web-designer Moscow, Russia" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nef-97-idk">
-                                <rect key="frame" x="67.5" y="397.5" width="240" height="42.5"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lp3-3o-tmW">
                                 <rect key="frame" x="56" y="597" width="263" height="40"/>
                                 <subviews>
@@ -147,40 +132,57 @@
                                     <action selector="closeProfile:" destination="RO4-Om-daL" eventType="touchUpInside" id="O08-6I-HGC"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Marina Dudarenko" placeholder="Your name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xsM-hk-Okl">
+                                <rect key="frame" x="16" y="348.5" width="343" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="29" id="IeM-rl-Jbo"/>
+                                </constraints>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <textInputTraits key="textInputTraits" textContentType="name"/>
+                            </textField>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="UX/UI designer, web-designer Moscow, Russia" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gje-1n-dug">
+                                <rect key="frame" x="67.5" y="397.5" width="240" height="179.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="V3o-Ff-Lti"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ed5-aY-cP7" firstAttribute="top" secondItem="0ym-aU-4cm" secondAttribute="bottom" constant="20" id="1ru-vv-7ES"/>
-                            <constraint firstItem="Nef-97-idk" firstAttribute="trailing" secondItem="ed5-aY-cP7" secondAttribute="trailing" id="435-MI-mVW"/>
+                            <constraint firstItem="Gje-1n-dug" firstAttribute="leading" secondItem="ed5-aY-cP7" secondAttribute="leading" id="6LU-2h-Hup"/>
                             <constraint firstItem="0ym-aU-4cm" firstAttribute="top" secondItem="V3o-Ff-Lti" secondAttribute="top" constant="37" id="AwJ-5t-R1F"/>
-                            <constraint firstItem="Nef-97-idk" firstAttribute="leading" secondItem="Hcx-5l-lV0" secondAttribute="leading" id="Fda-vO-Z20"/>
-                            <constraint firstItem="nQ3-ew-Ew4" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Hms-gd-sFb"/>
+                            <constraint firstItem="Gje-1n-dug" firstAttribute="top" secondItem="xsM-hk-Okl" secondAttribute="bottom" constant="20" id="D6a-i6-Nfw"/>
                             <constraint firstItem="0ym-aU-4cm" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Lt1-bb-z9T"/>
+                            <constraint firstItem="xsM-hk-Okl" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Svw-ae-wVS"/>
                             <constraint firstItem="V3o-Ff-Lti" firstAttribute="trailing" secondItem="Mmf-Cm-uN5" secondAttribute="trailing" constant="10" id="TTD-Th-3tv"/>
-                            <constraint firstItem="V3o-Ff-Lti" firstAttribute="trailing" secondItem="nQ3-ew-Ew4" secondAttribute="trailing" constant="16" id="Tpi-SY-6mL"/>
-                            <constraint firstItem="nQ3-ew-Ew4" firstAttribute="top" secondItem="ed5-aY-cP7" secondAttribute="bottom" constant="20" id="Wtq-MS-FvB"/>
                             <constraint firstItem="ed5-aY-cP7" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="dwk-7L-cIm"/>
+                            <constraint firstItem="V3o-Ff-Lti" firstAttribute="trailing" secondItem="xsM-hk-Okl" secondAttribute="trailing" constant="16" id="gXZ-gD-d1N"/>
+                            <constraint firstItem="xsM-hk-Okl" firstAttribute="top" secondItem="ed5-aY-cP7" secondAttribute="bottom" constant="20" id="mIP-gd-NmP"/>
                             <constraint firstItem="lp3-3o-tmW" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="nZ6-iO-5a2"/>
                             <constraint firstItem="V3o-Ff-Lti" firstAttribute="bottom" secondItem="lp3-3o-tmW" secondAttribute="bottom" constant="30" id="neB-OR-kWM"/>
-                            <constraint firstItem="Nef-97-idk" firstAttribute="top" secondItem="nQ3-ew-Ew4" secondAttribute="bottom" constant="20" id="onn-EJ-yUn"/>
+                            <constraint firstItem="Gje-1n-dug" firstAttribute="trailing" secondItem="ed5-aY-cP7" secondAttribute="trailing" id="sKw-D0-aOH"/>
                             <constraint firstItem="Mmf-Cm-uN5" firstAttribute="leading" relation="lessThanOrEqual" secondItem="0ym-aU-4cm" secondAttribute="trailing" constant="175.5" id="ss4-9H-Pkw"/>
+                            <constraint firstItem="lp3-3o-tmW" firstAttribute="top" secondItem="Gje-1n-dug" secondAttribute="bottom" constant="20" id="wV1-8Z-M2B"/>
                             <constraint firstItem="Mmf-Cm-uN5" firstAttribute="centerY" secondItem="0ym-aU-4cm" secondAttribute="centerY" id="zzC-1J-34Y"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="editButtonView" destination="lp3-3o-tmW" id="vnA-1n-yaf"/>
                         <outlet property="profileLabel" destination="0ym-aU-4cm" id="cf5-hH-aaU"/>
-                        <outlet property="userDetailsLabel" destination="Nef-97-idk" id="EXJ-jT-Lnn"/>
+                        <outlet property="userDetailsTextView" destination="Gje-1n-dug" id="rhO-Xw-I8N"/>
                         <outlet property="userImage" destination="Hcx-5l-lV0" id="JJA-w6-qWr"/>
                         <outlet property="userImageLabel" destination="eGb-uo-O7c" id="eWR-8w-rLq"/>
                         <outlet property="userImageView" destination="ed5-aY-cP7" id="gDA-VR-qCu"/>
-                        <outlet property="userNameLabel" destination="nQ3-ew-Ew4" id="9Eu-vk-Urk"/>
+                        <outlet property="userNameTextField" destination="xsM-hk-Okl" id="kxi-fQ-S86"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3JA-ez-AaQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="318" y="-689"/>
+            <point key="canvasLocation" x="317.60000000000002" y="-689.5052473763119"/>
         </scene>
         <!--Themes View Controller-->
         <scene sceneID="6KB-4a-qzS">
@@ -396,6 +398,9 @@
         </scene>
     </scenes>
     <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

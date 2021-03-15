@@ -10,8 +10,8 @@ import UIKit
 class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var editButtonView: UIView?
-    @IBOutlet weak var userNameLabel: UILabel?
-    @IBOutlet weak var userDetailsLabel: UILabel?
+    @IBOutlet weak var userNameTextField: UITextField?
+    @IBOutlet weak var userDetailsTextView: UITextView?
     @IBOutlet weak var userImageView: UIView?
     @IBOutlet weak var userImage: UIImageView?
     @IBOutlet weak var userImageLabel: UILabel?
@@ -49,6 +49,9 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         case .night:
             changeToNight()
         }
+        
+        let editRec = UITapGestureRecognizer(target: self, action: #selector(editButtonTapped))
+        editButtonView?.addGestureRecognizer(editRec)
         
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
@@ -97,28 +100,35 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func changeToClassic() {
         self.view.backgroundColor = .white
-        userNameLabel?.textColor = .black
-        userDetailsLabel?.textColor = .black
+        userNameTextField?.textColor = .black
+        userDetailsTextView?.textColor = .black
+        userDetailsTextView?.backgroundColor = .white
         profileLabel?.textColor = .black
-        editButtonView?.backgroundColor = .white
+        editButtonView?.backgroundColor = .lightGray
     }
     
     func changeToDay() {
         self.view.backgroundColor = .white
-        userNameLabel?.textColor = .black
-        userDetailsLabel?.textColor = .black
+        userNameTextField?.textColor = .black
+        userDetailsTextView?.textColor = .black
+        userDetailsTextView?.backgroundColor = .white
         profileLabel?.textColor = .black
-        editButtonView?.backgroundColor = .white
+        editButtonView?.backgroundColor = .lightGray
     }
     
     func changeToNight() {
         self.view.backgroundColor = .black
-        userNameLabel?.textColor = .white
-        userDetailsLabel?.textColor = .white
+        userNameTextField?.textColor = .white
+        userDetailsTextView?.textColor = .white
+        userDetailsTextView?.backgroundColor = .black
         profileLabel?.textColor = .white
-        editButtonView?.backgroundColor = .gray
+        editButtonView?.backgroundColor = .darkGray
     }
-    
+
+    @objc func editButtonTapped() {
+        userNameTextField?.isUserInteractionEnabled = true
+        userDetailsTextView?.isEditable = true
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -145,6 +155,5 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         NSLog("\nView did disappear : \(#function)")
     }
 }
-
 
 
