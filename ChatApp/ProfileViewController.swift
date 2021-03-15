@@ -53,6 +53,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         let editRec = UITapGestureRecognizer(target: self, action: #selector(editButtonTapped))
         editButtonView?.addGestureRecognizer(editRec)
         
+        putPlaceholder(to: userDetailsTextView, placeholder: "Bio")
+                
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
     }
@@ -126,8 +128,19 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 
     @objc func editButtonTapped() {
-        userNameTextField?.isUserInteractionEnabled = true
         userDetailsTextView?.isEditable = true
+        userDetailsTextView?.textColor = .black
+        userDetailsTextView?.text = ""
+        
+        userNameTextField?.isUserInteractionEnabled = true
+        userNameTextField?.becomeFirstResponder()
+        guard let end = userNameTextField?.endOfDocument else { return }
+        userNameTextField?.selectedTextRange = userNameTextField?.textRange(from: end, to: end)
+    }
+    
+    func putPlaceholder(to textView: UITextView?, placeholder: String) {
+        textView?.textColor = .lightGray
+        textView?.text = placeholder
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -156,4 +169,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 }
 
-
+extension ProfileViewController: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text == "" {
+            putPlaceholder(to: textView, placeholder: "Bio")
+        }
+    }
+}
