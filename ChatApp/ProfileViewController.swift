@@ -16,6 +16,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var userImage: UIImageView?
     @IBOutlet weak var userImageLabel: UILabel?
     @IBOutlet weak var profileLabel: UILabel?
+    @IBOutlet weak var saveGCDButtonView: UIView?
+    @IBOutlet weak var saveOperationsButtonView: UIView?
     
     /*
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -25,17 +27,21 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
      */
     
-    let editButtonCornerRadius: CGFloat = 14
+    let buttonCornerRadius: CGFloat = 14
     let userImageViewCornerRadius: CGFloat = 120
     var theme: Theme = .classic
+    var isEditingUserData = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NSLog("\nView did load : \(#function)")
 
-        editButtonView?.layer.cornerRadius = editButtonCornerRadius
-        
+        editButtonView?.layer.cornerRadius = buttonCornerRadius
+        saveGCDButtonView?.layer.cornerRadius = buttonCornerRadius
+        saveOperationsButtonView?.layer.cornerRadius = buttonCornerRadius
+        saveGCDButtonView?.isHidden = true
+        saveOperationsButtonView?.isHidden = true
         userImageView?.layer.cornerRadius = userImageViewCornerRadius
         
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
@@ -52,8 +58,15 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let editRec = UITapGestureRecognizer(target: self, action: #selector(editButtonTapped))
         editButtonView?.addGestureRecognizer(editRec)
+        let saveGCDRec = UITapGestureRecognizer(target: self, action: #selector(saveGCDTapped))
+        saveGCDButtonView?.addGestureRecognizer(saveGCDRec)
+        let saveOperationsRec = UITapGestureRecognizer(target: self, action: #selector(saveOperationsTapped))
+        saveOperationsButtonView?.addGestureRecognizer(saveOperationsRec)
         
         putPlaceholder(to: userDetailsTextView, placeholder: "Bio")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
                 
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
@@ -107,6 +120,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userDetailsTextView?.backgroundColor = .white
         profileLabel?.textColor = .black
         editButtonView?.backgroundColor = .lightGray
+        saveGCDButtonView?.backgroundColor = .lightGray
+        saveOperationsButtonView?.backgroundColor = .lightGray
     }
     
     func changeToDay() {
@@ -116,6 +131,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userDetailsTextView?.backgroundColor = .white
         profileLabel?.textColor = .black
         editButtonView?.backgroundColor = .lightGray
+        saveGCDButtonView?.backgroundColor = .lightGray
+        saveOperationsButtonView?.backgroundColor = .lightGray
     }
     
     func changeToNight() {
@@ -125,22 +142,74 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userDetailsTextView?.backgroundColor = .black
         profileLabel?.textColor = .white
         editButtonView?.backgroundColor = .darkGray
+        saveGCDButtonView?.backgroundColor = .darkGray
+        saveOperationsButtonView?.backgroundColor = .darkGray
+    }
+    
+    func changeButtonText(buttonView: UIView?, text: String) {
+        guard let subviews = buttonView?.subviews else { return }
+        for subview in subviews {
+            if subview.tag == 1 {
+                guard let label: UILabel = subview as? UILabel else { return }
+                label.text = text
+            }
+        }
     }
 
     @objc func editButtonTapped() {
-        userDetailsTextView?.isEditable = true
-        userDetailsTextView?.textColor = .black
-        userDetailsTextView?.text = ""
-        
-        userNameTextField?.isUserInteractionEnabled = true
-        userNameTextField?.becomeFirstResponder()
-        guard let end = userNameTextField?.endOfDocument else { return }
-        userNameTextField?.selectedTextRange = userNameTextField?.textRange(from: end, to: end)
+        if !isEditingUserData {
+            isEditingUserData = true
+            changeButtonText(buttonView: editButtonView, text: "Cancel")
+            userDetailsTextView?.isEditable = true
+            toggleSaveButtonsAlpha()
+            switch theme {
+            case .classic:
+                userDetailsTextView?.textColor = .black
+            case .day:
+                userDetailsTextView?.textColor = .black
+            case .night:
+                userDetailsTextView?.textColor = .white
+            }
+            userDetailsTextView?.text = ""
+            
+            userNameTextField?.isUserInteractionEnabled = true
+            userNameTextField?.becomeFirstResponder()
+            guard let end = userNameTextField?.endOfDocument else { return }
+            userNameTextField?.selectedTextRange = userNameTextField?.textRange(from: end, to: end)
+        } else {
+            isEditingUserData = false
+            toggleSaveButtonsAlpha()
+            changeButtonText(buttonView: editButtonView, text: "Edit")
+            userDetailsTextView?.isEditable = false
+            userNameTextField?.isUserInteractionEnabled = false
+            // ToDo: restore values
+        }
     }
     
     func putPlaceholder(to textView: UITextView?, placeholder: String) {
         textView?.textColor = .lightGray
         textView?.text = placeholder
+    }
+    
+    func toggleSaveButtonsAlpha() {
+        saveGCDButtonView?.isHidden.toggle()
+        saveOperationsButtonView?.isHidden.toggle()
+    }
+    
+    @objc func saveGCDTapped() {
+        isEditingUserData = false
+        changeButtonText(buttonView: editButtonView, text: "Edit")
+        userDetailsTextView?.isEditable = false
+        userNameTextField?.isUserInteractionEnabled = false
+        toggleSaveButtonsAlpha()
+    }
+    
+    @objc func saveOperationsTapped() {
+        isEditingUserData = false
+        changeButtonText(buttonView: editButtonView, text: "Edit")
+        userDetailsTextView?.isEditable = false
+        userNameTextField?.isUserInteractionEnabled = false
+        toggleSaveButtonsAlpha()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -173,6 +242,22 @@ extension ProfileViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text == "" {
             putPlaceholder(to: textView, placeholder: "Bio")
+        }
+    }
+}
+
+extension ProfileViewController {
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
         }
     }
 }
