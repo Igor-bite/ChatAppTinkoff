@@ -15,6 +15,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var userImageView: UIView?
     @IBOutlet weak var userImage: UIImageView?
     @IBOutlet weak var userImageLabel: UILabel?
+    @IBOutlet weak var profileLabel: UILabel?
     
     /*
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -26,6 +27,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     let editButtonCornerRadius: CGFloat = 14
     let userImageViewCornerRadius: CGFloat = 120
+    var theme: Theme = .classic
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +40,15 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
         userImageView?.addGestureRecognizer(userImageRec)
+        
+        switch theme {
+        case .classic:
+            changeToClassic()
+        case .day:
+            changeToDay()
+        case .night:
+            changeToNight()
+        }
         
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
@@ -83,6 +94,28 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 
         dismiss(animated: true)
     }
+    
+    func changeToClassic() {
+        self.view.backgroundColor = .white
+        userNameLabel?.textColor = .black
+        userDetailsLabel?.textColor = .black
+        profileLabel?.textColor = .black
+    }
+    
+    func changeToDay() {
+        self.view.backgroundColor = .white
+        userNameLabel?.textColor = .black
+        userDetailsLabel?.textColor = .black
+        profileLabel?.textColor = .black
+    }
+    
+    func changeToNight() {
+        self.view.backgroundColor = .black
+        userNameLabel?.textColor = .white
+        userDetailsLabel?.textColor = .white
+        profileLabel?.textColor = .white
+    }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

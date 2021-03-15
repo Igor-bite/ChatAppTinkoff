@@ -10,8 +10,10 @@ import UIKit
 class ConversationsListViewController: UIViewController {
     let navControllerTitle: String = "Tinkoff Chat"
     
-    let onlineConversations: [Conversation] = [Conversation(user: User(name: "John", isOnline: true)), Conversation(user: User(name: "William", isOnline: true)), Conversation(user: User(name: "Ben", isOnline: true)), Conversation(user: User(name: "Mikhail", isOnline: true)), Conversation(user: User(name: "Igor", isOnline: true)), Conversation(user: User(name: "Petr", isOnline: true)), Conversation(user: User(name: "Ilon", isOnline: true)), Conversation(user: User(name: "Craig", isOnline: true)), Conversation(user: User(name: "Cook", isOnline: true)), Conversation(user: User(name: "Kirill", isOnline: true))]
-    let historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika", isOnline: false)),  Conversation(user: User(name: "Polly", isOnline: false)), Conversation(user: User(name: "Roza", isOnline: false)),  Conversation(user: User(name: "Sergei", isOnline: false)), Conversation(user: User(name: "Pavel", isOnline: false)),  Conversation(user: User(name: "Liza", isOnline: false)), Conversation(user: User(name: "Betty", isOnline: false)),  Conversation(user: User(name: "Claudia", isOnline: false)), Conversation(user: User(name: "Anna", isOnline: false)),  Conversation(user: User(name: "Pierre", isOnline: false))]
+    let onlineConversations: [Conversation] = [Conversation(user: User(name: "John Hanks", isOnline: true)), Conversation(user: User(name: "William Gebern", isOnline: true)), Conversation(user: User(name: "Ben Clark", isOnline: true)), Conversation(user: User(name: "Mikhail Shumakher", isOnline: true)), Conversation(user: User(name: "Igor Roister", isOnline: true)), Conversation(user: User(name: "Petr Ivanov", isOnline: true)), Conversation(user: User(name: "Ilon Mask", isOnline: true)), Conversation(user: User(name: "Craig Federige", isOnline: true)), Conversation(user: User(name: "Tim Cook", isOnline: true)), Conversation(user: User(name: "Kirill Rumin", isOnline: true))]
+    let historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika Hepsberg", isOnline: false)),  Conversation(user: User(name: "Polly Luppy", isOnline: false)), Conversation(user: User(name: "Roza Shukina", isOnline: false)),  Conversation(user: User(name: "Sergei Mosty", isOnline: false)), Conversation(user: User(name: "Pavel Volya", isOnline: false)),  Conversation(user: User(name: "Liza Alert", isOnline: false)), Conversation(user: User(name: "Betty Krummy", isOnline: false)),  Conversation(user: User(name: "Claudia Hopkins", isOnline: false)), Conversation(user: User(name: "Anna Terberg", isOnline: false)),  Conversation(user: User(name: "Pierre Myile", isOnline: false))]
+    
+    var theme: Theme = .classic
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,8 +21,21 @@ class ConversationsListViewController: UIViewController {
         title = navControllerTitle
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(showProfile))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "gear"), style: .plain, target: self, action: #selector(showThemePicker))
+        navigationItem.leftBarButtonItem?.tintColor = .darkGray
         
         view.addSubview(tableView)
+        
+        theme = Theme(rawValue: userDefaultsManager.string(forKey: themeKeyIdentifier) ?? "classic") ?? Theme.classic
+        
+        switch theme {
+        case .classic:
+            changeToClassic()
+        case .day:
+            changeToDay()
+        case .night:
+            changeToNight()
+        }
         
 //        just for testing:
         onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
@@ -56,12 +71,30 @@ class ConversationsListViewController: UIViewController {
         let date4 = Date(timeInterval: TimeInterval(-60*60*24-5), since: Date())
         historyConversations[8].gotMessage(message: Message(text: "Bye", isFromMe: true, date: date4))
         historyConversations[9].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
-//        just for testing:
+//        just for testing
     }
     
     @objc func showProfile(_ sender: Any) {
         let profileVC : ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileVC") as! ProfileViewController
+        profileVC.theme = self.theme
         self.present(profileVC, animated: true, completion: nil)
+    }
+    
+    @objc func showThemePicker(_ sender: Any) {
+        let themesVC : ThemesViewController = self.storyboard?.instantiateViewController(withIdentifier: "ThemesVC") as! ThemesViewController
+        themesVC.conversationsVC = self
+        
+        themesVC.handler = { [weak self] (theme) in
+            switch theme {
+            case .classic:
+                self?.changeToClassic()
+            case .day:
+                self?.changeToDay()
+            case .night:
+                self?.changeToNight()
+            }
+        }
+        navigationController?.pushViewController(themesVC, animated: true)
     }
     
     private let cellIdentifier = String(describing: ConversationTableViewCell.self)
@@ -73,6 +106,72 @@ class ConversationsListViewController: UIViewController {
         tableView.delegate = self
         return tableView
     }()
+    
+    func changeToClassic() {
+        theme = .classic
+        tableView.backgroundColor = .white
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
+        tableView.reloadData()
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.backgroundColor = UIColor(named: "classicColor")
+            appearance.titleTextAttributes = [.foregroundColor: UIColor(named: "classicColor") ?? .black]
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor(named: "classicColor") ?? .black]
+            UINavigationBar.appearance().tintColor = UIColor(named: "classicColor")
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().compactAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        } else {
+            UINavigationBar.appearance().tintColor = UIColor(named: "classicColor")
+            UINavigationBar.appearance().barTintColor =  UIColor(named: "classicColor")
+            UINavigationBar.appearance().isTranslucent = false
+        }
+    }
+    
+    func changeToDay() {
+        theme = .day
+        tableView.backgroundColor = .white
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
+        tableView.reloadData()
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.backgroundColor = UIColor(named: "dayColor")
+            appearance.titleTextAttributes = [.foregroundColor: UIColor(named: "dayColor") ?? .black]
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor(named: "dayColor") ?? .black]
+            UINavigationBar.appearance().tintColor = UIColor(named: "dayColor")
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().compactAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        } else {
+            UINavigationBar.appearance().tintColor = UIColor(named: "dayColor")
+            UINavigationBar.appearance().barTintColor =  UIColor(named: "dayColor")
+            UINavigationBar.appearance().isTranslucent = false
+        }
+    }
+    
+    func changeToNight() {
+        theme = .night
+        tableView.backgroundColor = .black
+        navigationController?.navigationBar.barTintColor = .black
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        tableView.reloadData()
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.backgroundColor = UIColor(named: "nightColor")
+            appearance.titleTextAttributes = [.foregroundColor: UIColor(named: "nightColor") ?? .white]
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor(named: "nightColor") ?? .white]
+            UINavigationBar.appearance().tintColor = UIColor(named: "nightColor")
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().compactAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        } else {
+            UINavigationBar.appearance().tintColor = UIColor(named: "nightColor")
+            UINavigationBar.appearance().barTintColor =  UIColor(named: "nightColor")
+            UINavigationBar.appearance().isTranslucent = false
+        }
+    }
 }
 
 enum MessageType : Int, CaseIterable {
@@ -84,6 +183,7 @@ extension ConversationsListViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == MessageType.online.rawValue {
             let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
+            conversationVC.theme = theme
             
             navigationController?.pushViewController(conversationVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
@@ -110,8 +210,7 @@ extension ConversationsListViewController: UITableViewDataSource {
             } else {
                 cell.configure(name: onlineConversations[indexPath.row].user.getName(), message: nil, date: nil, online: true, hasUnreadMessages: false)
             }
-            
-            cell.backgroundColor = UIColor(red: 228/255, green: 232/255, blue: 43/255, alpha: 1) // бледно жёлтый
+            changeThemeForCell(cell: cell)
             cell.isUserInteractionEnabled = true
         case MessageType.history.rawValue:
             if let lastMessage = historyConversations[indexPath.row].getLastMessage() {
@@ -119,13 +218,36 @@ extension ConversationsListViewController: UITableViewDataSource {
             } else {
                 cell.configure(name: historyConversations[indexPath.row].user.getName(), message: nil, date: nil, online: false, hasUnreadMessages: false)
             }
-            cell.backgroundColor = .white
+            changeThemeForCell(cell: cell)
             cell.isUserInteractionEnabled = false
         default:
             break
         }
         
         return cell
+    }
+    
+    func changeThemeForCell(cell: ConversationTableViewCell) {
+        switch theme {
+        case .classic:
+            cell.backgroundColor = .white
+            let color = UIColor.black
+            cell.nameLabel?.textColor = color
+            cell.lastMessageLabel?.textColor = color
+            cell.dateLabel?.textColor = color
+        case .day:
+            cell.backgroundColor = .white
+            let color = UIColor.black
+            cell.nameLabel?.textColor = color
+            cell.lastMessageLabel?.textColor = color
+            cell.dateLabel?.textColor = color
+        case .night:
+            cell.backgroundColor = .black
+            let color = UIColor.white
+            cell.nameLabel?.textColor = color
+            cell.lastMessageLabel?.textColor = color
+            cell.dateLabel?.textColor = color
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

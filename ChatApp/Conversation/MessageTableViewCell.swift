@@ -32,11 +32,9 @@ class MessageTableViewCell: UITableViewCell {
         if !isFromMe {
             cellLeadingConstraint?.isActive = true
             cellTrailingConstraint?.isActive = false
-            messageView?.backgroundColor = UIColor(displayP3Red: 223/255, green: 223/255, blue: 223/255, alpha: 1)
         } else {
             cellLeadingConstraint?.isActive = false
             cellTrailingConstraint?.isActive = true
-            messageView?.backgroundColor = UIColor(displayP3Red: 220/255, green: 247/255, blue: 197/255, alpha: 1)
         }
         
         messageView?.translatesAutoresizingMaskIntoConstraints = false
