@@ -10,8 +10,28 @@ import UIKit
 class ConversationsListViewController: UIViewController {
     let navControllerTitle: String = "Tinkoff Chat"
     
-    let onlineConversations: [Conversation] = [Conversation(user: User(name: "John Hanks", isOnline: true)), Conversation(user: User(name: "William Gebern", isOnline: true)), Conversation(user: User(name: "Ben Clark", isOnline: true)), Conversation(user: User(name: "Mikhail Shumakher", isOnline: true)), Conversation(user: User(name: "Igor Roister", isOnline: true)), Conversation(user: User(name: "Petr Ivanov", isOnline: true)), Conversation(user: User(name: "Ilon Mask", isOnline: true)), Conversation(user: User(name: "Craig Federige", isOnline: true)), Conversation(user: User(name: "Tim Cook", isOnline: true)), Conversation(user: User(name: "Kirill Rumin", isOnline: true))]
-    let historyConversations: [Conversation] = [Conversation(user: User(name: "Veronika Hepsberg", isOnline: false)),  Conversation(user: User(name: "Polly Luppy", isOnline: false)), Conversation(user: User(name: "Roza Shukina", isOnline: false)),  Conversation(user: User(name: "Sergei Mosty", isOnline: false)), Conversation(user: User(name: "Pavel Volya", isOnline: false)),  Conversation(user: User(name: "Liza Alert", isOnline: false)), Conversation(user: User(name: "Betty Krummy", isOnline: false)),  Conversation(user: User(name: "Claudia Hopkins", isOnline: false)), Conversation(user: User(name: "Anna Terberg", isOnline: false)),  Conversation(user: User(name: "Pierre Myile", isOnline: false))]
+    let onlineConversations: [Conversation] = [
+        Conversation(user: User(name: "John Hanks", description: nil, isOnline: true)),
+        Conversation(user: User(name: "William Gebern", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Ben Clark", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Mikhail Shumakher", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Igor Roister", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Petr Ivanov", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Ilon Mask", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Craig Federige", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Tim Cook", description: nil, isOnline: true)),
+        Conversation(user: User(name: "Kirill Rumin", description: nil, isOnline: true))]
+    let historyConversations: [Conversation] = [
+        Conversation(user: User(name: "Veronika Hepsberg", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Polly Luppy", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Roza Shukina", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Sergei Mosty", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Pavel Volya", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Liza Alert", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Betty Krummy", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Claudia Hopkins", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Anna Terberg", description: nil, isOnline: false)),
+        Conversation(user: User(name: "Pierre Myile", description: nil, isOnline: false))]
     
     var theme: Theme = .classic
     
@@ -347,17 +367,27 @@ class Message {
     }
 }
 
-class User {
+class User: Codable {
     private var name: String?
+    private var description: String?
     private var isOnline: Bool
     
-    init(name: String, isOnline: Bool) {
+    init(name: String, description: String?, isOnline: Bool?) {
         self.name = name
-        self.isOnline = isOnline
+        self.description = description
+        if let isOnline = isOnline {
+            self.isOnline = isOnline
+        } else {
+            self.isOnline = false
+        }
     }
     
     func getName() -> String? {
         return name
+    }
+    
+    func getDescription() -> String? {
+        return description
     }
     
     func userWentOnline() {

@@ -22,7 +22,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var profileLabel: UILabel?
     @IBOutlet weak var saveGCDButtonView: UIView?
     @IBOutlet weak var saveOperationsButtonView: UIView?
-    
+    @IBOutlet weak var saveActivityIndicator: UIActivityIndicatorView?
     /*
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -31,10 +31,12 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
      */
     
-    let buttonCornerRadius: CGFloat = 14
-    let userImageViewCornerRadius: CGFloat = 120
+    private let buttonCornerRadius: CGFloat = 14
+    private let userImageViewCornerRadius: CGFloat = 120
     var theme: Theme = .classic
-    var isEditingUserData = false
+    private var isEditingUserData = false
+    private var isImageChanged = false
+    private var imageToRecover: UIImage? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +76,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         userDetailsHeightEquals?.isActive = false
         userDetailsHeightGreater?.isActive = true
+        
+        saveActivityIndicator?.hidesWhenStopped = true
                         
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
@@ -120,10 +124,14 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { return }
         userImageLabel?.isHidden = true
+        imageToRecover = userImage?.image
         userImage?.image = image
-
+        isImageChanged = true
+        
         dismiss(animated: true)
     }
+    
+//    MARK: - Theme change
     
     func changeToClassic() {
         self.view.backgroundColor = .white
@@ -215,6 +223,38 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userDetailsTextView?.isEditable = false
         userNameTextField?.isUserInteractionEnabled = false
         toggleSaveButtonsAlpha()
+        
+        saveActivityIndicator?.startAnimating()
+        
+        let saver = GCDSavingManager()
+        if isImageChanged {
+            saver.saveImage(of: Data())
+        }
+        
+        guard let name = userNameTextField?.text else { return }
+        guard let description = userDetailsTextView?.text else { return }
+        let curUser: User = User(name: name, description: description, isOnline: true)
+        
+        saver.saveUser(user: curUser) { [weak self] (error) in
+            if let error = error {
+                switch error {
+                case .badDirCreation:
+                    print("dir creation problems")
+                    return
+                case .badFileCreation:
+                    print("file creation problems")
+                    return
+                case .unspecified:
+                    print("unspecified problem")
+                    return
+                }
+            }
+            print("success")
+           
+            self?.saveActivityIndicator?.stopAnimating()
+        }
+        
+        
     }
     
     @objc func saveOperationsTapped() {
@@ -224,13 +264,27 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userDetailsTextView?.isEditable = false
         userNameTextField?.isUserInteractionEnabled = false
         toggleSaveButtonsAlpha()
+        
+        saveActivityIndicator?.startAnimating()
+        
+        let saver = OperationsSavingManager()
+        if isImageChanged {
+            saver.saveImage(of: Data())
+        }
+        
     }
     
     func changeUserImage() {
-        let userNameData = userNameTextField?.text?.components(separatedBy: " ")
-        guard let firstNameSymbol = userNameData?[0].first else { return }
-        guard let firstSurnameSymbol = userNameData?[1].first else { return }
-        userImageLabel?.text = "\(firstNameSymbol)\(firstSurnameSymbol)"
+        if let userNameData = userNameTextField?.text?.components(separatedBy: " ") {
+            if userNameData.count == 2 {
+                guard let firstNameSymbol = userNameData[0].capitalized.first else { return }
+                guard let firstSurnameSymbol = userNameData[1].capitalized.first else { return }
+                userImageLabel?.text = "\(firstNameSymbol)\(firstSurnameSymbol)"
+            } else if userNameData.count == 1 {
+                guard let firstNameSymbol = userNameData[0].capitalized.first else { return }
+                userImageLabel?.text = "\(firstNameSymbol)"
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
