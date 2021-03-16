@@ -11,7 +11,11 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     @IBOutlet weak var editButtonView: UIView?
     @IBOutlet weak var userNameTextField: UITextField?
+    
     @IBOutlet weak var userDetailsTextView: UITextView?
+    @IBOutlet var userDetailsHeightEquals: NSLayoutConstraint?
+    @IBOutlet var userDetailsHeightGreater: NSLayoutConstraint?
+    
     @IBOutlet weak var userImageView: UIView?
     @IBOutlet weak var userImage: UIImageView?
     @IBOutlet weak var userImageLabel: UILabel?
@@ -67,9 +71,17 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-                
+        
+        userDetailsHeightEquals?.isActive = false
+        userDetailsHeightGreater?.isActive = true
+                        
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
+    }
+    
+    func toggleUserDetailsHeight() {
+        userDetailsHeightEquals?.isActive.toggle()
+        userDetailsHeightGreater?.isActive.toggle()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -197,6 +209,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     @objc func saveGCDTapped() {
+        changeUserImage()
         isEditingUserData = false
         changeButtonText(buttonView: editButtonView, text: "Edit")
         userDetailsTextView?.isEditable = false
@@ -205,11 +218,19 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     @objc func saveOperationsTapped() {
+        changeUserImage()
         isEditingUserData = false
         changeButtonText(buttonView: editButtonView, text: "Edit")
         userDetailsTextView?.isEditable = false
         userNameTextField?.isUserInteractionEnabled = false
         toggleSaveButtonsAlpha()
+    }
+    
+    func changeUserImage() {
+        let userNameData = userNameTextField?.text?.components(separatedBy: " ")
+        guard let firstNameSymbol = userNameData?[0].first else { return }
+        guard let firstSurnameSymbol = userNameData?[1].first else { return }
+        userImageLabel?.text = "\(firstNameSymbol)\(firstSurnameSymbol)"
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -248,6 +269,7 @@ extension ProfileViewController: UITextViewDelegate {
 
 extension ProfileViewController {
     @objc func keyboardWillShow(notification: NSNotification) {
+        toggleUserDetailsHeight()
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height
@@ -256,6 +278,7 @@ extension ProfileViewController {
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
+        toggleUserDetailsHeight()
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }
