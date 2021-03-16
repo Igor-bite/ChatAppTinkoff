@@ -177,6 +177,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 
     @objc func editButtonTapped() {
+        toggleUserDetailsHeight()
         if !isEditingUserData {
             isEditingUserData = true
             changeButtonText(buttonView: editButtonView, text: "Cancel")
@@ -217,6 +218,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     @objc func saveGCDTapped() {
+        toggleUserDetailsHeight()
         changeUserImage()
         isEditingUserData = false
         changeButtonText(buttonView: editButtonView, text: "Edit")
@@ -228,7 +230,20 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let saver = GCDSavingManager()
         if isImageChanged {
-            saver.saveImage(of: Data())
+            saver.saveImage(of: Data(), completion: { error in
+                if let error = error {
+                    switch error {
+                    case .unspecified:
+                        print("unspecified")
+                    case .badDirCreation:
+                        print("badDirCreation")
+                    case .badFileCreation:
+                        print("badFileCreation")
+                    }
+                } else {
+                    print("done")
+                }
+            })
         }
         
         guard let name = userNameTextField?.text else { return }
@@ -258,6 +273,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     @objc func saveOperationsTapped() {
+        toggleUserDetailsHeight()
         changeUserImage()
         isEditingUserData = false
         changeButtonText(buttonView: editButtonView, text: "Edit")
@@ -269,14 +285,46 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let saver = OperationsSavingManager()
         if isImageChanged {
-            saver.saveImage(of: Data())
+            saver.saveImage(of: Data(), completion: { result in
+                if let result = result {
+                    switch result {
+                    case .unspecified:
+                        print("unspecified")
+                    case .badDirCreation:
+                        print("badDirCreation")
+                    case .badFileCreation:
+                        print("badFileCreation")
+                    }
+                } else {
+                    print("done")
+                }
+            })
         }
+        guard let name = userNameTextField?.text else { return }
+        guard let description = userDetailsTextView?.text else { return }
+        let curUser: User = User(name: name, description: description, isOnline: true)
         
+        saver.saveUser(user: curUser) { [weak self] (result) in
+            if let result = result {
+                switch result {
+                case .unspecified:
+                    print("unspecified")
+                case .badDirCreation:
+                    print("badDirCreation")
+                case .badFileCreation:
+                    print("badFileCreation")
+                }
+            } else {
+                print("done")
+            }
+            
+            self?.saveActivityIndicator?.stopAnimating()
+        }
     }
     
     func changeUserImage() {
         if let userNameData = userNameTextField?.text?.components(separatedBy: " ") {
-            if userNameData.count == 2 {
+            if userNameData.count >= 2 {
                 guard let firstNameSymbol = userNameData[0].capitalized.first else { return }
                 guard let firstSurnameSymbol = userNameData[1].capitalized.first else { return }
                 userImageLabel?.text = "\(firstNameSymbol)\(firstSurnameSymbol)"
@@ -323,7 +371,6 @@ extension ProfileViewController: UITextViewDelegate {
 
 extension ProfileViewController {
     @objc func keyboardWillShow(notification: NSNotification) {
-        toggleUserDetailsHeight()
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height
@@ -332,7 +379,6 @@ extension ProfileViewController {
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
-        toggleUserDetailsHeight()
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }

@@ -10,7 +10,7 @@ import Foundation
 protocol ISavingManager {
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void)
     
-    func saveImage(of data: Data)
+    func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void)
     
-    func saveTheme(theme: Theme)
+    func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void)
 }

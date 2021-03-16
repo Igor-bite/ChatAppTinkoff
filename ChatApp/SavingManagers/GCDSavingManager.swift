@@ -18,11 +18,12 @@ class GCDSavingManager: ISavingManager {
         }
     }
     
-    func saveImage(of data: Data) {
-        print("GCDSaving image")
+    func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
+        print("")
     }
     
-    func saveTheme(theme: Theme) {
-        print("GCDSaving theme")
+    func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void) {
+        print("")
     }
+    
 }

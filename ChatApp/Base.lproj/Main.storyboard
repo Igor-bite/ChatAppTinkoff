@@ -141,22 +141,6 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <textInputTraits key="textInputTraits" textContentType="name"/>
                             </textField>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Bio" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gje-1n-dug">
-                                <rect key="frame" x="94" y="431.33333333333326" width="240" height="330.66666666666674"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="51" id="l8P-rs-Iqm"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="51" id="ljx-aY-5TQ"/>
-                                </constraints>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="l8P-rs-Iqm"/>
-                                    </mask>
-                                </variation>
-                            </textView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lCy-VB-V20">
                                 <rect key="frame" x="218" y="772" width="202" height="40"/>
                                 <subviews>
@@ -191,9 +175,25 @@
                                     <constraint firstItem="Zea-M1-2h9" firstAttribute="centerX" secondItem="Oi2-ik-jNh" secondAttribute="centerX" id="qAp-Hx-NlT"/>
                                 </constraints>
                             </view>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="dGn-FN-LNn">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="dGn-FN-LNn">
                                 <rect key="frame" x="204" y="744" width="20" height="20"/>
                             </activityIndicatorView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Bio" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gje-1n-dug">
+                                <rect key="frame" x="94" y="431" width="240" height="296.66666666666674"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="51" id="l8P-rs-Iqm"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="51" id="ljx-aY-5TQ"/>
+                                </constraints>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="l8P-rs-Iqm"/>
+                                    </mask>
+                                </variation>
+                            </textView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="V3o-Ff-Lti"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -208,7 +208,7 @@
                             <constraint firstItem="Oi2-ik-jNh" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="8" id="Rgi-mT-Rxa"/>
                             <constraint firstItem="xsM-hk-Okl" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Svw-ae-wVS"/>
                             <constraint firstItem="V3o-Ff-Lti" firstAttribute="trailing" secondItem="Mmf-Cm-uN5" secondAttribute="trailing" constant="10" id="TTD-Th-3tv"/>
-                            <constraint firstItem="Oi2-ik-jNh" firstAttribute="top" secondItem="Gje-1n-dug" secondAttribute="bottom" constant="10" id="Zap-qW-okn"/>
+                            <constraint firstItem="dGn-FN-LNn" firstAttribute="top" secondItem="Gje-1n-dug" secondAttribute="bottom" constant="16" id="Zap-qW-okn"/>
                             <constraint firstItem="Oi2-ik-jNh" firstAttribute="width" secondItem="NLq-Jo-654" secondAttribute="width" multiplier="0.5" constant="-12" id="ZxM-xw-qWY"/>
                             <constraint firstItem="ed5-aY-cP7" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="dwk-7L-cIm"/>
                             <constraint firstItem="dGn-FN-LNn" firstAttribute="centerX" secondItem="NLq-Jo-654" secondAttribute="centerX" id="g4g-7z-0dC"/>
