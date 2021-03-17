@@ -179,7 +179,7 @@
                                 <rect key="frame" x="204" y="744" width="20" height="20"/>
                             </activityIndicatorView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Bio" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gje-1n-dug">
-                                <rect key="frame" x="94" y="431" width="240" height="296.66666666666674"/>
+                                <rect key="frame" x="94" y="431.33333333333326" width="240" height="296.66666666666674"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="51" id="l8P-rs-Iqm"/>

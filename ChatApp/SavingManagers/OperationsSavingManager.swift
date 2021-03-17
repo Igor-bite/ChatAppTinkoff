@@ -26,7 +26,18 @@ class OperationsSavingManager: ISavingManager {
     }
     
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
-        print("")
+        let saveImageOperation = SaveImageDataOperation(data: data)
+        
+        saveImageOperation.completionBlock = {
+            OperationQueue.main.addOperation {
+                if let result = saveImageOperation.result {
+                    completion(result)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+        queue.addOperations([saveImageOperation], waitUntilFinished: false)
     }
     
     func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void) {
@@ -117,5 +128,29 @@ class SaveUserOperation: AsyncOperation, IDataSaveOperation {
             self?.result = result
             self?.state = .finished
         })
+    }
+}
+
+// MARK: - SaveUserOperation
+
+class SaveImageDataOperation: AsyncOperation, IDataSaveOperation {
+    private let data: Data
+    private(set) var result: FileOperationError?
+    
+    init(data: Data) {
+        self.data = data
+        super.init()
+    }
+    
+    override func main() {
+        if isCancelled {
+            state = .finished
+            return
+        }
+        
+        saveUserImageData(data: data) { [weak self] (result) in
+            self?.result = result
+            self?.state = .finished
+        }
     }
 }
