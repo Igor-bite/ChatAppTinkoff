@@ -10,6 +10,8 @@ import UIKit
 public enum FileOperationError: Error {
     case badDirCreation
     case badFileCreation
+    case badWritingOperation
+    case badReadingOperation
     case unspecified
 }
 
@@ -24,6 +26,27 @@ func saveUserData(user: User, completion: @escaping (FileOperationError?) -> Voi
     }
 }
 
+func saveUserImageData(data: Data, completion: @escaping (FileOperationError?) -> Void) {
+    let manager = SavingManager()
+    do {
+        try manager.saveData(data: data)
+        completion(nil)
+    } catch {
+        completion(error as? FileOperationError)
+    }
+}
+
+func getAllUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
+    let manager = SavingManager()
+    do {
+        let user = try manager.getUserData()
+        let imageData = try manager.getImageData()
+        completion(user, imageData, nil)
+    } catch {
+        completion(nil, nil, error as? FileOperationError)
+    }
+}
+
 extension FileManager {
     func documentDirectory() -> URL {
         return self.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -33,6 +56,7 @@ extension FileManager {
 class SavingManager {
     private let appDirectoryName = "AppServiceData"
     private let userDataFileName = "userData.json"
+    private let userAvatarImage = "userImage"
     private let fileManager = FileManager.default
     private let docDirectory: URL
     private let filePath: URL
@@ -64,28 +88,33 @@ class SavingManager {
             guard let json = jsonString else { throw FileOperationError.unspecified}
             try json.write(to: filePath, atomically: true, encoding: .utf8)
         } catch {
-            print(error.localizedDescription)
+            print(error.localizedDescription) // fix
         }
         
     }
     
-    func getUserData() -> User? {
+    func getUserData() throws -> User? {
         do {
             let jsonData = try Data(contentsOf: filePath)
             let decoder = JSONDecoder()
             do {
                 let user = try decoder.decode(User.self, from: jsonData)
-//                print(user.name)
-//                print(user.description)
-//                print(user.themeRawValue)
                 return user
             } catch {
-                print(error.localizedDescription)
+                throw FileOperationError.unspecified // fix
             }
         } catch {
-            print(error.localizedDescription)
+            throw FileOperationError.unspecified // fix
         }
-        return nil
+    }
+    
+    func getImageData() throws -> Data {
+        do {
+            let data = try Data(contentsOf: appDirectory.appendingPathComponent(userAvatarImage))
+            return data
+        } catch {
+            throw FileOperationError.badReadingOperation
+        }
     }
     
     private func makeAppDirectory() throws {
@@ -96,5 +125,13 @@ class SavingManager {
     
     private func makeFile() {
         fileManager.createFile(atPath: filePath.absoluteString, contents: nil, attributes: nil)
+    }
+    
+    func saveData(data: Data) throws {
+        do {
+            try data.write(to: appDirectory.appendingPathComponent(userAvatarImage))
+        } catch {
+            throw FileOperationError.badWritingOperation
+        }
     }
 }

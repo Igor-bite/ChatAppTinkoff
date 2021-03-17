@@ -370,11 +370,24 @@ class Message {
 class User: Codable {
     private var name: String?
     private var description: String?
+    private var prefersGeneratedAvatar: Bool
     private var isOnline: Bool
     
     init(name: String, description: String?, isOnline: Bool?) {
         self.name = name
         self.description = description
+        self.prefersGeneratedAvatar = false
+        if let isOnline = isOnline {
+            self.isOnline = isOnline
+        } else {
+            self.isOnline = false
+        }
+    }
+    
+    init(name: String, description: String?, isOnline: Bool?, prefersGeneratedAvatar: Bool) {
+        self.name = name
+        self.description = description
+        self.prefersGeneratedAvatar = prefersGeneratedAvatar
         if let isOnline = isOnline {
             self.isOnline = isOnline
         } else {
@@ -388,6 +401,10 @@ class User: Codable {
     
     func getDescription() -> String? {
         return description
+    }
+    
+    func getPrefersGeneratedAvatar() -> Bool {
+        return self.prefersGeneratedAvatar
     }
     
     func userWentOnline() {

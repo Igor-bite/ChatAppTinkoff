@@ -35,7 +35,14 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     private let userImageViewCornerRadius: CGFloat = 120
     var theme: Theme = .classic
     private var isEditingUserData = false
-    private var isImageChanged = false
+    private var isImageChanged = false {
+        didSet {
+            if isImageChanged == true {
+                toggleSaveButtonsAlpha()
+            }
+        }
+    }
+    private var isAvatarGenerated = false
     private var imageToRecover: UIImage? = nil
     
     override func viewDidLoad() {
@@ -78,6 +85,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         userDetailsHeightGreater?.isActive = true
         
         saveActivityIndicator?.hidesWhenStopped = true
+        
+        
                         
 //        guard let frame = editButtonView?.frame else { return }
 //        print(frame)
@@ -115,6 +124,13 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             self.present(imagePicker, animated: true)
         })
         cameraAction.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
+        ac.addAction(UIAlertAction(title: "Generated avatar", style: .default, handler: { [weak self] (action) in
+            self?.userImage?.image = nil
+            self?.userImageLabel?.isHidden = false
+            self?.isImageChanged = true
+            self?.isAvatarGenerated = true
+            self?.changeUserImage()
+        }))
 
         ac.addAction(cameraAction)
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -127,6 +143,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         imageToRecover = userImage?.image
         userImage?.image = image
         isImageChanged = true
+        self.isAvatarGenerated = false
         
         dismiss(animated: true)
     }
@@ -182,7 +199,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             isEditingUserData = true
             changeButtonText(buttonView: editButtonView, text: "Cancel")
             userDetailsTextView?.isEditable = true
-            toggleSaveButtonsAlpha()
+            if !isImageChanged {
+                toggleSaveButtonsAlpha()
+            }
+            
             switch theme {
             case .classic:
                 userDetailsTextView?.textColor = .black
@@ -191,7 +211,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             case .night:
                 userDetailsTextView?.textColor = .white
             }
-            userDetailsTextView?.text = ""
             
             userNameTextField?.isUserInteractionEnabled = true
             userNameTextField?.becomeFirstResponder()
@@ -217,6 +236,48 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         saveOperationsButtonView?.isHidden.toggle()
     }
     
+    func getUserData() {
+        let saver = GCDSavingManager()
+//        let saver = OperationsSavingManager()
+        
+        saver.getUserData { [weak self] (user, data, error) in
+            if let error = error {
+                print(error.localizedDescription)
+                self?.setDefault()
+            } else {
+                DispatchQueue.main.async {
+                    self?.userNameTextField?.text = user?.getName()
+                    self?.userDetailsTextView?.text = user?.getDescription()
+                    guard let data = data else { return }
+                    self?.userImage?.image = UIImage(data: data)
+//                    sleep(3)
+                    self?.saveActivityIndicator?.stopAnimating()
+                    self?.userImageView?.isHidden = false
+                    self?.userNameTextField?.isHidden = false
+                    self?.userDetailsTextView?.isHidden = false
+                    guard let generatedAva = user?.getPrefersGeneratedAvatar() else { return }
+                    self?.isAvatarGenerated = generatedAva
+                    if generatedAva {
+                        self?.userImage?.image = nil
+                        self?.userImageLabel?.isHidden = false
+                        self?.changeUserImage()
+                    } else {
+                        self?.userImageLabel?.isHidden = true
+                    }
+                }
+            }
+        }
+    }
+    
+    func setDefault() {
+        saveActivityIndicator?.stopAnimating()
+        userImageLabel?.isHidden = false
+        userImageView?.isHidden = false
+        userNameTextField?.isHidden = false
+        userDetailsTextView?.isHidden = false
+        userImageLabel?.text = "HI"
+    }
+    
     @objc func saveGCDTapped() {
         toggleUserDetailsHeight()
         changeUserImage()
@@ -229,26 +290,34 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         saveActivityIndicator?.startAnimating()
         
         let saver = GCDSavingManager()
-        if isImageChanged {
-            saver.saveImage(of: Data(), completion: { error in
-                if let error = error {
-                    switch error {
-                    case .unspecified:
-                        print("unspecified")
-                    case .badDirCreation:
-                        print("badDirCreation")
-                    case .badFileCreation:
-                        print("badFileCreation")
-                    }
-                } else {
-                    print("done")
+        if isImageChanged && !isAvatarGenerated {
+            if let image = userImage?.image {
+                if let imageData = image.jpegData(compressionQuality: 1) {
+                    saver.saveImage(of: imageData, completion: { error in
+                        if let error = error {
+                            switch error {
+                            case .unspecified:
+                                print("unspecified")
+                            case .badDirCreation:
+                                print("badDirCreation")
+                            case .badFileCreation:
+                                print("badFileCreation")
+                            case .badWritingOperation:
+                                print("badWritingOperation")
+                            case .badReadingOperation:
+                                print("badReadingOperation")
+                            }
+                        } else {
+                            print("done with saving image")
+                        }
+                    })
                 }
-            })
+            }
         }
         
         guard let name = userNameTextField?.text else { return }
         guard let description = userDetailsTextView?.text else { return }
-        let curUser: User = User(name: name, description: description, isOnline: true)
+        let curUser: User = User(name: name, description: description, isOnline: true, prefersGeneratedAvatar: isAvatarGenerated)
         
         saver.saveUser(user: curUser) { [weak self] (error) in
             if let error = error {
@@ -262,14 +331,18 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                 case .unspecified:
                     print("unspecified problem")
                     return
+                case .badWritingOperation:
+                    print("badWritingOperation")
+                    return
+                case .badReadingOperation:
+                    print("badReadingOperation")
+                    return
                 }
             }
             print("success")
            
             self?.saveActivityIndicator?.stopAnimating()
         }
-        
-        
     }
     
     @objc func saveOperationsTapped() {
@@ -284,7 +357,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         saveActivityIndicator?.startAnimating()
         
         let saver = OperationsSavingManager()
-        if isImageChanged {
+        if isImageChanged && !isAvatarGenerated {
             saver.saveImage(of: Data(), completion: { result in
                 if let result = result {
                     switch result {
@@ -294,6 +367,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                         print("badDirCreation")
                     case .badFileCreation:
                         print("badFileCreation")
+                    case .badWritingOperation:
+                        print("badWritingOperation")
+                    case .badReadingOperation:
+                        print("badReadingOperation")
                     }
                 } else {
                     print("done")
@@ -302,7 +379,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
         guard let name = userNameTextField?.text else { return }
         guard let description = userDetailsTextView?.text else { return }
-        let curUser: User = User(name: name, description: description, isOnline: true)
+        let curUser: User = User(name: name, description: description, isOnline: nil, prefersGeneratedAvatar: isAvatarGenerated)
         
         saver.saveUser(user: curUser) { [weak self] (result) in
             if let result = result {
@@ -313,6 +390,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                     print("badDirCreation")
                 case .badFileCreation:
                     print("badFileCreation")
+                case .badWritingOperation:
+                    print("badWritingOperation")
+                case .badReadingOperation:
+                    print("badReadingOperation")
                 }
             } else {
                 print("done")
@@ -338,6 +419,12 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NSLog("\nView will appear : \(#function)")
+        
+        saveActivityIndicator?.startAnimating()
+        userImageView?.isHidden = true
+        userNameTextField?.isHidden = true
+        userDetailsTextView?.isHidden = true
+        getUserData()
     }
     
     override func viewWillLayoutSubviews() {

@@ -19,11 +19,23 @@ class GCDSavingManager: ISavingManager {
     }
     
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
-        print("")
+        queue.async {
+            saveUserImageData(data: data) { result in
+                DispatchQueue.main.async { completion(result) }
+            }
+        }
     }
     
     func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void) {
         print("")
+    }
+    
+    func getUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
+        queue.async {
+            getAllUserData() { user, data, error in
+                DispatchQueue.main.async { completion(user, data, error) }
+            }
+        }
     }
     
 }
