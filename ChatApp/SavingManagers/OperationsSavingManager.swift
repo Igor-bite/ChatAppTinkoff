@@ -9,39 +9,44 @@ import UIKit
 
 class OperationsSavingManager: ISavingManager {
     private let queue = OperationQueue()
+    var saveUserOperation: SaveUserOperation?
+    var saveImageOperation: SaveImageDataOperation?
     
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void) {
-        let saveUserOperation = SaveUserOperation(user: user)
+        saveUserOperation = SaveUserOperation(user: user)
         
-        saveUserOperation.completionBlock = {
+        saveUserOperation?.completionBlock = {
             OperationQueue.main.addOperation {
-                if let result = saveUserOperation.result {
+                if let result = self.saveUserOperation?.result {
                     completion(result)
                 } else {
                     completion(nil)
                 }
             }
         }
+        guard let saveUserOperation = saveUserOperation else { return }
         queue.addOperations([saveUserOperation], waitUntilFinished: false)
     }
     
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
-        let saveImageOperation = SaveImageDataOperation(data: data)
+        saveImageOperation = SaveImageDataOperation(data: data)
         
-        saveImageOperation.completionBlock = {
+        saveImageOperation?.completionBlock = {
             OperationQueue.main.addOperation {
-                if let result = saveImageOperation.result {
+                if let result = self.saveImageOperation?.result {
                     completion(result)
                 } else {
                     completion(nil)
                 }
             }
         }
+        guard let saveImageOperation = saveImageOperation else { return }
         queue.addOperations([saveImageOperation], waitUntilFinished: false)
     }
     
-    func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void) {
-        print("")
+    func cancel() {
+        saveUserOperation?.cancel()
+        saveImageOperation?.cancel()
     }
 }
 

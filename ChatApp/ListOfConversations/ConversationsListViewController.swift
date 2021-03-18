@@ -8,7 +8,9 @@
 import UIKit
 
 class ConversationsListViewController: UIViewController {
-    let navControllerTitle: String = "Tinkoff Chat"
+    private let navControllerTitle: String = "Tinkoff Chat"
+    var currentUser: User?
+    var userImage: UIImage?
     
     let onlineConversations: [Conversation] = [
         Conversation(user: User(name: "John Hanks", description: nil, isOnline: true)),
@@ -37,7 +39,7 @@ class ConversationsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = navControllerTitle
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(showProfile))
@@ -46,63 +48,48 @@ class ConversationsListViewController: UIViewController {
         
         view.addSubview(tableView)
         
-        theme = Theme(rawValue: userDefaultsManager.string(forKey: themeKeyIdentifier) ?? "classic") ?? Theme.classic
-        
-        switch theme {
-        case .classic:
-            changeToClassic()
-        case .day:
-            changeToDay()
-        case .night:
-            changeToNight()
-        }
+//        getSavedUser()
+        getUserImage()
         
 //        just for testing:
-        onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "How are you?", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "I am great. And you?", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "Super!", isFromMe: false))
-//        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
-        onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
-        onlineConversations[3].gotMessage(message: Message(text: "How are you?", isFromMe: false, date: date1))
-        onlineConversations[4].gotMessage(message: Message(text: "Hello", isFromMe: false))
-//        onlineConversations[5].gotMessage(message: Message(text: "How are you?", isFromMe: true))
-        onlineConversations[6].gotMessage(message: Message(text: "Hello", isFromMe: true))
-        onlineConversations[7].gotMessage(message: Message(text: "How are you?", isFromMe: true))
-        onlineConversations[8].gotMessage(message: Message(text: "Hello", isFromMe: true))
-        let date2 = Date(timeInterval: TimeInterval(-60*60*24*10-5), since: Date())
-        onlineConversations[9].gotMessage(message: Message(text: "How are you?", isFromMe: true, date: date2))
-        
-        historyConversations[0].gotMessage(message: Message(text: "Bye", isFromMe: false))
-        historyConversations[1].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
-        let date3 = Date(timeInterval: TimeInterval(-60*60*24*3-5), since: Date())
-        historyConversations[2].gotMessage(message: Message(text: "Bye", isFromMe: false, date: date3))
-        historyConversations[3].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
-        historyConversations[4].gotMessage(message: Message(text: "Bye", isFromMe: false))
-        historyConversations[5].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
-        historyConversations[6].gotMessage(message: Message(text: "Bye", isFromMe: true))
-        historyConversations[7].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
-        let date4 = Date(timeInterval: TimeInterval(-60*60*24-5), since: Date())
-        historyConversations[8].gotMessage(message: Message(text: "Bye", isFromMe: true, date: date4))
-        historyConversations[9].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
+        setUpHardCodedData()
 //        just for testing
+        
+        
+        guard let value = currentUser?.getThemeRawValue() else { return }
+        print(value)
+        guard let theme = Theme(rawValue: value) else { return }
+        switch theme {
+        case .classic:
+            UIView.animate(withDuration: 1) {
+                self.changeToClassic()
+            }
+        case .day:
+            UIView.animate(withDuration: 1) {
+                self.changeToDay()
+            }
+        case .night:
+            UIView.animate(withDuration: 1) {
+                self.changeToNight()
+            }
+        }
+        self.theme = theme
     }
     
     @objc func showProfile(_ sender: Any) {
         let profileVC : ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileVC") as! ProfileViewController
         profileVC.theme = self.theme
+        profileVC.userToRecover = currentUser
+        profileVC.imageToRecover = userImage
+        profileVC.delegate = self
         self.present(profileVC, animated: true, completion: nil)
     }
     
     @objc func showThemePicker(_ sender: Any) {
         let themesVC : ThemesViewController = self.storyboard?.instantiateViewController(withIdentifier: "ThemesVC") as! ThemesViewController
         themesVC.conversationsVC = self
+        themesVC.currentTheme = theme
+        themesVC.lastTheme = theme
         
         themesVC.handler = { [weak self] (theme) in
             switch theme {
@@ -192,6 +179,42 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().isTranslucent = false
         }
     }
+    
+    func getSavedUser() {
+        let saver = GCDSavingManager()
+//        let saver = OperationsSavingManager()
+        
+        saver.getUser { [weak self] (user, error) in
+            if let user = user {
+                self?.currentUser = user
+                self?.theme = Theme(rawValue: user.getThemeRawValue()) ?? .classic
+                print("got user")
+            } else {
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    func getUserImage() {
+        let saver = GCDSavingManager()
+//        let saver = OperationsSavingManager()
+        
+        saver.getImage { [weak self] (data, error) in
+            if let data = data {
+                self?.userImage = UIImage(data: data)
+                print("got image")
+            } else {
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    func showCancelAlert() {
+        let ac = UIAlertController(title: "Изменения профиля отменены", message: nil, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
+        
+        present(ac, animated: true)
+    }
 }
 
 enum MessageType : Int, CaseIterable {
@@ -217,6 +240,41 @@ extension ConversationsListViewController : UITableViewDelegate {
         
         conversationVC.conversation = conversation
         return conversationVC
+    }
+    func setUpHardCodedData() {
+        onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "How are you?", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "I am great. And you?", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "Super!", isFromMe: false))
+    //        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
+        onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
+        let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
+        onlineConversations[3].gotMessage(message: Message(text: "How are you?", isFromMe: false, date: date1))
+        onlineConversations[4].gotMessage(message: Message(text: "Hello", isFromMe: false))
+    //        onlineConversations[5].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+        onlineConversations[6].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        onlineConversations[7].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+        onlineConversations[8].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        let date2 = Date(timeInterval: TimeInterval(-60*60*24*10-5), since: Date())
+        onlineConversations[9].gotMessage(message: Message(text: "How are you?", isFromMe: true, date: date2))
+        
+        historyConversations[0].gotMessage(message: Message(text: "Bye", isFromMe: false))
+        historyConversations[1].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
+        let date3 = Date(timeInterval: TimeInterval(-60*60*24*3-5), since: Date())
+        historyConversations[2].gotMessage(message: Message(text: "Bye", isFromMe: false, date: date3))
+        historyConversations[3].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
+        historyConversations[4].gotMessage(message: Message(text: "Bye", isFromMe: false))
+        historyConversations[5].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
+        historyConversations[6].gotMessage(message: Message(text: "Bye", isFromMe: true))
+        historyConversations[7].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
+        let date4 = Date(timeInterval: TimeInterval(-60*60*24-5), since: Date())
+        historyConversations[8].gotMessage(message: Message(text: "Bye", isFromMe: true, date: date4))
+        historyConversations[9].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
     }
 }
 
@@ -371,7 +429,8 @@ class User: Codable {
     private var name: String?
     private var description: String?
     private var prefersGeneratedAvatar: Bool
-    private var isOnline: Bool
+    var isOnline: Bool
+    private var theme: String = "classic"
     
     init(name: String, description: String?, isOnline: Bool?) {
         self.name = name
@@ -395,6 +454,18 @@ class User: Codable {
         }
     }
     
+    init(name: String, description: String?, isOnline: Bool?, prefersGeneratedAvatar: Bool, theme: String) {
+        self.name = name
+        self.description = description
+        self.prefersGeneratedAvatar = prefersGeneratedAvatar
+        self.theme = theme
+        if let isOnline = isOnline {
+            self.isOnline = isOnline
+        } else {
+            self.isOnline = false
+        }
+    }
+    
     func getName() -> String? {
         return name
     }
@@ -407,6 +478,15 @@ class User: Codable {
         return self.prefersGeneratedAvatar
     }
     
+    func getThemeRawValue() -> String {
+        return self.theme
+    }
+    
+    func changeUserTheme(theme: String) {
+        assert(Theme(rawValue: theme) != nil, "Something wrong with themeRawValue")
+        self.theme = theme
+    }
+    
     func userWentOnline() {
         isOnline = true
     }
@@ -415,3 +495,5 @@ class User: Codable {
         isOnline = false
     }
 }
+
+

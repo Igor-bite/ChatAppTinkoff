@@ -47,6 +47,39 @@ func getAllUserData(completion: @escaping (User?, Data?, FileOperationError?) ->
     }
 }
 
+func saveUserTheme(theme: String, completion: @escaping (FileOperationError?) -> Void) {
+    let manager = SavingManager()
+    do {
+        let user = try manager.getUserData()
+        user?.changeUserTheme(theme: theme)
+        guard let userUnwrapped = user else { return }
+        try manager.saveUserData(user: userUnwrapped)
+        completion(nil)
+    } catch {
+        completion(error as? FileOperationError)
+    }
+}
+
+func getUserOnly(completion: @escaping (User?, FileOperationError?) -> Void) {
+    let manager = SavingManager()
+    do {
+        let user = try manager.getUserData()
+        completion(user, nil)
+    } catch {
+        completion(nil, error as? FileOperationError)
+    }
+}
+
+func getUserImage(completion: @escaping (Data?, FileOperationError?) -> Void) {
+    let manager = SavingManager()
+    do {
+        let imageData = try manager.getImageData()
+        completion(imageData, nil)
+    } catch {
+        completion(nil, error as? FileOperationError)
+    }
+}
+
 extension FileManager {
     func documentDirectory() -> URL {
         return self.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -88,7 +121,7 @@ class SavingManager {
             guard let json = jsonString else { throw FileOperationError.unspecified}
             try json.write(to: filePath, atomically: true, encoding: .utf8)
         } catch {
-            print(error.localizedDescription) // fix
+            throw FileOperationError.unspecified
         }
         
     }
@@ -97,12 +130,8 @@ class SavingManager {
         do {
             let jsonData = try Data(contentsOf: filePath)
             let decoder = JSONDecoder()
-            do {
-                let user = try decoder.decode(User.self, from: jsonData)
-                return user
-            } catch {
-                throw FileOperationError.unspecified // fix
-            }
+            let user = try decoder.decode(User.self, from: jsonData)
+            return user
         } catch {
             throw FileOperationError.unspecified // fix
         }

@@ -27,7 +27,11 @@ class GCDSavingManager: ISavingManager {
     }
     
     func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void) {
-        print("")
+        queue.async {
+            saveUserTheme(theme: theme.rawValue) { result in
+                DispatchQueue.main.async { completion(result) }
+            }
+        }
     }
     
     func getUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
@@ -38,4 +42,19 @@ class GCDSavingManager: ISavingManager {
         }
     }
     
+    func getUser(completion: @escaping (User?, FileOperationError?) -> Void) {
+        queue.async {
+            getUserOnly() { user, error in
+                DispatchQueue.main.async { completion(user, error) }
+            }
+        }
+    }
+    
+    func getImage(completion: @escaping (Data?, FileOperationError?) -> Void) {
+        queue.async {
+            getUserImage() { data, error in
+                DispatchQueue.main.async { completion(data, error) }
+            }
+        }
+    }
 }

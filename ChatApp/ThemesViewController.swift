@@ -15,18 +15,27 @@ enum Theme: String {
 
 let themeKeyIdentifier = "theme"
 
-let userDefaultsManager = UserDefaults.standard
-
-func getSavedTheme() -> Theme {
-    return Theme(rawValue: userDefaultsManager.string(forKey: themeKeyIdentifier) ?? "classic") ?? Theme.classic
-}
+//let userDefaultsManager = UserDefaults.standard
+//func getSavedTheme() -> Theme {
+//    return Theme(rawValue: userDefaultsManager.string(forKey: themeKeyIdentifier) ?? "classic") ?? Theme.classic
+//}
 
 class ThemesViewController: UIViewController {
-    let lastTheme: Theme = getSavedTheme()
-    var currentTheme: Theme = getSavedTheme()
+    var lastTheme: Theme?
+    var currentTheme: Theme = .classic {
+        didSet {
+            if currentTheme != lastTheme {
+                isThemeChanged = true
+            } else {
+                isThemeChanged = false
+            }
+        }
+    }
     weak var conversationsVC: ConversationsListViewController? // Если не прописать weak у delegate, то у нас появится цикл. Делегат ссылается на предущий экран, а тот на нынешний.
 //    ConversationsListViewController создает ThemesViewController, а затем устанавливает себя в качестве делегата ThemesViewController.
     var handler: ((Theme) -> ())? // Если не прописать weak self в замыкании, то у нас будет сильная ссылка на предыдущий контроллер в этом контроллере (замыкании), а в предыдущем ссылка на замыкание
+    
+    var isThemeChanged = false
     
     @IBOutlet weak var classicThemeView: UIView?
     @IBOutlet weak var classicMessagesView: UIView?
@@ -34,7 +43,10 @@ class ThemesViewController: UIViewController {
     @IBOutlet weak var dayMessagesView: UIView?
     @IBOutlet weak var nightThemeView: UIView?
     @IBOutlet weak var nightMessagesView: UIView?
-
+    @IBOutlet weak var saveButtonView: UIView?
+    @IBOutlet weak var saveIndicator: UIActivityIndicatorView?
+    @IBOutlet weak var isSavedImage: UIImageView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -44,6 +56,11 @@ class ThemesViewController: UIViewController {
         makeRoundCorners(for: classicMessagesView)
         makeRoundCorners(for: dayMessagesView)
         makeRoundCorners(for: nightMessagesView)
+        makeRoundCorners(for: saveButtonView)
+        
+        saveIndicator?.hidesWhenStopped = true
+        saveIndicator?.stopAnimating()
+        isSavedImage?.image = UIImage(named: "checkmark")
         
         let gestureRecognizerClassic = UITapGestureRecognizer(target: self, action: #selector(changeToClassic))
         classicThemeView?.addGestureRecognizer(gestureRecognizerClassic)
@@ -54,6 +71,10 @@ class ThemesViewController: UIViewController {
         let gestureRecognizerNight = UITapGestureRecognizer(target: self, action: #selector(changeToNight))
         nightThemeView?.addGestureRecognizer(gestureRecognizerNight)
         
+        let saveGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(saveUserTheme))
+        saveButtonView?.addGestureRecognizer(saveGestureRecognizer)
+        
+        guard let lastTheme = lastTheme else { return }
         selectThemeView(theme: lastTheme)
     }
     
@@ -67,6 +88,8 @@ class ThemesViewController: UIViewController {
     }
     
     @objc func restoreSettings() {
+        isThemeChanged = false
+        guard let lastTheme = lastTheme else { return }
         switch lastTheme {
         case .classic:
             changeToClassic()
@@ -75,20 +98,22 @@ class ThemesViewController: UIViewController {
         case .night:
             changeToNight()
         }
-        saveSettings()
+        saveUserTheme()
         navigationController?.popViewController(animated: true)
-        changeDelegateTheme()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        changeDelegateTheme()
-//        handler!(currentTheme)
+        if isThemeChanged {
+//            saveUserTheme()
+            
+//
+        }
     }
     
-    func saveSettings() {
-        userDefaultsManager.setValue(currentTheme.rawValue, forKey: themeKeyIdentifier)
-    }
+//    func saveSettings() {
+//        userDefaultsManager.setValue(currentTheme.rawValue, forKey: themeKeyIdentifier)
+//    }
     
     func selectThemeView(theme: Theme) {
         deselectAllThemeViews()
@@ -118,7 +143,7 @@ class ThemesViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
         selectThemeView(theme: .classic)
         currentTheme = .classic
-        saveSettings()
+//        saveSettings()
     }
     
     @objc func changeToDay() {
@@ -127,7 +152,7 @@ class ThemesViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
         selectThemeView(theme: .day)
         currentTheme = .day
-        saveSettings()
+//        saveSettings()
     }
     
     @objc func changeToNight() {
@@ -136,7 +161,7 @@ class ThemesViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         selectThemeView(theme: .night)
         currentTheme = .night
-        saveSettings()
+//        saveSettings()
     }
     
     func changeDelegateTheme() {
@@ -147,6 +172,41 @@ class ThemesViewController: UIViewController {
             conversationsVC?.changeToDay()
         case .night:
             conversationsVC?.changeToNight()
+        }
+    }
+    
+    @objc func saveUserTheme() {
+        changeDelegateTheme()
+//        handler?(currentTheme)
+        let saver = GCDSavingManager()
+//        let saver = OperationsSavingManager()
+        
+        saveIndicator?.startAnimating()
+        isSavedImage?.isHidden = true
+        saver.saveTheme(theme: currentTheme) { [weak self] (error) in
+            if let error = error {
+                switch error {
+                case .badDirCreation:
+                    print("dir creation problems")
+                    return
+                case .badFileCreation:
+                    print("file creation problems")
+                    return
+                case .unspecified:
+                    print("unspecified problem")
+                    return
+                case .badWritingOperation:
+                    print("badWritingOperation")
+                    return
+                case .badReadingOperation:
+                    print("badReadingOperation")
+                    return
+                }
+            }
+            sleep(3)
+            self?.isSavedImage?.isHidden = false
+            self?.saveIndicator?.stopAnimating()
+            print("success with theme")
         }
     }
 }
