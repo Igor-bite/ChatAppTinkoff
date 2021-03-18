@@ -13,13 +13,6 @@ enum Theme: String {
     case night = "night"
 }
 
-let themeKeyIdentifier = "theme"
-
-//let userDefaultsManager = UserDefaults.standard
-//func getSavedTheme() -> Theme {
-//    return Theme(rawValue: userDefaultsManager.string(forKey: themeKeyIdentifier) ?? "classic") ?? Theme.classic
-//}
-
 class ThemesViewController: UIViewController {
     var lastTheme: Theme?
     var currentTheme: Theme = .classic {
@@ -102,19 +95,6 @@ class ThemesViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if isThemeChanged {
-//            saveUserTheme()
-            
-//
-        }
-    }
-    
-//    func saveSettings() {
-//        userDefaultsManager.setValue(currentTheme.rawValue, forKey: themeKeyIdentifier)
-//    }
-    
     func selectThemeView(theme: Theme) {
         deselectAllThemeViews()
         let themeView: UIView?
@@ -143,7 +123,6 @@ class ThemesViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
         selectThemeView(theme: .classic)
         currentTheme = .classic
-//        saveSettings()
     }
     
     @objc func changeToDay() {
@@ -152,7 +131,6 @@ class ThemesViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
         selectThemeView(theme: .day)
         currentTheme = .day
-//        saveSettings()
     }
     
     @objc func changeToNight() {
@@ -161,7 +139,6 @@ class ThemesViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         selectThemeView(theme: .night)
         currentTheme = .night
-//        saveSettings()
     }
     
     func changeDelegateTheme() {
@@ -206,7 +183,6 @@ class ThemesViewController: UIViewController {
             sleep(3)
             self?.isSavedImage?.isHidden = false
             self?.saveIndicator?.stopAnimating()
-            print("success with theme")
         }
     }
 }

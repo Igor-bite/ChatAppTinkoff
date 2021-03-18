@@ -444,7 +444,7 @@
                                     <constraint firstItem="R1c-wH-zs6" firstAttribute="centerY" secondItem="j4I-MB-PTA" secondAttribute="centerY" id="8a8-HR-pjD"/>
                                     <constraint firstItem="iFa-18-mrv" firstAttribute="leading" secondItem="j4I-MB-PTA" secondAttribute="leading" constant="35" id="8gS-Zy-U6W"/>
                                     <constraint firstAttribute="trailing" secondItem="P08-VH-25N" secondAttribute="trailing" constant="50" id="QFS-HC-W41"/>
-                                    <constraint firstItem="P08-VH-25N" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iFa-18-mrv" secondAttribute="trailing" constant="46" id="U2S-jI-sWg"/>
+                                    <constraint firstItem="P08-VH-25N" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iFa-18-mrv" secondAttribute="trailing" constant="10" id="U2S-jI-sWg"/>
                                     <constraint firstItem="P08-VH-25N" firstAttribute="height" secondItem="j4I-MB-PTA" secondAttribute="height" multiplier="0.5" id="VN3-Dn-YOU"/>
                                     <constraint firstItem="iFa-18-mrv" firstAttribute="centerY" secondItem="j4I-MB-PTA" secondAttribute="centerY" id="nEJ-nO-rIh"/>
                                     <constraint firstItem="P08-VH-25N" firstAttribute="centerY" secondItem="j4I-MB-PTA" secondAttribute="centerY" id="nkh-Af-P5c"/>
