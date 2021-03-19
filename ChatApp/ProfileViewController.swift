@@ -619,9 +619,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         guard let name = userNameTextField?.text else { return }
         guard let description = userDetailsTextView?.text else { return }
         delegate?.currentUser = User(name: name, description: description, isOnline: true, prefersGeneratedAvatar: isAvatarGenerated, theme: theme.rawValue)
-        if isImageChanged {
-            delegate?.userImage = userImage?.image
-        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -662,6 +659,7 @@ extension ProfileViewController {
         if !isSavingCancelled {
             isSavingCancelled = false
             present(ac, animated: true)
+            delegate?.userImage = userImage?.image
         }
     }
     
