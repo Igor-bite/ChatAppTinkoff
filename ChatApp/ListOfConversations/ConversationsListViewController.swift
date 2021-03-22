@@ -9,7 +9,7 @@ import UIKit
 import FirebaseFirestore
 
 class ConversationsListViewController: UIViewController {
-    private let navControllerTitle: String = "Tinkoff Chat"
+    private let navControllerTitle: String = "Channels"
     var currentUser: User?
     var userImage: UIImage?
     
@@ -24,18 +24,7 @@ class ConversationsListViewController: UIViewController {
         Conversation(user: User(name: "Craig Federige", description: nil, isOnline: true)),
         Conversation(user: User(name: "Tim Cook", description: nil, isOnline: true)),
         Conversation(user: User(name: "Kirill Rumin", description: nil, isOnline: true))]
-    let historyConversations: [Conversation] = [
-        Conversation(user: User(name: "Veronika Hepsberg", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Polly Luppy", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Roza Shukina", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Sergei Mosty", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Pavel Volya", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Liza Alert", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Betty Krummy", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Claudia Hopkins", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Anna Terberg", description: nil, isOnline: false)),
-        Conversation(user: User(name: "Pierre Myile", description: nil, isOnline: false))]
-    
+   
     var theme: Theme = .classic
     
     override func viewDidLoad() {
@@ -237,13 +226,12 @@ class ConversationsListViewController: UIViewController {
 }
 
 enum MessageType : Int, CaseIterable {
-    case online = 0
-    case history = 1
+    case main = 0
 }
 
 extension ConversationsListViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == MessageType.online.rawValue {
+        if indexPath.section == MessageType.main.rawValue {
             let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
             conversationVC.theme = theme
             
@@ -260,48 +248,13 @@ extension ConversationsListViewController : UITableViewDelegate {
         conversationVC.conversation = conversation
         return conversationVC
     }
-    func setUpHardCodedData() {
-        onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "How are you?", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "I am great. And you?", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "Super!", isFromMe: false))
-    //        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
-        onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
-        onlineConversations[3].gotMessage(message: Message(text: "How are you?", isFromMe: false, date: date1))
-        onlineConversations[4].gotMessage(message: Message(text: "Hello", isFromMe: false))
-    //        onlineConversations[5].gotMessage(message: Message(text: "How are you?", isFromMe: true))
-        onlineConversations[6].gotMessage(message: Message(text: "Hello", isFromMe: true))
-        onlineConversations[7].gotMessage(message: Message(text: "How are you?", isFromMe: true))
-        onlineConversations[8].gotMessage(message: Message(text: "Hello", isFromMe: true))
-        let date2 = Date(timeInterval: TimeInterval(-60*60*24*10-5), since: Date())
-        onlineConversations[9].gotMessage(message: Message(text: "How are you?", isFromMe: true, date: date2))
-        
-        historyConversations[0].gotMessage(message: Message(text: "Bye", isFromMe: false))
-        historyConversations[1].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
-        let date3 = Date(timeInterval: TimeInterval(-60*60*24*3-5), since: Date())
-        historyConversations[2].gotMessage(message: Message(text: "Bye", isFromMe: false, date: date3))
-        historyConversations[3].gotMessage(message: Message(text: "Goodbye", isFromMe: false))
-        historyConversations[4].gotMessage(message: Message(text: "Bye", isFromMe: false))
-        historyConversations[5].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
-        historyConversations[6].gotMessage(message: Message(text: "Bye", isFromMe: true))
-        historyConversations[7].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
-        let date4 = Date(timeInterval: TimeInterval(-60*60*24-5), since: Date())
-        historyConversations[8].gotMessage(message: Message(text: "Bye", isFromMe: true, date: date4))
-        historyConversations[9].gotMessage(message: Message(text: "Goodbye", isFromMe: true))
-    }
 }
 
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
         switch indexPath.section {
-        case MessageType.online.rawValue:
+        case MessageType.main.rawValue:
             if let lastMessage = onlineConversations[indexPath.row].getLastMessage() {
                 cell.configure(name: onlineConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: true, hasUnreadMessages: onlineConversations[indexPath.row].hasUnreadMessages())
             } else {
@@ -309,14 +262,6 @@ extension ConversationsListViewController: UITableViewDataSource {
             }
             changeThemeForCell(cell: cell)
             cell.isUserInteractionEnabled = true
-        case MessageType.history.rawValue:
-            if let lastMessage = historyConversations[indexPath.row].getLastMessage() {
-                cell.configure(name: historyConversations[indexPath.row].user.getName(), message: lastMessage.text, date: lastMessage.date, online: false, hasUnreadMessages: onlineConversations[indexPath.row].hasUnreadMessages())
-            } else {
-                cell.configure(name: historyConversations[indexPath.row].user.getName(), message: nil, date: nil, online: false, hasUnreadMessages: false)
-            }
-            changeThemeForCell(cell: cell)
-            cell.isUserInteractionEnabled = false
         default:
             break
         }
@@ -349,10 +294,8 @@ extension ConversationsListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case MessageType.online.rawValue:
+        case MessageType.main.rawValue:
             return onlineConversations.count
-        case MessageType.history.rawValue:
-            return historyConversations.count
         default:
             return 0
         }
@@ -360,10 +303,8 @@ extension ConversationsListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case MessageType.online.rawValue:
-            return "Online"
-        case MessageType.history.rawValue:
-            return "History"
+        case MessageType.main.rawValue:
+            return ""
         default:
             return ""
         }
@@ -449,7 +390,7 @@ class User: Codable {
     private var description: String?
     private var prefersGeneratedAvatar: Bool
     var isOnline: Bool
-    private var theme: String = "classic"
+    private var theme: String = Theme.classic.rawValue
     
     init(name: String, description: String?, isOnline: Bool?) {
         self.name = name
@@ -516,3 +457,27 @@ class User: Codable {
 }
 
 
+extension ConversationsListViewController {
+    func setUpHardCodedData() {
+        onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "How are you?", isFromMe: false))
+        onlineConversations[0].gotMessage(message: Message(text: "I am great. And you?", isFromMe: true))
+        onlineConversations[0].gotMessage(message: Message(text: "Super!", isFromMe: false))
+    //        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
+        onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
+        let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
+        onlineConversations[3].gotMessage(message: Message(text: "How are you?", isFromMe: false, date: date1))
+        onlineConversations[4].gotMessage(message: Message(text: "Hello", isFromMe: false))
+    //        onlineConversations[5].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+        onlineConversations[6].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        onlineConversations[7].gotMessage(message: Message(text: "How are you?", isFromMe: true))
+        onlineConversations[8].gotMessage(message: Message(text: "Hello", isFromMe: true))
+        let date2 = Date(timeInterval: TimeInterval(-60*60*24*10-5), since: Date())
+        onlineConversations[9].gotMessage(message: Message(text: "How are you?", isFromMe: true, date: date2))
+    }
+}
