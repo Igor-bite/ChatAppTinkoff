@@ -8,10 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
+		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
+		A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */; };
+		A599D8DC2600F6AC0002D3B8 /* ISavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */; };
+		A599D8E02600F9A20002D3B8 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DF2600F9A20002D3B8 /* Common.swift */; };
 		A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94225DA85D500F61A26 /* AppDelegate.swift */; };
 		A5A5B94A25DA85D500F61A26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94825DA85D500F61A26 /* Main.storyboard */; };
 		A5A5B94C25DA85D600F61A26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94B25DA85D600F61A26 /* Assets.xcassets */; };
 		A5A5B94F25DA85D600F61A26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94D25DA85D600F61A26 /* LaunchScreen.storyboard */; };
+		A5AF547926035CE000446B0D /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AF547826035CE000446B0D /* LaunchViewController.swift */; };
 		A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */; };
 		A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */; };
 		A5D666F325F14F4900FC4AA0 /* ConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */; };
@@ -23,12 +28,17 @@
 
 /* Begin PBXFileReference section */
 		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
+		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
+		A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationsSavingManager.swift; sourceTree = "<group>"; };
+		A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISavingManager.swift; sourceTree = "<group>"; };
+		A599D8DF2600F9A20002D3B8 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		A5A5B93F25DA85D500F61A26 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5A5B94225DA85D500F61A26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5A5B94925DA85D500F61A26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A5A5B94B25DA85D600F61A26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A5A5B94E25DA85D600F61A26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A5A5B95025DA85D600F61A26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5AF547826035CE000446B0D /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationTableViewCell.xib; sourceTree = "<group>"; };
@@ -69,6 +79,17 @@
 			path = ListOfConversations;
 			sourceTree = "<group>";
 		};
+		A599D8D92600F5F40002D3B8 /* SavingManagers */ = {
+			isa = PBXGroup;
+			children = (
+				A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */,
+				A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */,
+				A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */,
+				A599D8DF2600F9A20002D3B8 /* Common.swift */,
+			);
+			path = SavingManagers;
+			sourceTree = "<group>";
+		};
 		A5A5B93625DA85D500F61A26 = {
 			isa = PBXGroup;
 			children = (
@@ -92,9 +113,11 @@
 				A56F761525FA1D510080AC1F /* ListOfConversations */,
 				A56F761325FA1D3A0080AC1F /* Conversation */,
 				A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */,
+				A599D8D92600F5F40002D3B8 /* SavingManagers */,
 				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
 				A5A5B94825DA85D500F61A26 /* Main.storyboard */,
 				A5A5B94B25DA85D600F61A26 /* Assets.xcassets */,
+				A5AF547826035CE000446B0D /* LaunchViewController.swift */,
 				A5A5B94D25DA85D600F61A26 /* LaunchScreen.storyboard */,
 				A5A5B95025DA85D600F61A26 /* Info.plist */,
 			);
@@ -175,7 +198,12 @@
 			files = (
 				A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */,
 				A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */,
+				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
+				A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */,
+				A599D8E02600F9A20002D3B8 /* Common.swift in Sources */,
 				A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */,
+				A599D8DC2600F6AC0002D3B8 /* ISavingManager.swift in Sources */,
+				A5AF547926035CE000446B0D /* LaunchViewController.swift in Sources */,
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,
 				A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */,
