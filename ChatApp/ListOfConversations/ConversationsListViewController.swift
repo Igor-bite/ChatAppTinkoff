@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
@@ -214,6 +215,24 @@ class ConversationsListViewController: UIViewController {
         ac.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
         
         present(ac, animated: true)
+    }
+    
+//    MARK: - Firebase/Firestore
+    lazy var db = Firestore.firestore()
+    lazy var reference = db.collection("channels").document("Tinkoff Channel").collection("messages")
+    
+    
+    func addListenerForFirestore() {
+        reference.addSnapshotListener { [weak self] snapshot, error in // some code
+            snapshot!.documents[0].data()
+            self?.showCancelAlert() // change!!!
+        }
+    }
+    
+    func addMessage() {
+        reference.addDocument(data: ["content": "It is new message",
+                                     "created": Date(),
+                                     "senderName": "It is sender name"])
     }
 }
 
