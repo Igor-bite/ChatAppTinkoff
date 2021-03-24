@@ -40,10 +40,14 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
     }
     
     func setLabels() {
-        let userNameData = name?.components(separatedBy: " ")
-        guard let firstNameSymbol = userNameData?[0].first else { return }
-        guard let firstSurnameSymbol = userNameData?[1].first else { return }
-        userInitialsLabel?.text = "\(firstNameSymbol)\(firstSurnameSymbol)"
+        guard let userNameData = name?.components(separatedBy: " ") else { return }
+        guard let firstNameSymbol = userNameData[0].first?.uppercased() else { return }
+        if userNameData.count > 1 {
+            guard let firstSurnameSymbol = userNameData[1].first?.uppercased() else { return }
+            userInitialsLabel?.text = "\(firstNameSymbol)\(firstSurnameSymbol)"
+        } else {
+            userInitialsLabel?.text = "\(firstNameSymbol)"
+        }
         
         nameLabel?.text = name
         if let message = message {

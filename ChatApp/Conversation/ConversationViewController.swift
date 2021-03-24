@@ -8,7 +8,8 @@
 import UIKit
 
 class ConversationViewController: UIViewController {
-    var conversation: Conversation?
+    var channel: Channel?
+    var messages: [Message]?
 
     @IBOutlet weak var tableView: UITableView?
     let cellIdentifier = String(describing: MessageTableViewCell.self)
@@ -17,13 +18,13 @@ class ConversationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = conversation?.user.getName()
+        title = channel?.getName()
         
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
         tableView?.dataSource = self
         
         tableView?.allowsSelection = false
-        if let numOfMessages = conversation?.messages.count {
+        if let numOfMessages = messages?.count {
             if numOfMessages > 0 {
                 tableView?.scrollToRow(at: IndexPath(row: numOfMessages - 1, section: 0), at: .bottom, animated: true)
             }
@@ -49,9 +50,9 @@ class ConversationViewController: UIViewController {
 extension ConversationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? MessageTableViewCell else { return UITableViewCell() }
-        let text = conversation?.messages[indexPath.row].text
-        let isFromMe = conversation?.messages[indexPath.row].isFromMe
-        cell.configure(text: text ?? "", isFromMe: isFromMe ?? false)
+        let text = messages?[indexPath.row].content
+        let isFromMe = messages?[indexPath.row].senderId == UIDevice.current.identifierForVendor!.uuidString
+        cell.configure(text: text ?? "", isFromMe: isFromMe)
         changeThemeForCell(cell: cell)
         return cell
     }
@@ -99,7 +100,7 @@ extension ConversationViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return conversation?.messages.count ?? 0
+        return messages?.count ?? 0
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
