@@ -14,22 +14,21 @@ class ConversationViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView?
     let cellIdentifier = String(describing: MessageTableViewCell.self)
     var theme: Theme = .classic
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = channel?.getName()
-        
-        tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
+        tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self),
+                                  bundle: nil),
+                            forCellReuseIdentifier: cellIdentifier)
         tableView?.dataSource = self
-        
         tableView?.allowsSelection = false
         if let numOfMessages = messages?.count {
             if numOfMessages > 0 {
                 tableView?.scrollToRow(at: IndexPath(row: numOfMessages - 1, section: 0), at: .bottom, animated: true)
             }
         }
-        
         switch theme {
         case .classic:
             self.view.backgroundColor = .white
@@ -41,22 +40,29 @@ class ConversationViewController: UIViewController {
             self.view.backgroundColor = .black
             self.tableView?.backgroundColor = .black
         }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
     }
 }
 
 extension ConversationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? MessageTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier,
+                                                       for: indexPath)
+                as? MessageTableViewCell else { return UITableViewCell() }
         let text = messages?[indexPath.row].content
         let isFromMe = messages?[indexPath.row].senderId == UIDevice.current.identifierForVendor!.uuidString
         cell.configure(text: text ?? "", isFromMe: isFromMe)
         changeThemeForCell(cell: cell)
         return cell
     }
-    
+
     func changeThemeForCell(cell: MessageTableViewCell) {
         guard let isFromMe = cell.isFromMe else { return }
         if isFromMe {
@@ -96,13 +102,12 @@ extension ConversationViewController: UITableViewDataSource {
                 cell.messageLabel?.textColor = color
             }
         }
-        
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages?.count ?? 0
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -110,7 +115,8 @@ extension ConversationViewController: UITableViewDataSource {
 
 extension ConversationViewController {
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+                                as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height
             }

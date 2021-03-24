@@ -15,14 +15,15 @@ class LaunchViewController: UIViewController {
         super.viewDidLoad()
 
         getSavedUser()
-        
-        let convListVC : ConversationsListViewController = self.storyboard?.instantiateViewController(withIdentifier: "ConvListVC") as? ConversationsListViewController ?? ConversationsListViewController()
+
+        let convListVC: ConversationsListViewController = self.storyboard?
+            .instantiateViewController(withIdentifier: "ConvListVC")
+            as? ConversationsListViewController ?? ConversationsListViewController()
         convListVC.currentUser = user
-        
         navigationController?.popViewController(animated: true)
         navigationController?.pushViewController(convListVC, animated: true)
     }
-    
+
     func getSavedUser() {
         do {
             self.user = try SavingManager().getUserData()

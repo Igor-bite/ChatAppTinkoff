@@ -17,17 +17,16 @@ class MessageTableViewCell: UITableViewCell {
     var isFromMe: Bool?
     @IBOutlet var cellLeadingConstraint: NSLayoutConstraint?
     @IBOutlet var cellTrailingConstraint: NSLayoutConstraint?
-    
+
     func configure(text: String, isFromMe: Bool) {
         messageLabel?.text = text
         messageLabel?.textColor = .black
         self.isFromMe = isFromMe
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         messageView?.layer.cornerRadius = 15
-        
         guard let isFromMe = self.isFromMe else { return }
         if !isFromMe {
             cellLeadingConstraint?.isActive = true
@@ -36,7 +35,6 @@ class MessageTableViewCell: UITableViewCell {
             cellLeadingConstraint?.isActive = false
             cellTrailingConstraint?.isActive = true
         }
-        
         messageView?.translatesAutoresizingMaskIntoConstraints = false
     }
 }

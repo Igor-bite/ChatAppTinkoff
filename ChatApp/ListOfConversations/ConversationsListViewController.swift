@@ -13,27 +13,27 @@ class ConversationsListViewController: UIViewController {
     var currentUser: User?
     var userImage: UIImage?
     let database: Database = Database()
-    
     var onlineConversations: [Channel] = []
-   
     var theme: Theme = .classic
-    
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         title = navControllerTitle
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(showProfile))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "gear"), style: .plain, target: self, action: #selector(showThemePicker))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                            target: self,
+                                                            action: #selector(showProfile))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "gear"),
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(showThemePicker))
         navigationItem.leftBarButtonItem?.tintColor = .darkGray
-        
-        tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
+        tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
+                                  bundle: nil),
+                            forCellReuseIdentifier: cellIdentifier)
         tableView?.dataSource = self
         tableView?.delegate = self
-                
         database.getChannels { [weak self] (result) in
             switch result {
             case .success(let snap):
@@ -41,16 +41,16 @@ class ConversationsListViewController: UIViewController {
                 self?.onlineConversations = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
-                    
                     guard let name = jsonData["name"] as? String else { return }
                     let identifier = jsonData["identifier"] as? String
                     let lastMessage = jsonData["lastMessage"] as? String
                     let lastActivity = jsonData["lastActivity"] as? Date
-                    
-                    let channel = Channel(identifier: identifier, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
+                    let channel = Channel(identifier: identifier,
+                                          name: name,
+                                          lastMessage: lastMessage,
+                                          lastActivity: lastActivity)
                     self?.onlineConversations.append(channel)
                 }
-                
                 self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
                     let name1 = ch1.name
                     let name2 = ch2.name
@@ -61,10 +61,7 @@ class ConversationsListViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
-        
-        
         getUserImage()
-        
         database.addListenerForFirestore { [weak self] (result) in
             switch result {
             case .success(let snap):
@@ -72,16 +69,16 @@ class ConversationsListViewController: UIViewController {
                 self?.onlineConversations = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
-                    
                     guard let name = jsonData["name"] as? String else { return }
                     let identifier = jsonData["identifier"] as? String
                     let lastMessage = jsonData["lastMessage"] as? String
                     let lastActivity = jsonData["lastActivity"] as? Date
-                    
-                    let channel = Channel(identifier: identifier, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
+                    let channel = Channel(identifier: identifier,
+                                          name: name,
+                                          lastMessage: lastMessage,
+                                          lastActivity: lastActivity)
                     self?.onlineConversations.append(channel)
                 }
-                
                 self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
                     let name1 = ch1.name
                     let name2 = ch2.name
@@ -92,14 +89,12 @@ class ConversationsListViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
-        
         newChannelImage?.image = UIImage(named: "pencil")
         if let height = newChannelButtonView?.bounds.height {
             newChannelButtonView?.layer.cornerRadius = height / 2
         }
         let newChannelGestureRec = UITapGestureRecognizer(target: self, action: #selector(addNewChannel))
         newChannelButtonView?.addGestureRecognizer(newChannelGestureRec)
-        
         guard let value = currentUser?.getThemeRawValue() else { return }
         guard let theme = Theme(rawValue: value) else { return }
         switch theme {
@@ -118,22 +113,23 @@ class ConversationsListViewController: UIViewController {
         }
         self.theme = theme
     }
-    
+
     @objc func showProfile(_ sender: Any) {
-        let profileVC : ProfileViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProfileVC") as! ProfileViewController
+        let profileVC: ProfileViewController = self.storyboard?
+            .instantiateViewController(withIdentifier: "ProfileVC") as? ProfileViewController ?? ProfileViewController()
         profileVC.theme = self.theme
         profileVC.userToRecover = currentUser
         profileVC.imageToRecover = userImage
         profileVC.delegate = self
         self.present(profileVC, animated: true, completion: nil)
     }
-    
+
     @objc func showThemePicker(_ sender: Any) {
-        let themesVC : ThemesViewController = self.storyboard?.instantiateViewController(withIdentifier: "ThemesVC") as! ThemesViewController
+        let themesVC: ThemesViewController = self.storyboard?
+            .instantiateViewController(withIdentifier: "ThemesVC") as? ThemesViewController ?? ThemesViewController()
         themesVC.conversationsVC = self
         themesVC.currentTheme = theme
         themesVC.lastTheme = theme
-        
         themesVC.handler = { [weak self] (theme) in
             switch theme {
             case .classic:
@@ -146,11 +142,10 @@ class ConversationsListViewController: UIViewController {
         }
         navigationController?.pushViewController(themesVC, animated: true)
     }
-    
+
     private let cellIdentifier = String(describing: ConversationTableViewCell.self)
-    
     @IBOutlet weak var tableView: UITableView?
-    
+
     func changeToClassic() {
         theme = .classic
         tableView?.backgroundColor = .white
@@ -172,7 +167,7 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().isTranslucent = false
         }
     }
-    
+
     func changeToDay() {
         theme = .day
         tableView?.backgroundColor = .white
@@ -194,7 +189,7 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().isTranslucent = false
         }
     }
-    
+
     func changeToNight() {
         theme = .night
         tableView?.backgroundColor = .black
@@ -216,11 +211,10 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().isTranslucent = false
         }
     }
-    
+
     func getSavedUser() {
         let saver = GCDSavingManager()
 //        let saver = OperationsSavingManager()
-        
         saver.getUser { [weak self] (user, error) in
             if let user = user {
                 self?.currentUser = user
@@ -231,11 +225,11 @@ class ConversationsListViewController: UIViewController {
             }
         }
     }
-    
+
     func getUserImage() {
         let saver = GCDSavingManager()
 //        let saver = OperationsSavingManager()
-        
+
         saver.getImage { [weak self] (data, error) in
             if let data = data {
                 self?.userImage = UIImage(data: data)
@@ -245,37 +239,40 @@ class ConversationsListViewController: UIViewController {
             }
         }
     }
-    
+
     func showCancelAlert() {
-        let ac = UIAlertController(title: "Изменения профиля отменены", message: nil, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
-        
-        present(ac, animated: true)
+        let alertControl = UIAlertController(title: "Изменения профиля отменены", message: nil, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
+
+        present(alertControl, animated: true)
     }
-    
+
     @objc func addNewChannel() {
-        let ac = UIAlertController(title: "Make new channel", message: "Enter name of a new channel", preferredStyle: .alert)
-        ac.addTextField {_ in }
-        ac.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] (action) in
-            print(ac.textFields?[0].text as Any)
-            if let name = ac.textFields?[0].text {
+        let alertControl = UIAlertController(
+            title: "Make new channel",
+            message: "Enter name of a new channel",
+            preferredStyle: .alert)
+        alertControl.addTextField {_ in }
+        alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] (_) in
+            print(alertControl.textFields?[0].text as Any)
+            if let name = alertControl.textFields?[0].text {
                 self?.database.makeNewChannel(with: name)
             }
         }))
-        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+        alertControl.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             print("canceled")
         }))
-        
-        present(ac, animated: true)
+
+        present(alertControl, animated: true)
     }
 }
 
-//    MARK: - Firebase/Firestore
+// MARK: - Firebase/Firestore
 
 class Database {
-    lazy var db = Firestore.firestore()
-    lazy var reference = db.collection("channels")
-    
+    lazy var dbInstance = Firestore.firestore()
+    lazy var reference = dbInstance.collection("channels")
+
     func addListenerForFirestore(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
         reference.addSnapshotListener { snapshot, error in // some code
             if let error = error {
@@ -285,7 +282,7 @@ class Database {
             completion(.success(snap))
         }
     }
-    
+
     func getChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
         reference.getDocuments { (snap, error) in
             if let error = error {
@@ -296,10 +293,8 @@ class Database {
             completion(.success(snap))
         }
     }
-    
     func makeNewChannel(with name: String) {
         let newChannelRef = reference.document()
-        
         let channel = Channel(name: name)
         do {
             try newChannelRef.setData(channel.asDictionary())
@@ -307,10 +302,10 @@ class Database {
             print("Error writing to Firestore: \(error)")
         }
     }
-    
+
     func getMessagesFor(channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        guard let id = channel.identifier else { return }
-        reference.document(id).collection("messages").getDocuments { (snap, error) in
+        guard let channelId = channel.identifier else { return }
+        reference.document(channelId).collection("messages").getDocuments { (snap, error) in
             if let error = error {
                 print(error.localizedDescription)
                 completion(.failure(error))
@@ -326,14 +321,14 @@ struct Channel: Codable {
     let name: String
     let lastMessage: String?
     let lastActivity: Date?
-    
+
     init(name: String) {
         lastMessage = nil
         identifier = nil
         lastActivity = nil
         self.name = name
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -341,28 +336,27 @@ struct Channel: Codable {
         let identifier = try container.decode(String.self, forKey: .identifier)
         let lastMessage = try container.decode(String.self, forKey: .lastMessage)
         let lastActivity = try container.decode(Date.self, forKey: .lastActivity)
-        
         self.name = name
         self.identifier = identifier
         self.lastActivity = lastActivity
         self.lastMessage = lastMessage
     }
-    
+
     init(identifier: String?, name: String, lastMessage: String?, lastActivity: Date?) {
         self.name = name
         self.identifier = identifier
         self.lastActivity = lastActivity
         self.lastMessage = lastMessage
     }
-    
+
     func getName() -> String {
         return name
     }
-    
+
     func getLastMessage() -> String? {
         return lastMessage
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case identifier
         case name
@@ -371,16 +365,18 @@ struct Channel: Codable {
     }
 }
 
-enum MessageType : Int, CaseIterable {
+enum MessageType: Int, CaseIterable {
     case channels = 0
 }
 
-extension ConversationsListViewController : UITableViewDelegate {
+extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == MessageType.channels.rawValue {
             let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
             conversationVC.theme = theme
-            self.database.getMessagesFor(channel: onlineConversations[indexPath.row], completion: { [weak conversationVC] (res) in
+            self.database.getMessagesFor(
+                channel: onlineConversations[indexPath.row],
+                completion: { [weak conversationVC] (res) in
                 print("hello")
                 switch res {
                 case .success(let snap):
@@ -388,13 +384,14 @@ extension ConversationsListViewController : UITableViewDelegate {
                     var messages = [Message]()
                     docs.forEach { (doc) in
                         let jsonData = doc.data()
-                        
                         guard let content = jsonData["content"] as? String else { return }
                         let created = jsonData["created"] as? Date
                         let senderId = jsonData["senderId"] as? String
                         let senderName = jsonData["senderName"] as? String
-                        
-                        let mes = Message(content: content, userName: senderName ?? "", created: created ?? Date(), senderId: senderId ?? "")
+                        let mes = Message(content: content,
+                                          userName: senderName ?? "",
+                                          created: created ?? Date(),
+                                          senderId: senderId ?? "")
                         messages.append(mes)
                     }
                     if messages.isEmpty {
@@ -402,24 +399,22 @@ extension ConversationsListViewController : UITableViewDelegate {
                     } else {
                         print(messages)
                     }
-                    
                     conversationVC?.messages = messages
                     conversationVC?.tableView?.reloadData()
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
             })
-            
             navigationController?.pushViewController(conversationVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
-    
+
     func getConversationViewController(for channel: Channel) -> ConversationViewController {
-        guard let conversationVC = storyboard?.instantiateViewController(withIdentifier: "ConversationVC") as? ConversationViewController else {
+        guard let conversationVC = storyboard?
+                .instantiateViewController(withIdentifier: "ConversationVC") as? ConversationViewController else {
             fatalError("Couldn't load conversation view controller")
         }
-        
         conversationVC.channel = channel
         return conversationVC
     }
@@ -427,19 +422,24 @@ extension ConversationsListViewController : UITableViewDelegate {
 
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: cellIdentifier,
+                for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
         switch indexPath.section {
         case MessageType.channels.rawValue:
-            cell.configure(name: onlineConversations[indexPath.row].getName(), message: onlineConversations[indexPath.row].getName(), date: onlineConversations[indexPath.row].lastActivity, online: true, hasUnreadMessages: /*onlineConversations[indexPath.row].hasUnreadMessages()*/ true) // fix
+            cell.configure(name: onlineConversations[indexPath.row].getName(),
+                           message: onlineConversations[indexPath.row].getName(),
+                           date: onlineConversations[indexPath.row].lastActivity,
+                           online: true,
+                           hasUnreadMessages: true) // fix
             changeThemeForCell(cell: cell)
             cell.isUserInteractionEnabled = true
         default:
             break
         }
-        
         return cell
     }
-    
+
     func changeThemeForCell(cell: ConversationTableViewCell) {
         switch theme {
         case .classic:
@@ -462,7 +462,7 @@ extension ConversationsListViewController: UITableViewDataSource {
             cell.dateLabel?.textColor = color
         }
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case MessageType.channels.rawValue:
@@ -471,7 +471,7 @@ extension ConversationsListViewController: UITableViewDataSource {
             return 0
         }
     }
-    
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case MessageType.channels.rawValue:
@@ -480,7 +480,7 @@ extension ConversationsListViewController: UITableViewDataSource {
             return ""
         }
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return MessageType.allCases.count
     }
@@ -499,7 +499,7 @@ class Message {
         self.senderId = senderId
         self.senderName = userName
     }
-    
+
     init(content: String, userName: String) {
         self.content = content
         created = Date()
@@ -514,7 +514,7 @@ class User: Codable {
     private var prefersGeneratedAvatar: Bool
     var isOnline: Bool
     private var theme: String = Theme.classic.rawValue
-    
+
     init(name: String, description: String?, isOnline: Bool?) {
         self.name = name
         self.description = description
@@ -525,7 +525,7 @@ class User: Codable {
             self.isOnline = false
         }
     }
-    
+
     init(name: String, description: String?, isOnline: Bool?, prefersGeneratedAvatar: Bool) {
         self.name = name
         self.description = description
@@ -536,7 +536,7 @@ class User: Codable {
             self.isOnline = false
         }
     }
-    
+
     init(name: String, description: String?, isOnline: Bool?, prefersGeneratedAvatar: Bool, theme: String) {
         self.name = name
         self.description = description
@@ -548,67 +548,42 @@ class User: Codable {
             self.isOnline = false
         }
     }
-    
+
     func getName() -> String? {
         return name
     }
-    
+
     func getDescription() -> String? {
         return description
     }
-    
+
     func getPrefersGeneratedAvatar() -> Bool {
         return self.prefersGeneratedAvatar
     }
-    
+
     func getThemeRawValue() -> String {
         return self.theme
     }
-    
+
     func changeUserTheme(theme: String) {
         assert(Theme(rawValue: theme) != nil, "Something wrong with themeRawValue")
         self.theme = theme
     }
-    
+
     func userWentOnline() {
         isOnline = true
     }
-    
+
     func userWentOffline() {
         isOnline = false
     }
 }
 
-/*
-extension ConversationsListViewController {
-    func setUpHardCodedData() {
-        onlineConversations[0].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "How are you?", isFromMe: false))
-        onlineConversations[0].gotMessage(message: Message(text: "I am great. And you?", isFromMe: true))
-        onlineConversations[0].gotMessage(message: Message(text: "Super!", isFromMe: false))
-    //        onlineConversations[1].gotMessage(message: Message(text: "How are you?", isFromMe: false))
-        onlineConversations[2].gotMessage(message: Message(text: "Hello", isFromMe: false))
-        let date1 = Date(timeInterval: TimeInterval(-60*60*24*5-5), since: Date())
-        onlineConversations[3].gotMessage(message: Message(text: "How are you?", isFromMe: false, date: date1))
-        onlineConversations[4].gotMessage(message: Message(text: "Hello", isFromMe: false))
-    //        onlineConversations[5].gotMessage(message: Message(text: "How are you?", isFromMe: true))
-        onlineConversations[6].gotMessage(message: Message(text: "Hello", isFromMe: true))
-        onlineConversations[7].gotMessage(message: Message(text: "How are you?", isFromMe: true))
-        onlineConversations[8].gotMessage(message: Message(text: "Hello", isFromMe: true))
-        let date2 = Date(timeInterval: TimeInterval(-60*60*24*10-5), since: Date())
-        onlineConversations[9].gotMessage(message: Message(text: "How are you?", isFromMe: true, date: date2))
-    }
-}
-*/
 extension Encodable {
   func asDictionary() throws -> [String: Any] {
     let data = try JSONEncoder().encode(self)
-    guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+    guard let dictionary = try JSONSerialization.jsonObject(with: data,
+                                                            options: .allowFragments) as? [String: Any] else {
       throw NSError()
     }
     return dictionary

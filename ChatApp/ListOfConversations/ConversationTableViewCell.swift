@@ -6,13 +6,13 @@
 //
 
 import UIKit
- 
-protocol ConversationCellConfiguration : class {
-    var name : String? {get set}
-    var message : String? {get set}
-    var date : Date? {get set}
-    var online : Bool {get set}
-    var hasUnreadMessages : Bool {get set}
+
+protocol ConversationCellConfiguration: class {
+    var name: String? {get set}
+    var message: String? {get set}
+    var date: Date? {get set}
+    var online: Bool {get set}
+    var hasUnreadMessages: Bool {get set}
 }
 
 let noMessagesText = "No messages yet"
@@ -23,13 +23,12 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
     var date: Date?
     var online: Bool = false
     var hasUnreadMessages: Bool = false
-    
     @IBOutlet weak var userImageView: UIView?
     @IBOutlet weak var userInitialsLabel: UILabel?
     @IBOutlet weak var nameLabel: UILabel?
     @IBOutlet weak var lastMessageLabel: UILabel?
     @IBOutlet weak var dateLabel: UILabel?
-    
+
     func configure(name: String?, message: String?, date: Date?, online: Bool, hasUnreadMessages: Bool) {
         self.name = name
         self.message = message
@@ -38,7 +37,7 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
         self.hasUnreadMessages = hasUnreadMessages
         setLabels()
     }
-    
+
     func setLabels() {
         guard let userNameData = name?.components(separatedBy: " ") else { return }
         guard let firstNameSymbol = userNameData[0].first?.uppercased() else { return }
@@ -48,16 +47,14 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
         } else {
             userInitialsLabel?.text = "\(firstNameSymbol)"
         }
-        
         nameLabel?.text = name
         if let message = message {
             lastMessageLabel?.text = message
         } else {
             lastMessageLabel?.text = noMessagesText
-            lastMessageLabel?.font = UIFont(name:"AmericanTypewriter", size: 17)
+            lastMessageLabel?.font = UIFont(name: "AmericanTypewriter", size: 17)
         }
-        
-        if (hasUnreadMessages) {
+        if hasUnreadMessages {
             lastMessageLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         } else {
             lastMessageLabel?.font = UIFont.systemFont(ofSize: 17)
@@ -68,14 +65,14 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
             return
         }
         let yesterday = Date()-60*60*24
-        if (date <= yesterday) {
+        if date <= yesterday {
             dateFormatter.dateFormat = "dd MMM"
         } else {
             dateFormatter.dateFormat = "HH:mm"
         }
         dateLabel?.text = dateFormatter.string(from: date)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         guard let width = userImageView?.bounds.size.width else { return }
@@ -83,6 +80,10 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
         userImageView?.backgroundColor = .white
         userImageView?.clipsToBounds = true
         userImageView?.layer.borderWidth = 5
-        userImageView?.layer.borderColor = self.online ? UIColor(red: 228/255, green: 232/255, blue: 43/255, alpha: 1).cgColor : UIColor.gray.cgColor // бледно жёлтый или серый
+        userImageView?.layer.borderColor = self.online ? UIColor(red: 228/255,
+                                                                 green: 232/255,
+                                                                 blue: 43/255,
+                                                                 alpha: 1).cgColor
+                                                        : UIColor.gray.cgColor // бледно жёлтый или серый
     }
 }
