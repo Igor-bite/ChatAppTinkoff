@@ -100,7 +100,7 @@ class ThemesViewController: UIViewController {
         }
         guard let view = themeView else { return }
         view.layer.borderWidth = 3
-        view.layer.borderColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1).cgColor
+        view.layer.borderColor = UIColor(red: 0, green: 122 / 255, blue: 1, alpha: 1).cgColor
     }
 
     func deselectAllThemeViews() {

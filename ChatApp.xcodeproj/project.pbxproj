@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		28ACEA3EB0E9EC949746C78D /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A41EEB192829EFF64BD012 /* Pods_ChatApp.framework */; };
+		A51FF246260D0894004BAB8E /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF245260D0894004BAB8E /* UserModel.swift */; };
+		A51FF249260D08A6004BAB8E /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF248260D08A6004BAB8E /* MessageModel.swift */; };
+		A51FF24C260D08DC004BAB8E /* ChannelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF24B260D08DC004BAB8E /* ChannelModel.swift */; };
+		A51FF250260D090A004BAB8E /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF24F260D090A004BAB8E /* Database.swift */; };
+		A51FF253260D0955004BAB8E /* ProfileThemeChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */; };
 		A55A16442608D701004749E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A55A16432608D700004749E2 /* GoogleService-Info.plist */; };
 		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
 		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
@@ -25,6 +30,8 @@
 		A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */; };
 		A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */; };
 		A5D666FD25F19BC300FC4AA0 /* MessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */; };
+		A5E83451260D536B001975EC /* SavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83450260D536B001975EC /* SavingService.swift */; };
+		A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83453260D55D8001975EC /* ImagePickerManager.swift */; };
 		A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +39,11 @@
 		00A41EEB192829EFF64BD012 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0294211437A3180C4DC43F1F /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
 		8F735FE4C435B1211CF7DA1E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A51FF245260D0894004BAB8E /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		A51FF248260D08A6004BAB8E /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		A51FF24B260D08DC004BAB8E /* ChannelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelModel.swift; sourceTree = "<group>"; };
+		A51FF24F260D090A004BAB8E /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileThemeChanger.swift; sourceTree = "<group>"; };
 		A55A16432608D700004749E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
@@ -51,6 +63,8 @@
 		A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageTableViewCell.xib; sourceTree = "<group>"; };
+		A5E83450260D536B001975EC /* SavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingService.swift; sourceTree = "<group>"; };
+		A5E83453260D55D8001975EC /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
 		A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +95,35 @@
 				0294211437A3180C4DC43F1F /* Pods-ChatApp.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		A51FF244260D0887004BAB8E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A51FF245260D0894004BAB8E /* UserModel.swift */,
+				A51FF248260D08A6004BAB8E /* MessageModel.swift */,
+				A51FF24B260D08DC004BAB8E /* ChannelModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A51FF24E260D08FC004BAB8E /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				A51FF24F260D090A004BAB8E /* Database.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		A51FF256260D09F9004BAB8E /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */,
+				A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */,
+				A5E83450260D536B001975EC /* SavingService.swift */,
+				A5E83453260D55D8001975EC /* ImagePickerManager.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		A56F761325FA1D3A0080AC1F /* Conversation */ = {
@@ -135,10 +178,12 @@
 		A5A5B94125DA85D500F61A26 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				A51FF256260D09F9004BAB8E /* Profile */,
+				A51FF24E260D08FC004BAB8E /* Firebase */,
+				A51FF244260D0887004BAB8E /* Models */,
 				A5A5B94225DA85D500F61A26 /* AppDelegate.swift */,
 				A56F761525FA1D510080AC1F /* ListOfConversations */,
 				A56F761325FA1D3A0080AC1F /* Conversation */,
-				A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */,
 				A599D8D92600F5F40002D3B8 /* SavingManagers */,
 				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
 				A5A5B94825DA85D500F61A26 /* Main.storyboard */,
@@ -291,13 +336,20 @@
 				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
 				A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */,
 				A599D8E02600F9A20002D3B8 /* Common.swift in Sources */,
+				A51FF246260D0894004BAB8E /* UserModel.swift in Sources */,
 				A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */,
+				A51FF24C260D08DC004BAB8E /* ChannelModel.swift in Sources */,
 				A599D8DC2600F6AC0002D3B8 /* ISavingManager.swift in Sources */,
+				A51FF253260D0955004BAB8E /* ProfileThemeChanger.swift in Sources */,
 				A5AF547926035CE000446B0D /* LaunchViewController.swift in Sources */,
+				A51FF249260D08A6004BAB8E /* MessageModel.swift in Sources */,
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
+				A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,
 				A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */,
+				A51FF250260D090A004BAB8E /* Database.swift in Sources */,
 				A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */,
+				A5E83451260D536B001975EC /* SavingService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

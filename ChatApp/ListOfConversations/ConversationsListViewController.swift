@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 
 class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
@@ -42,7 +41,7 @@ class ConversationsListViewController: UIViewController {
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
-                    let identifier = jsonData["identifier"] as? String
+                    guard let identifier = jsonData["identifier"] as? String else { return }
                     let lastMessage = jsonData["lastMessage"] as? String
                     let lastActivity = jsonData["lastActivity"] as? Date
                     let channel = Channel(identifier: identifier,
@@ -52,8 +51,8 @@ class ConversationsListViewController: UIViewController {
                     self?.onlineConversations.append(channel)
                 }
                 self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
-                    let name1 = ch1.name
-                    let name2 = ch2.name
+                    let name1 = ch1.getName()
+                    let name2 = ch2.getName()
                     return name1 < name2
                 })
                 self?.tableView?.reloadData()
@@ -70,7 +69,7 @@ class ConversationsListViewController: UIViewController {
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
-                    let identifier = jsonData["identifier"] as? String
+                    guard let identifier = jsonData["identifier"] as? String else { return }
                     let lastMessage = jsonData["lastMessage"] as? String
                     let lastActivity = jsonData["lastActivity"] as? Date
                     let channel = Channel(identifier: identifier,
@@ -80,8 +79,8 @@ class ConversationsListViewController: UIViewController {
                     self?.onlineConversations.append(channel)
                 }
                 self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
-                    let name1 = ch1.name
-                    let name2 = ch2.name
+                    let name1 = ch1.getName()
+                    let name2 = ch2.getName()
                     return name1 < name2
                 })
                 self?.tableView?.reloadData()
@@ -163,7 +162,7 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
         } else {
             UINavigationBar.appearance().tintColor = UIColor(named: "classicColor")
-            UINavigationBar.appearance().barTintColor =  UIColor(named: "classicColor")
+            UINavigationBar.appearance().barTintColor = UIColor(named: "classicColor")
             UINavigationBar.appearance().isTranslucent = false
         }
     }
@@ -185,7 +184,7 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
         } else {
             UINavigationBar.appearance().tintColor = UIColor(named: "dayColor")
-            UINavigationBar.appearance().barTintColor =  UIColor(named: "dayColor")
+            UINavigationBar.appearance().barTintColor = UIColor(named: "dayColor")
             UINavigationBar.appearance().isTranslucent = false
         }
     }
@@ -207,7 +206,7 @@ class ConversationsListViewController: UIViewController {
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
         } else {
             UINavigationBar.appearance().tintColor = UIColor(named: "nightColor")
-            UINavigationBar.appearance().barTintColor =  UIColor(named: "nightColor")
+            UINavigationBar.appearance().barTintColor = UIColor(named: "nightColor")
             UINavigationBar.appearance().isTranslucent = false
         }
     }
@@ -267,104 +266,6 @@ class ConversationsListViewController: UIViewController {
     }
 }
 
-// MARK: - Firebase/Firestore
-
-class Database {
-    lazy var dbInstance = Firestore.firestore()
-    lazy var reference = dbInstance.collection("channels")
-
-    func addListenerForFirestore(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.addSnapshotListener { snapshot, error in // some code
-            if let error = error {
-                completion(.failure(error))
-            }
-            guard let snap = snapshot else { return }
-            completion(.success(snap))
-        }
-    }
-
-    func getChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.getDocuments { (snap, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                completion(.failure(error))
-            }
-            guard let snap = snap else { return }
-            completion(.success(snap))
-        }
-    }
-    func makeNewChannel(with name: String) {
-        let newChannelRef = reference.document()
-        let channel = Channel(name: name)
-        do {
-            try newChannelRef.setData(channel.asDictionary())
-        } catch let error {
-            print("Error writing to Firestore: \(error)")
-        }
-    }
-
-    func getMessagesFor(channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        guard let channelId = channel.identifier else { return }
-        reference.document(channelId).collection("messages").getDocuments { (snap, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                completion(.failure(error))
-            }
-            guard let snap = snap else { return }
-            completion(.success(snap))
-        }
-    }
-}
-
-struct Channel: Codable {
-    let identifier: String?
-    let name: String
-    let lastMessage: String?
-    let lastActivity: Date?
-
-    init(name: String) {
-        lastMessage = nil
-        identifier = nil
-        lastActivity = nil
-        self.name = name
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        let name = try container.decode(String.self, forKey: .name)
-        let identifier = try container.decode(String.self, forKey: .identifier)
-        let lastMessage = try container.decode(String.self, forKey: .lastMessage)
-        let lastActivity = try container.decode(Date.self, forKey: .lastActivity)
-        self.name = name
-        self.identifier = identifier
-        self.lastActivity = lastActivity
-        self.lastMessage = lastMessage
-    }
-
-    init(identifier: String?, name: String, lastMessage: String?, lastActivity: Date?) {
-        self.name = name
-        self.identifier = identifier
-        self.lastActivity = lastActivity
-        self.lastMessage = lastMessage
-    }
-
-    func getName() -> String {
-        return name
-    }
-
-    func getLastMessage() -> String? {
-        return lastMessage
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case identifier
-        case name
-        case lastMessage
-        case lastActivity
-    }
-}
-
 enum MessageType: Int, CaseIterable {
     case channels = 0
 }
@@ -377,34 +278,31 @@ extension ConversationsListViewController: UITableViewDelegate {
             self.database.getMessagesFor(
                 channel: onlineConversations[indexPath.row],
                 completion: { [weak conversationVC] (res) in
-                print("hello")
-                switch res {
-                case .success(let snap):
-                    let docs = snap.documents
-                    var messages = [Message]()
-                    docs.forEach { (doc) in
-                        let jsonData = doc.data()
-                        guard let content = jsonData["content"] as? String else { return }
-                        let created = jsonData["created"] as? Date
-                        let senderId = jsonData["senderId"] as? String
-                        let senderName = jsonData["senderName"] as? String
-                        let mes = Message(content: content,
-                                          userName: senderName ?? "",
-                                          created: created ?? Date(),
-                                          senderId: senderId ?? "")
-                        messages.append(mes)
+                    switch res {
+                    case .success(let snap):
+                        let docs = snap.documents
+                        var messages = [Message]()
+                        docs.forEach { (doc) in
+                            let jsonData = doc.data()
+                            guard let content = jsonData["content"] as? String else { return }
+                            let created = jsonData["created"] as? Date
+                            let senderId = jsonData["senderId"] as? String
+                            let senderName = jsonData["senderName"] as? String
+                            let mes = Message(content: content,
+                                              userName: senderName ?? "",
+                                              created: created ?? Date(),
+                                              senderId: senderId ?? "")
+                            messages.append(mes)
+                        }
+                        messages.sort { (message1, message2) -> Bool in
+                            return message1.created.timeIntervalSince1970 < message2.created.timeIntervalSince1970
+                        }
+                        conversationVC?.messages = messages
+                        conversationVC?.tableView?.reloadData()
+                    case .failure(let error):
+                        print(error.localizedDescription)
                     }
-                    if messages.isEmpty {
-                        print("It is empty")
-                    } else {
-                        print(messages)
-                    }
-                    conversationVC?.messages = messages
-                    conversationVC?.tableView?.reloadData()
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            })
+                })
             navigationController?.pushViewController(conversationVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
         }
@@ -429,7 +327,7 @@ extension ConversationsListViewController: UITableViewDataSource {
         case MessageType.channels.rawValue:
             cell.configure(name: onlineConversations[indexPath.row].getName(),
                            message: onlineConversations[indexPath.row].getName(),
-                           date: onlineConversations[indexPath.row].lastActivity,
+                           date: onlineConversations[indexPath.row].getLastActivity(),
                            online: true,
                            hasUnreadMessages: true) // fix
             changeThemeForCell(cell: cell)
@@ -483,99 +381,6 @@ extension ConversationsListViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return MessageType.allCases.count
-    }
-}
-
-// спросить можно ли класс вместо структуры или просто структуру впихнуть в класс
-class Message {
-    let content: String
-    let created: Date
-    let senderId: String
-    let senderName: String
-
-    init(content: String, userName: String, created: Date, senderId: String) {
-        self.content = content
-        self.created = created
-        self.senderId = senderId
-        self.senderName = userName
-    }
-
-    init(content: String, userName: String) {
-        self.content = content
-        created = Date()
-        senderId = UIDevice.current.identifierForVendor!.uuidString
-        senderName = userName
-    }
-}
-
-class User: Codable {
-    private var name: String?
-    private var description: String?
-    private var prefersGeneratedAvatar: Bool
-    var isOnline: Bool
-    private var theme: String = Theme.classic.rawValue
-
-    init(name: String, description: String?, isOnline: Bool?) {
-        self.name = name
-        self.description = description
-        self.prefersGeneratedAvatar = false
-        if let isOnline = isOnline {
-            self.isOnline = isOnline
-        } else {
-            self.isOnline = false
-        }
-    }
-
-    init(name: String, description: String?, isOnline: Bool?, prefersGeneratedAvatar: Bool) {
-        self.name = name
-        self.description = description
-        self.prefersGeneratedAvatar = prefersGeneratedAvatar
-        if let isOnline = isOnline {
-            self.isOnline = isOnline
-        } else {
-            self.isOnline = false
-        }
-    }
-
-    init(name: String, description: String?, isOnline: Bool?, prefersGeneratedAvatar: Bool, theme: String) {
-        self.name = name
-        self.description = description
-        self.prefersGeneratedAvatar = prefersGeneratedAvatar
-        self.theme = theme
-        if let isOnline = isOnline {
-            self.isOnline = isOnline
-        } else {
-            self.isOnline = false
-        }
-    }
-
-    func getName() -> String? {
-        return name
-    }
-
-    func getDescription() -> String? {
-        return description
-    }
-
-    func getPrefersGeneratedAvatar() -> Bool {
-        return self.prefersGeneratedAvatar
-    }
-
-    func getThemeRawValue() -> String {
-        return self.theme
-    }
-
-    func changeUserTheme(theme: String) {
-        assert(Theme(rawValue: theme) != nil, "Something wrong with themeRawValue")
-        self.theme = theme
-    }
-
-    func userWentOnline() {
-        isOnline = true
-    }
-
-    func userWentOffline() {
-        isOnline = false
     }
 }
 

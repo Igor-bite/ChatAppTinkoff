@@ -14,9 +14,13 @@ class ConversationViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView?
     let cellIdentifier = String(describing: MessageTableViewCell.self)
     var theme: Theme = .classic
+    private let database = Database()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+//        if let channel = channel {
+//            database.addMessageToChannel(message: Message(content: "How are you?", userName: "SomeUser"), channel: channel)
+//        }
 
         title = channel?.getName()
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self),

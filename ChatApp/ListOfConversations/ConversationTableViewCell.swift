@@ -64,7 +64,7 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
             dateLabel?.text = ""
             return
         }
-        let yesterday = Date()-60*60*24
+        let yesterday = Date() - 60 * 60 * 24
         if date <= yesterday {
             dateFormatter.dateFormat = "dd MMM"
         } else {
@@ -80,9 +80,9 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
         userImageView?.backgroundColor = .white
         userImageView?.clipsToBounds = true
         userImageView?.layer.borderWidth = 5
-        userImageView?.layer.borderColor = self.online ? UIColor(red: 228/255,
-                                                                 green: 232/255,
-                                                                 blue: 43/255,
+        userImageView?.layer.borderColor = self.online ? UIColor(red: 228 / 255,
+                                                                 green: 232 / 255,
+                                                                 blue: 43 / 255,
                                                                  alpha: 1).cgColor
                                                         : UIColor.gray.cgColor // бледно жёлтый или серый
     }
