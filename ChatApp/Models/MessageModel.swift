@@ -14,11 +14,11 @@ struct Message: Codable {
     let senderId: String
     let senderName: String
 
-    init(content: String, userName: String, created: Date, senderId: String) {
+    init(content: String, senderName: String, created: Date, senderId: String) {
         self.content = content
         self.created = created
         self.senderId = senderId
-        self.senderName = userName
+        self.senderName = senderName
     }
 
     init(content: String, userName: String) {

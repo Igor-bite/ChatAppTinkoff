@@ -15,8 +15,18 @@ class Database {
     lazy var dbInstance = Firestore.firestore()
     lazy var reference = dbInstance.collection("channels")
 
-    func addListenerForFirestore(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.addSnapshotListener { snapshot, error in // some code
+    func addListenerForChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
+        reference.addSnapshotListener { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+            }
+            guard let snap = snapshot else { return }
+            completion(.success(snap))
+        }
+    }
+    
+    func addListenerForMessages(in channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
+        reference.document(channel.getName()).collection("messages").addSnapshotListener { snapshot, error in
             if let error = error {
                 completion(.failure(error))
             }

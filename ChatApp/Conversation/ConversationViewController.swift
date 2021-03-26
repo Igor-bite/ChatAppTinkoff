@@ -9,18 +9,19 @@ import UIKit
 
 class ConversationViewController: UIViewController {
     var channel: Channel?
+    var user: User?
     var messages: [Message]?
 
     @IBOutlet weak var tableView: UITableView?
+    @IBOutlet weak var sendButtonView: UIView?
+    @IBOutlet weak var messageTextField: UITextField?
+    @IBOutlet weak var sendImage: UIImageView?
     let cellIdentifier = String(describing: MessageTableViewCell.self)
     var theme: Theme = .classic
     private let database = Database()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        if let channel = channel {
-//            database.addMessageToChannel(message: Message(content: "How are you?", userName: "SomeUser"), channel: channel)
-//        }
 
         title = channel?.getName()
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self),
@@ -52,6 +53,60 @@ class ConversationViewController: UIViewController {
                                                selector: #selector(keyboardWillHide),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
+        if let height = sendButtonView?.bounds.height {
+            sendButtonView?.layer.cornerRadius = height / 2
+        }
+        sendImage?.image = UIImage(named: "sendIcon")
+        let sendRec = UITapGestureRecognizer(target: self, action: #selector(sendTapped))
+        sendButtonView?.addGestureRecognizer(sendRec)
+        
+        guard let channel = channel else { return }
+        database.addListenerForMessages(in: channel) { [weak self] (result) in
+            switch result {
+            case .success(let snap):
+                let docs = snap.documents
+                self?.messages = []
+                docs.forEach { (doc) in
+                    let jsonData = doc.data()
+                    guard let content = jsonData["content"] as? String else { return }
+                    guard let created = jsonData["created"] as? Double else { return }
+                    guard let senderId = jsonData["senderId"] as? String else { return }
+                    guard let senderName = jsonData["senderName"] as? String else { return }
+                    let mes = Message(content: content,
+                                      senderName: senderName,
+                                      created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                      senderId: senderId)
+                    self?.messages?.append(mes)
+                }
+                self?.messages?.sort { (message1, message2) -> Bool in
+                    return message1.created.timeIntervalSince1970 < message2.created.timeIntervalSince1970
+                }
+                self?.tableView?.reloadData()
+                guard let numOfMessages = self?.messages?.count else { return }
+                self?.tableView?.scrollToRow(at: IndexPath(row: numOfMessages - 1, section: 0), at: .bottom, animated: true)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    @objc func sendTapped() {
+        let text = messageTextField?.text
+        if text == "" {
+            showAlert(with: "Message can't be empty", message: "Please, enter some text")
+        }
+        if let name = user?.getName(), let text = text, let channel = channel {
+            let message = Message(content: text, userName: name)
+            database.addMessageToChannel(message: message, channel: channel)
+            messageTextField?.text = ""
+        }
+    }
+    
+    func showAlert(with title: String, message: String?) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in }))
+        
+        present(alertController, animated: true)
     }
 }
 

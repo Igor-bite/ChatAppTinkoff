@@ -27,6 +27,7 @@
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nbz-Kl-KWN">
                                         <rect key="frame" x="12.666666666666686" y="12.666666666666629" width="25" height="25"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="nbz-Kl-KWN" secondAttribute="height" multiplier="1:1" id="nem-sf-FMv"/>
                                         </constraints>
@@ -72,10 +73,31 @@
                                 <rect key="frame" x="0.0" y="44" width="428" height="802"/>
                             </tableView>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="57F-6f-sQV">
-                                <rect key="frame" x="0.0" y="846" width="428" height="34"/>
+                                <rect key="frame" x="0.0" y="846" width="373" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8rl-tF-TPI">
+                                <rect key="frame" x="383" y="845.66666666666663" width="35" height="35"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o46-v8-j4M">
+                                        <rect key="frame" x="5" y="5" width="25" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="25" id="T4j-ws-0uN"/>
+                                            <constraint firstAttribute="width" secondItem="o46-v8-j4M" secondAttribute="height" multiplier="1:1" id="b19-i2-64t"/>
+                                            <constraint firstAttribute="height" constant="25" id="oZa-aw-s2c"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="S7M-gh-o9j"/>
+                                    <constraint firstItem="o46-v8-j4M" firstAttribute="centerY" secondItem="8rl-tF-TPI" secondAttribute="centerY" id="Yf1-w2-jhG"/>
+                                    <constraint firstAttribute="width" constant="35" id="p1Y-KA-VTL"/>
+                                    <constraint firstAttribute="width" secondItem="8rl-tF-TPI" secondAttribute="height" multiplier="1:1" id="tSp-wl-PRh"/>
+                                    <constraint firstItem="o46-v8-j4M" firstAttribute="centerX" secondItem="8rl-tF-TPI" secondAttribute="centerX" id="ymb-VV-WrA"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ssp-pg-egF"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -84,18 +106,23 @@
                             <constraint firstItem="57F-6f-sQV" firstAttribute="top" secondItem="gQp-sr-ZhY" secondAttribute="bottom" id="P5a-eK-dhu"/>
                             <constraint firstItem="gQp-sr-ZhY" firstAttribute="top" secondItem="ssp-pg-egF" secondAttribute="top" id="P7Q-cP-3s3"/>
                             <constraint firstItem="57F-6f-sQV" firstAttribute="bottom" secondItem="ssp-pg-egF" secondAttribute="bottom" constant="-12" id="Rmv-U8-ls3"/>
-                            <constraint firstItem="57F-6f-sQV" firstAttribute="trailing" secondItem="ssp-pg-egF" secondAttribute="trailing" id="e5e-tm-eCH"/>
+                            <constraint firstItem="8rl-tF-TPI" firstAttribute="leading" secondItem="57F-6f-sQV" secondAttribute="trailing" constant="10" id="b0K-MB-3zK"/>
+                            <constraint firstItem="8rl-tF-TPI" firstAttribute="centerY" secondItem="57F-6f-sQV" secondAttribute="centerY" id="gtK-4K-fJU"/>
                             <constraint firstItem="ssp-pg-egF" firstAttribute="trailing" secondItem="gQp-sr-ZhY" secondAttribute="trailing" id="jjw-pB-ZHw"/>
+                            <constraint firstItem="ssp-pg-egF" firstAttribute="trailing" secondItem="8rl-tF-TPI" secondAttribute="trailing" constant="10" id="mf2-Pq-Fzg"/>
                             <constraint firstItem="57F-6f-sQV" firstAttribute="leading" secondItem="ssp-pg-egF" secondAttribute="leading" id="xnO-sU-i5j"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="messageTextField" destination="57F-6f-sQV" id="Lri-1T-yeC"/>
+                        <outlet property="sendButtonView" destination="8rl-tF-TPI" id="79y-t6-SbW"/>
+                        <outlet property="sendImage" destination="o46-v8-j4M" id="1nQ-eh-fOp"/>
                         <outlet property="tableView" destination="gQp-sr-ZhY" id="u7w-A9-dyn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wny-11-jhG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1622" y="74"/>
+            <point key="canvasLocation" x="1621.9626168224297" y="73.866090712742988"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="cIn-gO-e2h">

@@ -61,7 +61,7 @@ class ConversationsListViewController: UIViewController {
             }
         }
         getUserImage()
-        database.addListenerForFirestore { [weak self] (result) in
+        database.addListenerForChannels { [weak self] (result) in
             switch result {
             case .success(let snap):
                 let docs = snap.documents
@@ -218,7 +218,6 @@ class ConversationsListViewController: UIViewController {
             if let user = user {
                 self?.currentUser = user
                 self?.theme = Theme(rawValue: user.getThemeRawValue()) ?? .classic
-                print("got user")
             } else {
                 print(error?.localizedDescription as Any)
             }
@@ -232,7 +231,6 @@ class ConversationsListViewController: UIViewController {
         saver.getImage { [weak self] (data, error) in
             if let data = data {
                 self?.userImage = UIImage(data: data)
-                print("got image")
             } else {
                 print(error?.localizedDescription as Any)
             }
@@ -277,7 +275,7 @@ extension ConversationsListViewController: UITableViewDelegate {
             conversationVC.theme = theme
             self.database.getMessagesFor(
                 channel: onlineConversations[indexPath.row],
-                completion: { [weak conversationVC] (res) in
+                completion: { [weak conversationVC, weak self] (res) in
                     switch res {
                     case .success(let snap):
                         let docs = snap.documents
@@ -285,18 +283,19 @@ extension ConversationsListViewController: UITableViewDelegate {
                         docs.forEach { (doc) in
                             let jsonData = doc.data()
                             guard let content = jsonData["content"] as? String else { return }
-                            let created = jsonData["created"] as? Date
-                            let senderId = jsonData["senderId"] as? String
-                            let senderName = jsonData["senderName"] as? String
+                            guard let created = jsonData["created"] as? Double else { return }
+                            guard let senderId = jsonData["senderId"] as? String else { return }
+                            guard let senderName = jsonData["senderName"] as? String else { return }
                             let mes = Message(content: content,
-                                              userName: senderName ?? "",
-                                              created: created ?? Date(),
-                                              senderId: senderId ?? "")
+                                              senderName: senderName,
+                                              created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                              senderId: senderId)
                             messages.append(mes)
                         }
                         messages.sort { (message1, message2) -> Bool in
                             return message1.created.timeIntervalSince1970 < message2.created.timeIntervalSince1970
                         }
+                        conversationVC?.user = self?.currentUser
                         conversationVC?.messages = messages
                         conversationVC?.tableView?.reloadData()
                     case .failure(let error):
@@ -326,7 +325,7 @@ extension ConversationsListViewController: UITableViewDataSource {
         switch indexPath.section {
         case MessageType.channels.rawValue:
             cell.configure(name: onlineConversations[indexPath.row].getName(),
-                           message: onlineConversations[indexPath.row].getName(),
+                           message: onlineConversations[indexPath.row].getLastMessage(),
                            date: onlineConversations[indexPath.row].getLastActivity(),
                            online: true,
                            hasUnreadMessages: true) // fix
