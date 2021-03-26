@@ -117,7 +117,7 @@ extension ConversationViewController: UITableViewDataSource {
                 as? MessageTableViewCell else { return UITableViewCell() }
         let text = messages?[indexPath.row].content
         let isFromMe = messages?[indexPath.row].senderId == UIDevice.current.identifierForVendor!.uuidString
-        cell.configure(text: text ?? "", isFromMe: isFromMe)
+        cell.configure(text: text ?? "", userName: messages?[indexPath.row].senderName, isFromMe: isFromMe)
         changeThemeForCell(cell: cell)
         return cell
     }
