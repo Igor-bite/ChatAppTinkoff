@@ -13,6 +13,7 @@
 		A51FF24C260D08DC004BAB8E /* ChannelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF24B260D08DC004BAB8E /* ChannelModel.swift */; };
 		A51FF250260D090A004BAB8E /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF24F260D090A004BAB8E /* Database.swift */; };
 		A51FF253260D0955004BAB8E /* ProfileThemeChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */; };
+		A5484D4726136E77008AF909 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4526136E77008AF909 /* Chat.xcdatamodeld */; };
 		A55A16442608D701004749E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A55A16432608D700004749E2 /* GoogleService-Info.plist */; };
 		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
 		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
@@ -44,6 +45,7 @@
 		A51FF24B260D08DC004BAB8E /* ChannelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelModel.swift; sourceTree = "<group>"; };
 		A51FF24F260D090A004BAB8E /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileThemeChanger.swift; sourceTree = "<group>"; };
+		A5484D4626136E77008AF909 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		A55A16432608D700004749E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
@@ -126,6 +128,14 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		A5484D4426136E60008AF909 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				A5484D4526136E77008AF909 /* Chat.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		A56F761325FA1D3A0080AC1F /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
@@ -178,6 +188,7 @@
 		A5A5B94125DA85D500F61A26 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				A5484D4426136E60008AF909 /* CoreData */,
 				A51FF256260D09F9004BAB8E /* Profile */,
 				A51FF24E260D08FC004BAB8E /* Firebase */,
 				A51FF244260D0887004BAB8E /* Models */,
@@ -332,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */,
+				A5484D4726136E77008AF909 /* Chat.xcdatamodeld in Sources */,
 				A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */,
 				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
 				A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */,
@@ -555,6 +567,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A5484D4526136E77008AF909 /* Chat.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A5484D4626136E77008AF909 /* Chat.xcdatamodel */,
+			);
+			currentVersion = A5484D4626136E77008AF909 /* Chat.xcdatamodel */;
+			path = Chat.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = A5A5B93725DA85D500F61A26 /* Project object */;
 }
