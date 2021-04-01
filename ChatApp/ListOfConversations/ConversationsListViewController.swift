@@ -12,10 +12,11 @@ class ConversationsListViewController: UIViewController {
     var currentUser: User?
     var userImage: UIImage?
     let database: Database = Database()
-    var onlineConversations: [Channel] = []
+    var channelsList: [Channel] = []
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
+    let coreDataStack = CoreDataStack()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,7 @@ class ConversationsListViewController: UIViewController {
             switch result {
             case .success(let snap):
                 let docs = snap.documents
-                self?.onlineConversations = []
+                self?.channelsList = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
@@ -48,24 +49,78 @@ class ConversationsListViewController: UIViewController {
                                           name: name,
                                           lastMessage: lastMessage,
                                           lastActivity: lastActivity)
-                    self?.onlineConversations.append(channel)
+                    self?.channelsList.append(channel)
                 }
-                self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
+                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
                     let name1 = ch1.getName()
                     let name2 = ch2.getName()
                     return name1 < name2
                 })
                 self?.tableView?.reloadData()
+                
+                guard let channelsList = self?.channelsList else { return }
+                for channel in channelsList {
+                    self?.database.addListenerForMessages(in: channel, completion: { (result) in
+                        switch result {
+                        case .success(let snap):
+                            let docs = snap.documents
+                            var messages = [Message]()
+                            docs.forEach { (doc) in
+                                let jsonData = doc.data()
+                                guard let content = jsonData["content"] as? String else { return }
+                                guard let created = jsonData["created"] as? Double else { return }
+                                guard let senderId = jsonData["senderId"] as? String else { return }
+                                guard let senderName = jsonData["senderName"] as? String else { return }
+                                let mes = Message(content: content,
+                                                  senderName: senderName,
+                                                  created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                                  senderId: senderId, identifier: doc.documentID)
+                                messages.append(mes)
+                            }
+                            self?.coreDataStack.didUpdateDataBase = { stack in
+                                stack.printDatabaseStatistice()
+                            }
+
+                            self?.coreDataStack.enableObservers()
+                            
+                            self?.coreDataStack.performSave { context in
+                                let channel_db = Channel_db(name: channel.getName(),
+                                                            identifier: channel.getId(),
+                                                            lastActivity: channel.getLastActivity(),
+                                                            lastMessage: channel.getLastMessage(),
+                                                            in: context)
+                                for message in messages {
+                                    guard let identifier = message.getIdentifier() else {
+                                        assertionFailure("There is no document id of message from firestore")
+                                        return
+                                    }
+                                    let message_db = Message_db(content: message.getContent(),
+                                                                created: message.getCreationDate(),
+                                                                identifier: identifier,
+                                                                senderId: message.getSenderId(),
+                                                                senderName: message.getSenderName(),
+                                                                in: context)
+                                    channel_db.addToMessages(message_db)
+                                }
+                            }
+                            
+                        case .failure(let error):
+                            assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
+                    }
+                    })
+                }
+                
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
+        
         getUserImage()
         database.addListenerForChannels { [weak self] (result) in
             switch result {
             case .success(let snap):
                 let docs = snap.documents
-                self?.onlineConversations = []
+                self?.channelsList = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
@@ -76,9 +131,9 @@ class ConversationsListViewController: UIViewController {
                                           name: name,
                                           lastMessage: lastMessage,
                                           lastActivity: lastActivity)
-                    self?.onlineConversations.append(channel)
+                    self?.channelsList.append(channel)
                 }
-                self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
+                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
                     let name1 = ch1.getName()
                     let name2 = ch2.getName()
                     return name1 < name2
@@ -271,10 +326,10 @@ enum MessageType: Int, CaseIterable {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == MessageType.channels.rawValue {
-            let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
+            let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
             conversationVC.theme = theme
             self.database.getMessagesFor(
-                channel: onlineConversations[indexPath.row],
+                channel: channelsList[indexPath.row],
                 completion: { [weak conversationVC, weak self] (res) in
                     switch res {
                     case .success(let snap):
@@ -289,11 +344,11 @@ extension ConversationsListViewController: UITableViewDelegate {
                             let mes = Message(content: content,
                                               senderName: senderName,
                                               created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                              senderId: senderId)
+                                              senderId: senderId, identifier: doc.documentID)
                             messages.append(mes)
                         }
                         messages.sort { (message1, message2) -> Bool in
-                            return message1.created.timeIntervalSince1970 < message2.created.timeIntervalSince1970
+                            return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
                         }
                         conversationVC?.user = self?.currentUser
                         conversationVC?.messages = messages
@@ -324,9 +379,9 @@ extension ConversationsListViewController: UITableViewDataSource {
                 for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
         switch indexPath.section {
         case MessageType.channels.rawValue:
-            cell.configure(name: onlineConversations[indexPath.row].getName(),
-                           message: onlineConversations[indexPath.row].getLastMessage(),
-                           date: onlineConversations[indexPath.row].getLastActivity(),
+            cell.configure(name: channelsList[indexPath.row].getName(),
+                           message: channelsList[indexPath.row].getLastMessage(),
+                           date: channelsList[indexPath.row].getLastActivity(),
                            online: true,
                            hasUnreadMessages: true) // fix
             changeThemeForCell(cell: cell)
@@ -363,7 +418,7 @@ extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case MessageType.channels.rawValue:
-            return onlineConversations.count
+            return channelsList.count
         default:
             return 0
         }

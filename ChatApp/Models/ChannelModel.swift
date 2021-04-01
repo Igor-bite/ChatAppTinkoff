@@ -49,7 +49,7 @@ struct Channel: Codable {
         return lastMessage
     }
 
-    func getId() -> String? {
+    func getId() -> String {
         return identifier
     }
 

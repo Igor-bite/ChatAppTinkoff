@@ -77,4 +77,8 @@ class User: Codable {
     func userWentOffline() {
         isOnline = false
     }
+    
+    static func getUnknownUserName() -> String {
+        return "Unknown User"
+    }
 }
