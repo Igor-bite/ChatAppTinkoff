@@ -16,8 +16,7 @@ class ConversationsListViewController: UIViewController {
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
-    let coreDataStack = CoreDataStack()
-
+    let coreDataService = CoreDataService()
     override func viewDidLoad() {
         super.viewDidLoad()
         title = navControllerTitle
@@ -57,59 +56,8 @@ class ConversationsListViewController: UIViewController {
                     return name1 < name2
                 })
                 self?.tableView?.reloadData()
-                
-                guard let channelsList = self?.channelsList else { return }
-                for channel in channelsList {
-                    self?.database.addListenerForMessages(in: channel, completion: { (result) in
-                        switch result {
-                        case .success(let snap):
-                            let docs = snap.documents
-                            var messages = [Message]()
-                            docs.forEach { (doc) in
-                                let jsonData = doc.data()
-                                guard let content = jsonData["content"] as? String else { return }
-                                guard let created = jsonData["created"] as? Double else { return }
-                                guard let senderId = jsonData["senderId"] as? String else { return }
-                                guard let senderName = jsonData["senderName"] as? String else { return }
-                                let mes = Message(content: content,
-                                                  senderName: senderName,
-                                                  created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                                  senderId: senderId, identifier: doc.documentID)
-                                messages.append(mes)
-                            }
-                            self?.coreDataStack.didUpdateDataBase = { stack in
-                                stack.printDatabaseStatistice()
-                            }
-
-                            self?.coreDataStack.enableObservers()
-                            
-                            self?.coreDataStack.performSave { context in
-                                let channel_db = Channel_db(name: channel.getName(),
-                                                            identifier: channel.getId(),
-                                                            lastActivity: channel.getLastActivity(),
-                                                            lastMessage: channel.getLastMessage(),
-                                                            in: context)
-                                for message in messages {
-                                    guard let identifier = message.getIdentifier() else {
-                                        assertionFailure("There is no document id of message from firestore")
-                                        return
-                                    }
-                                    let message_db = Message_db(content: message.getContent(),
-                                                                created: message.getCreationDate(),
-                                                                identifier: identifier,
-                                                                senderId: message.getSenderId(),
-                                                                senderName: message.getSenderName(),
-                                                                in: context)
-                                    channel_db.addToMessages(message_db)
-                                }
-                            }
-                            
-                        case .failure(let error):
-                            assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
-                    }
-                    })
-                }
-                
+                                
+                self?.listenToMessages()
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -123,8 +71,7 @@ class ConversationsListViewController: UIViewController {
                 self?.channelsList = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
-                    guard let name = jsonData["name"] as? String else { return }
-                    guard let identifier = jsonData["identifier"] as? String else { return }
+                    guard let name = jsonData["name"] as? String, let identifier = jsonData["identifier"] as? String else { return }
                     let lastMessage = jsonData["lastMessage"] as? String
                     let lastActivity = jsonData["lastActivity"] as? Date
                     let channel = Channel(identifier: identifier,
@@ -143,14 +90,14 @@ class ConversationsListViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
+    
         newChannelImage?.image = UIImage(named: "pencil")
         if let height = newChannelButtonView?.bounds.height {
             newChannelButtonView?.layer.cornerRadius = height / 2
         }
         let newChannelGestureRec = UITapGestureRecognizer(target: self, action: #selector(addNewChannel))
         newChannelButtonView?.addGestureRecognizer(newChannelGestureRec)
-        guard let value = currentUser?.getThemeRawValue() else { return }
-        guard let theme = Theme(rawValue: value) else { return }
+        guard let value = currentUser?.getThemeRawValue(), let theme = Theme(rawValue: value) else { return }
         switch theme {
         case .classic:
             UIView.animate(withDuration: 1) {
@@ -166,6 +113,33 @@ class ConversationsListViewController: UIViewController {
             }
         }
         self.theme = theme
+    }
+    
+    private func listenToMessages() {
+        for channel in channelsList {
+            database.addListenerForMessages(in: channel, completion: { [weak self] (result) in
+                switch result {
+                case .success(let snap):
+                    let docs = snap.documents
+                    var messages = [Message]()
+                    docs.forEach { (doc) in
+                        let jsonData = doc.data()
+                        guard let content = jsonData["content"] as? String,
+                              let created = jsonData["created"] as? Double,
+                              let senderId = jsonData["senderId"] as? String,
+                              let senderName = jsonData["senderName"] as? String else { return }
+                        let mes = Message(content: content,
+                                          senderName: senderName,
+                                          created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                          senderId: senderId, identifier: doc.documentID)
+                        messages.append(mes)
+                    }
+                    self?.coreDataService.save(channel: channel, messages: messages)
+                case .failure(let error):
+                    assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
+                }
+            })
+        }
     }
 
     @objc func showProfile(_ sender: Any) {

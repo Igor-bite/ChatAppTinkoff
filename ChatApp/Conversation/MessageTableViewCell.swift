@@ -18,6 +18,7 @@ class MessageTableViewCell: UITableViewCell {
     var isFromMe: Bool?
     @IBOutlet var cellLeadingConstraint: NSLayoutConstraint?
     @IBOutlet var cellTrailingConstraint: NSLayoutConstraint?
+    @IBOutlet var messageTextCentering: NSLayoutConstraint?
     @IBOutlet weak var userName: UILabel?
     
     func configure(text: String, userName: String?, isFromMe: Bool) {
@@ -28,9 +29,11 @@ class MessageTableViewCell: UITableViewCell {
             if let userName = userName {
                 self.userName?.text = userName
                 self.userName?.isHidden = false
+                self.messageTextCentering?.isActive = false
             }
         } else {
             self.userName?.isHidden = true
+            self.messageTextCentering?.isActive = true
         }
     }
 
