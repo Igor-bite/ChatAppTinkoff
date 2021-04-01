@@ -96,7 +96,7 @@ class SavingManager {
     private let appDirectory: URL
     private var isFileExists = false
     private var isDirExists = false
-    
+
     init() {
         docDirectory = fileManager.documentDirectory()
         appDirectory = docDirectory.appendingPathComponent(appDirectoryName, isDirectory: true)
@@ -104,9 +104,9 @@ class SavingManager {
         isDirExists = fileManager.fileExists(atPath: appDirectory.absoluteString)
         isFileExists = fileManager.fileExists(atPath: filePath.absoluteString)
     }
-    
+
     func saveUserData(user: User) throws {
-        if (!isFileExists) {
+        if !isFileExists {
             if !isDirExists {
                 try makeAppDirectory()
             }
@@ -123,9 +123,8 @@ class SavingManager {
         } catch {
             throw FileOperationError.unspecified
         }
-        
     }
-    
+
     func getUserData() throws -> User? {
         do {
             let jsonData = try Data(contentsOf: filePath)
@@ -136,7 +135,7 @@ class SavingManager {
             throw FileOperationError.unspecified // fix
         }
     }
-    
+
     func getImageData() throws -> Data {
         do {
             let data = try Data(contentsOf: appDirectory.appendingPathComponent(userAvatarImage))
@@ -145,17 +144,17 @@ class SavingManager {
             throw FileOperationError.badReadingOperation
         }
     }
-    
+
     private func makeAppDirectory() throws {
         if !fileManager.fileExists(atPath: appDirectory.absoluteString) {
             try fileManager.createDirectory(at: appDirectory, withIntermediateDirectories: true, attributes: nil)
         }
     }
-    
+
     private func makeFile() {
         fileManager.createFile(atPath: filePath.absoluteString, contents: nil, attributes: nil)
     }
-    
+
     func saveData(data: Data) throws {
         do {
             try data.write(to: appDirectory.appendingPathComponent(userAvatarImage))

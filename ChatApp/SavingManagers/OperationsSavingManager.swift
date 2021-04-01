@@ -11,10 +11,9 @@ class OperationsSavingManager: ISavingManager {
     private let queue = OperationQueue()
     var saveUserOperation: SaveUserOperation?
     var saveImageOperation: SaveImageDataOperation?
-    
+
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void) {
         saveUserOperation = SaveUserOperation(user: user)
-        
         saveUserOperation?.completionBlock = {
             OperationQueue.main.addOperation {
                 if let result = self.saveUserOperation?.result {
@@ -27,10 +26,9 @@ class OperationsSavingManager: ISavingManager {
         guard let saveUserOperation = saveUserOperation else { return }
         queue.addOperations([saveUserOperation], waitUntilFinished: false)
     }
-    
+
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
         saveImageOperation = SaveImageDataOperation(data: data)
-        
         saveImageOperation?.completionBlock = {
             OperationQueue.main.addOperation {
                 if let result = self.saveImageOperation?.result {
@@ -43,7 +41,7 @@ class OperationsSavingManager: ISavingManager {
         guard let saveImageOperation = saveImageOperation else { return }
         queue.addOperations([saveImageOperation], waitUntilFinished: false)
     }
-    
+
     func cancel() {
         saveUserOperation?.cancel()
         saveImageOperation?.cancel()
@@ -53,15 +51,13 @@ class OperationsSavingManager: ISavingManager {
 // MARK: - AsyncOperation
 
 class AsyncOperation: Operation {
-    
     enum State: String {
         case ready, executing, finished, cancelled
-        
         fileprivate var keyPath: String {
             return "is" + rawValue.capitalized
         }
     }
-    
+
     var state = State.ready {
         willSet {
             willChangeValue(forKey: newValue.keyPath)
@@ -78,23 +74,23 @@ extension AsyncOperation {
     override var isReady: Bool {
         return super.isReady && state == .ready
     }
-    
+
     override var isExecuting: Bool {
         return state == .executing
     }
-    
+
     override var isFinished: Bool {
         return state == .finished
     }
-    
+
     override var isCancelled: Bool {
         return state == .cancelled
     }
-    
+
     override var isAsynchronous: Bool {
         return true
     }
-    
+
     override func start() {
         if isCancelled {
             state = .finished
@@ -103,7 +99,7 @@ extension AsyncOperation {
         main()
         state = .executing
     }
-    
+
     override func cancel() {
         state = .cancelled
     }
@@ -118,12 +114,12 @@ protocol IDataSaveOperation {
 class SaveUserOperation: AsyncOperation, IDataSaveOperation {
     private let user: User
     private(set) var result: FileOperationError?
-    
+
     init(user: User) {
         self.user = user
         super.init()
     }
-    
+
     override func main() {
         if isCancelled {
             state = .finished
@@ -141,18 +137,18 @@ class SaveUserOperation: AsyncOperation, IDataSaveOperation {
 class SaveImageDataOperation: AsyncOperation, IDataSaveOperation {
     private let data: Data
     private(set) var result: FileOperationError?
-    
+
     init(data: Data) {
         self.data = data
         super.init()
     }
-    
+
     override func main() {
         if isCancelled {
             state = .finished
             return
         }
-        
+
         saveUserImageData(data: data) { [weak self] (result) in
             self?.result = result
             self?.state = .finished

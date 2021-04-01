@@ -8,9 +8,9 @@
 import UIKit
 
 enum Theme: String {
-    case classic = "classic"
-    case day = "day"
-    case night = "night"
+    case classic
+    case day
+    case night
 }
 
 class ThemesViewController: UIViewController {
@@ -24,12 +24,9 @@ class ThemesViewController: UIViewController {
             }
         }
     }
-    weak var conversationsVC: ConversationsListViewController? // Если не прописать weak у delegate, то у нас появится цикл. Делегат ссылается на предущий экран, а тот на нынешний.
-//    ConversationsListViewController создает ThemesViewController, а затем устанавливает себя в качестве делегата ThemesViewController.
-    var handler: ((Theme) -> ())? // Если не прописать weak self в замыкании, то у нас будет сильная ссылка на предыдущий контроллер в этом контроллере (замыкании), а в предыдущем ссылка на замыкание
-    
+    weak var conversationsVC: ConversationsListViewController?
+    var handler: ((Theme) -> Void)?
     var isThemeChanged = false
-    
     @IBOutlet weak var classicThemeView: UIView?
     @IBOutlet weak var classicMessagesView: UIView?
     @IBOutlet weak var dayThemeView: UIView?
@@ -39,38 +36,33 @@ class ThemesViewController: UIViewController {
     @IBOutlet weak var saveButtonView: UIView?
     @IBOutlet weak var saveIndicator: UIActivityIndicatorView?
     @IBOutlet weak var isSavedImage: UIImageView?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "Settings"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(restoreSettings))
-        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                            target: self,
+                                                            action: #selector(restoreSettings))
         makeRoundCorners(for: classicMessagesView)
         makeRoundCorners(for: dayMessagesView)
         makeRoundCorners(for: nightMessagesView)
         makeRoundCorners(for: saveButtonView)
-        
         saveIndicator?.hidesWhenStopped = true
         saveIndicator?.stopAnimating()
         isSavedImage?.image = UIImage(named: "checkmark")
-        
         let gestureRecognizerClassic = UITapGestureRecognizer(target: self, action: #selector(changeToClassic))
         classicThemeView?.addGestureRecognizer(gestureRecognizerClassic)
-        
         let gestureRecognizerDay = UITapGestureRecognizer(target: self, action: #selector(changeToDay))
         dayThemeView?.addGestureRecognizer(gestureRecognizerDay)
-        
         let gestureRecognizerNight = UITapGestureRecognizer(target: self, action: #selector(changeToNight))
         nightThemeView?.addGestureRecognizer(gestureRecognizerNight)
-        
         let saveGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(saveUserTheme))
         saveButtonView?.addGestureRecognizer(saveGestureRecognizer)
-        
         guard let lastTheme = lastTheme else { return }
         selectThemeView(theme: lastTheme)
     }
-    
+
     func makeRoundCorners(for view: UIView?) {
         if let view = view {
             view.layer.cornerRadius = 14
@@ -79,7 +71,7 @@ class ThemesViewController: UIViewController {
             }
         }
     }
-    
+
     @objc func restoreSettings() {
         isThemeChanged = false
         guard let lastTheme = lastTheme else { return }
@@ -94,7 +86,7 @@ class ThemesViewController: UIViewController {
         saveUserTheme()
         navigationController?.popViewController(animated: true)
     }
-    
+
     func selectThemeView(theme: Theme) {
         deselectAllThemeViews()
         let themeView: UIView?
@@ -108,15 +100,15 @@ class ThemesViewController: UIViewController {
         }
         guard let view = themeView else { return }
         view.layer.borderWidth = 3
-        view.layer.borderColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1).cgColor
+        view.layer.borderColor = UIColor(red: 0, green: 122 / 255, blue: 1, alpha: 1).cgColor
     }
-    
+
     func deselectAllThemeViews() {
         classicMessagesView?.layer.borderWidth = 0
         dayMessagesView?.layer.borderWidth = 0
         nightMessagesView?.layer.borderWidth = 0
     }
-    
+
     @objc func changeToClassic() {
         self.view.backgroundColor = UIColor(named: "classicColor")
         navigationController?.navigationBar.barTintColor = .white
@@ -124,7 +116,7 @@ class ThemesViewController: UIViewController {
         selectThemeView(theme: .classic)
         currentTheme = .classic
     }
-    
+
     @objc func changeToDay() {
         self.view.backgroundColor = UIColor(named: "dayColor")
         navigationController?.navigationBar.barTintColor = .white
@@ -132,7 +124,7 @@ class ThemesViewController: UIViewController {
         selectThemeView(theme: .day)
         currentTheme = .day
     }
-    
+
     @objc func changeToNight() {
         self.view.backgroundColor = UIColor(named: "nightColor")
         navigationController?.navigationBar.barTintColor = .black
@@ -140,7 +132,7 @@ class ThemesViewController: UIViewController {
         selectThemeView(theme: .night)
         currentTheme = .night
     }
-    
+
     func changeDelegateTheme() {
         switch currentTheme {
         case .classic:
@@ -151,13 +143,12 @@ class ThemesViewController: UIViewController {
             conversationsVC?.changeToNight()
         }
     }
-    
+
     @objc func saveUserTheme() {
         changeDelegateTheme()
 //        handler?(currentTheme)
         let saver = GCDSavingManager()
 //        let saver = OperationsSavingManager()
-        
         saveIndicator?.startAnimating()
         isSavedImage?.isHidden = true
         saver.saveTheme(theme: currentTheme) { [weak self] (error) in
