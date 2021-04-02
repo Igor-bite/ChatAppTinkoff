@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationViewController: UIViewController {
     var channel: Channel?
@@ -20,8 +21,6 @@ class ConversationViewController: UIViewController {
     var theme: Theme = .classic
     private let database = Database()
     
-    let maxMessagesShown = 20
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -69,18 +68,15 @@ class ConversationViewController: UIViewController {
                 let docs = snap.documents
                 self?.messages = []
                 docs.forEach { (doc) in
-                    guard let curMessagesNum = self?.messages?.count, let maxMessagesShown = self?.maxMessagesShown else { return }
-                    if curMessagesNum > maxMessagesShown {
-                        return
-                    }
                     let jsonData = doc.data()
                     guard let content = jsonData["content"] as? String else { return }
-                    guard let created = jsonData["created"] as? Double else { return }
+                    guard let timestamp = jsonData["created"] as? Timestamp else { return }
+                    let created = timestamp.dateValue()
                     guard let senderId = jsonData["senderId"] as? String else { return }
                     guard let senderName = jsonData["senderName"] as? String else { return }
                     let mes = Message(content: content,
                                       senderName: senderName,
-                                      created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                      created: created,
                                       senderId: senderId, identifier: doc.documentID)
                     self?.messages?.append(mes)
                 }

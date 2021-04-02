@@ -26,7 +26,7 @@ class Database {
     }
     
     func addListenerForMessages(in channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.document(channel.getName()).collection("messages").addSnapshotListener { snapshot, error in
+        reference.document(channel.getId()).collection("messages").addSnapshotListener { snapshot, error in
             if let error = error {
                 completion(.failure(error))
             }
@@ -57,7 +57,7 @@ class Database {
     }
 
     func getMessagesFor(channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.document(channel.getName()).collection("messages").getDocuments { (snap, error) in
+        reference.document(channel.getId()).collection("messages").getDocuments { (snap, error) in
             if let error = error {
                 print(error.localizedDescription)
                 completion(.failure(error))
@@ -68,7 +68,7 @@ class Database {
     }
 
     func addMessageToChannel(message: Message, channel: Channel) {
-        let newMessageRef = reference.document(channel.getName()).collection("messages").document()
+        let newMessageRef = reference.document(channel.getId()).collection("messages").document()
         do {
             try newMessageRef.setData(message.asDictionary())
         } catch let error {
