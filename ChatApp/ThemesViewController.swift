@@ -171,7 +171,6 @@ class ThemesViewController: UIViewController {
                     return
                 }
             }
-            sleep(3)
             self?.isSavedImage?.isHidden = false
             self?.saveIndicator?.stopAnimating()
         }

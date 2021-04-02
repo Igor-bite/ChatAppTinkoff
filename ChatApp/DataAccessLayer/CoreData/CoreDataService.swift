@@ -37,8 +37,4 @@ class CoreDataService {
             }
         }
     }
-    
-    func save(channels: [Channel]) {
-        print("Not implemented")
-    }
 }

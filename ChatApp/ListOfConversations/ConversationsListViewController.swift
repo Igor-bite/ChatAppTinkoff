@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
@@ -33,6 +34,7 @@ class ConversationsListViewController: UIViewController {
                             forCellReuseIdentifier: cellIdentifier)
         tableView?.dataSource = self
         tableView?.delegate = self
+        
         database.getChannels { [weak self] (result) in
             switch result {
             case .success(let snap):
@@ -41,9 +43,10 @@ class ConversationsListViewController: UIViewController {
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
-                    guard let identifier = jsonData["identifier"] as? String else { return }
+                    let identifier = doc.documentID // jsonData["identifier"] as? String else { return }
                     let lastMessage = jsonData["lastMessage"] as? String
-                    let lastActivity = jsonData["lastActivity"] as? Date
+                    let timestamp = jsonData["lastActivity"] as? Timestamp
+                    let lastActivity = timestamp?.dateValue()
                     let channel = Channel(identifier: identifier,
                                           name: name,
                                           lastMessage: lastMessage,
@@ -56,7 +59,6 @@ class ConversationsListViewController: UIViewController {
                     return name1 < name2
                 })
                 self?.tableView?.reloadData()
-                                
                 self?.listenToMessages()
             case .failure(let error):
                 print(error.localizedDescription)
@@ -71,7 +73,8 @@ class ConversationsListViewController: UIViewController {
                 self?.channelsList = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
-                    guard let name = jsonData["name"] as? String, let identifier = jsonData["identifier"] as? String else { return }
+                    guard let name = jsonData["name"] as? String else { return }
+                    let identifier = doc.documentID
                     let lastMessage = jsonData["lastMessage"] as? String
                     let lastActivity = jsonData["lastActivity"] as? Date
                     let channel = Channel(identifier: identifier,
@@ -357,7 +360,7 @@ extension ConversationsListViewController: UITableViewDataSource {
                            message: channelsList[indexPath.row].getLastMessage(),
                            date: channelsList[indexPath.row].getLastActivity(),
                            online: true,
-                           hasUnreadMessages: true) // fix
+                           hasUnreadMessages: true)
             changeThemeForCell(cell: cell)
             cell.isUserInteractionEnabled = true
         default:

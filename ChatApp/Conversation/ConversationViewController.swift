@@ -19,6 +19,8 @@ class ConversationViewController: UIViewController {
     let cellIdentifier = String(describing: MessageTableViewCell.self)
     var theme: Theme = .classic
     private let database = Database()
+    
+    let maxMessagesShown = 20
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +69,10 @@ class ConversationViewController: UIViewController {
                 let docs = snap.documents
                 self?.messages = []
                 docs.forEach { (doc) in
+                    guard let curMessagesNum = self?.messages?.count, let maxMessagesShown = self?.maxMessagesShown else { return }
+                    if curMessagesNum > maxMessagesShown {
+                        return
+                    }
                     let jsonData = doc.data()
                     guard let content = jsonData["content"] as? String else { return }
                     guard let created = jsonData["created"] as? Double else { return }
@@ -120,7 +126,6 @@ extension ConversationViewController: UITableViewDataSource {
                 as? MessageTableViewCell else { return UITableViewCell() }
         let text = messages?[indexPath.row].getContent()
         let isFromMe = messages?[indexPath.row].getSenderId() == UIDevice.current.identifierForVendor!.uuidString
-        print(isFromMe)
         cell.configure(text: text ?? "", userName: messages?[indexPath.row].getSenderName(), isFromMe: isFromMe)
         changeThemeForCell(cell: cell)
         return cell

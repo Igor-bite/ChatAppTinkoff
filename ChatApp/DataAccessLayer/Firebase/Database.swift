@@ -41,8 +41,9 @@ class Database {
                 print(error.localizedDescription)
                 completion(.failure(error))
             }
-            guard let snap = snap else { return }
-            completion(.success(snap))
+            
+            guard let snapshot = snap else { return }
+            completion(.success(snapshot))
         }
     }
     func makeNewChannel(with name: String) {
