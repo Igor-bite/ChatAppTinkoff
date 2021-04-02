@@ -76,7 +76,8 @@ class ConversationsListViewController: UIViewController {
                     guard let name = jsonData["name"] as? String else { return }
                     let identifier = doc.documentID
                     let lastMessage = jsonData["lastMessage"] as? String
-                    let lastActivity = jsonData["lastActivity"] as? Date
+                    let timestamp = jsonData["lastActivity"] as? Timestamp
+                    let lastActivity = timestamp?.dateValue()
                     let channel = Channel(identifier: identifier,
                                           name: name,
                                           lastMessage: lastMessage,
