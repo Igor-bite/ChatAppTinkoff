@@ -17,9 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="vmD-Ur-POG">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="vmD-Ur-POG">
                                 <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h9Q-Q5-IVH">
@@ -47,7 +46,11 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ubZ-Ux-ITr" firstAttribute="bottom" secondItem="h9Q-Q5-IVH" secondAttribute="bottom" constant="20" id="41C-ZD-mhX"/>
+                            <constraint firstAttribute="bottom" secondItem="vmD-Ur-POG" secondAttribute="bottom" id="JmD-f3-pZU"/>
                             <constraint firstItem="ubZ-Ux-ITr" firstAttribute="trailing" secondItem="h9Q-Q5-IVH" secondAttribute="trailing" constant="20" id="Qk1-7w-YRO"/>
+                            <constraint firstItem="vmD-Ur-POG" firstAttribute="top" secondItem="Gpe-Ou-yKa" secondAttribute="top" id="hMa-0S-bCn"/>
+                            <constraint firstItem="vmD-Ur-POG" firstAttribute="leading" secondItem="ubZ-Ux-ITr" secondAttribute="leading" id="jhb-MN-hNu"/>
+                            <constraint firstItem="vmD-Ur-POG" firstAttribute="trailing" secondItem="ubZ-Ux-ITr" secondAttribute="trailing" id="ppR-x4-wLQ"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="0sc-Pp-ehB"/>

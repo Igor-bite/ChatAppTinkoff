@@ -113,7 +113,7 @@ class CoreDataStack {
     private func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         
-//        didUpdateDataBase?(self)
+        didUpdateDataBase?(self)
 
         if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
            inserts.count > 0 {
