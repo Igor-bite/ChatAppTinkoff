@@ -54,9 +54,15 @@ class ConversationsListViewController: UIViewController {
                     self?.channelsList.append(channel)
                 }
                 self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
-                    let name1 = ch1.getName()
-                    let name2 = ch2.getName()
-                    return name1 < name2
+                    if let date1 = ch1.getLastActivity()?.timeIntervalSince1970 {
+                        if let date2 = ch2.getLastActivity()?.timeIntervalSince1970 {
+                            return date1 > date2
+                        } else {
+                            return true
+                        }
+                    } else {
+                        return false
+                    }
                 })
                 self?.tableView?.reloadData()
                 self?.listenToMessages()
