@@ -22,6 +22,7 @@ class CoreDataService {
                                         lastActivity: channel.getLastActivity(),
                                         lastMessage: channel.getLastMessage(),
                                         in: context)
+            var messages_db = [Message_db]()
             for message in messages {
                 guard let identifier = message.getIdentifier() else {
                     assertionFailure("There is no document id of message from firestore")
@@ -33,8 +34,10 @@ class CoreDataService {
                                             senderId: message.getSenderId(),
                                             senderName: message.getSenderName(),
                                             in: context)
-                channel_db.addToMessages(message_db)
+                messages_db.append(message_db)
             }
+            
+            channel_db.addToMessages(NSSet(array: messages_db))
         }
     }
 }
