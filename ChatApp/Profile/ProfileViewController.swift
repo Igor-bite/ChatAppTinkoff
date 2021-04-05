@@ -48,11 +48,15 @@ class ProfileViewController: UIViewController {
     var isSavingCancelled = false
     private var themeChanger: ProfileThemeChanger = ProfileThemeChanger()
 
+    let gcdSaver = GCDSavingManager()
+    let operationsSaver = OperationsSavingManager()
+    let saveService = SavingService()
 // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         UIHelper.viewControl = self
         themeChanger.profileVC = self
+        saveService.profileVC = self
 
         NSLog("\nView did load : \(#function)")
         editButtonView?.layer.cornerRadius = buttonCornerRadius
@@ -91,10 +95,6 @@ class ProfileViewController: UIViewController {
         userDetailsHeightGreater?.isActive = true
     }
 // MARK: - OnTapFunctions
-
-    let gcdSaver = GCDSavingManager()
-    let operationsSaver = OperationsSavingManager()
-    let saveService = SavingService()
 
     fileprivate func saveUser(with saver: ISavingManager) {
         if isEditingUserData || isImageChanged {

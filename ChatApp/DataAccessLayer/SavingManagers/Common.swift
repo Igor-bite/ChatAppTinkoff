@@ -19,7 +19,6 @@ func saveUserData(user: User, completion: @escaping (FileOperationError?) -> Voi
     let manager = SavingManager()
     do {
         try manager.saveUserData(user: user)
-        sleep(3)
         completion(nil)
     } catch {
         completion(FileOperationError.unspecified) // fix catching specific errors

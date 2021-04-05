@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationViewController: UIViewController {
     var channel: Channel?
@@ -19,7 +20,7 @@ class ConversationViewController: UIViewController {
     let cellIdentifier = String(describing: MessageTableViewCell.self)
     var theme: Theme = .classic
     private let database = Database()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -69,21 +70,24 @@ class ConversationViewController: UIViewController {
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let content = jsonData["content"] as? String else { return }
-                    guard let created = jsonData["created"] as? Double else { return }
+                    guard let timestamp = jsonData["created"] as? Timestamp else { return }
+                    let created = timestamp.dateValue()
                     guard let senderId = jsonData["senderId"] as? String else { return }
                     guard let senderName = jsonData["senderName"] as? String else { return }
                     let mes = Message(content: content,
                                       senderName: senderName,
-                                      created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                      senderId: senderId)
+                                      created: created,
+                                      senderId: senderId, identifier: doc.documentID)
                     self?.messages?.append(mes)
                 }
                 self?.messages?.sort { (message1, message2) -> Bool in
-                    return message1.created.timeIntervalSince1970 < message2.created.timeIntervalSince1970
+                    return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
                 }
                 self?.tableView?.reloadData()
                 guard let numOfMessages = self?.messages?.count else { return }
-                self?.tableView?.scrollToRow(at: IndexPath(row: numOfMessages - 1, section: 0), at: .bottom, animated: true)
+                if numOfMessages > 0 {
+                    self?.tableView?.scrollToRow(at: IndexPath(row: numOfMessages - 1, section: 0), at: .bottom, animated: true)
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -95,8 +99,9 @@ class ConversationViewController: UIViewController {
         if text == "" {
             showAlert(with: "Message can't be empty", message: "Please, enter some text")
         }
-        if let name = user?.getName(), let text = text, let channel = channel {
-            let message = Message(content: text, userName: name)
+        if let text = text, let channel = channel {
+            
+            let message = Message(content: text, userName: user?.getName() ?? User.getUnknownUserName())
             database.addMessageToChannel(message: message, channel: channel)
             messageTextField?.text = ""
         }
@@ -115,9 +120,9 @@ extension ConversationViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier,
                                                        for: indexPath)
                 as? MessageTableViewCell else { return UITableViewCell() }
-        let text = messages?[indexPath.row].content
-        let isFromMe = messages?[indexPath.row].senderId == UIDevice.current.identifierForVendor!.uuidString
-        cell.configure(text: text ?? "", userName: messages?[indexPath.row].senderName, isFromMe: isFromMe)
+        let text = messages?[indexPath.row].getContent()
+        let isFromMe = messages?[indexPath.row].getSenderId() == UIDevice.current.identifierForVendor!.uuidString
+        cell.configure(text: text ?? "", userName: messages?[indexPath.row].getSenderName(), isFromMe: isFromMe)
         changeThemeForCell(cell: cell)
         return cell
     }

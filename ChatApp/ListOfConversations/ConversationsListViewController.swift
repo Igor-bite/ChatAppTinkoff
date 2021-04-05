@@ -6,17 +6,18 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
     var currentUser: User?
     var userImage: UIImage?
     let database: Database = Database()
-    var onlineConversations: [Channel] = []
+    var channelsList: [Channel] = []
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
-
+    let coreDataService = CoreDataService()
     override func viewDidLoad() {
         super.viewDidLoad()
         title = navControllerTitle
@@ -33,52 +34,63 @@ class ConversationsListViewController: UIViewController {
                             forCellReuseIdentifier: cellIdentifier)
         tableView?.dataSource = self
         tableView?.delegate = self
+        
         database.getChannels { [weak self] (result) in
             switch result {
             case .success(let snap):
                 let docs = snap.documents
-                self?.onlineConversations = []
+                self?.channelsList = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
-                    guard let identifier = jsonData["identifier"] as? String else { return }
+                    let identifier = doc.documentID // jsonData["identifier"] as? String else { return }
                     let lastMessage = jsonData["lastMessage"] as? String
-                    let lastActivity = jsonData["lastActivity"] as? Date
+                    let timestamp = jsonData["lastActivity"] as? Timestamp
+                    let lastActivity = timestamp?.dateValue()
                     let channel = Channel(identifier: identifier,
                                           name: name,
                                           lastMessage: lastMessage,
                                           lastActivity: lastActivity)
-                    self?.onlineConversations.append(channel)
+                    self?.channelsList.append(channel)
                 }
-                self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
-                    let name1 = ch1.getName()
-                    let name2 = ch2.getName()
-                    return name1 < name2
+                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
+                    if let date1 = ch1.getLastActivity()?.timeIntervalSince1970 {
+                        if let date2 = ch2.getLastActivity()?.timeIntervalSince1970 {
+                            return date1 > date2
+                        } else {
+                            return true
+                        }
+                    } else {
+                        return false
+                    }
                 })
                 self?.tableView?.reloadData()
+                self?.listenToMessages()
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
+        
         getUserImage()
         database.addListenerForChannels { [weak self] (result) in
             switch result {
             case .success(let snap):
                 let docs = snap.documents
-                self?.onlineConversations = []
+                self?.channelsList = []
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
-                    guard let identifier = jsonData["identifier"] as? String else { return }
+                    let identifier = doc.documentID
                     let lastMessage = jsonData["lastMessage"] as? String
-                    let lastActivity = jsonData["lastActivity"] as? Date
+                    let timestamp = jsonData["lastActivity"] as? Timestamp
+                    let lastActivity = timestamp?.dateValue()
                     let channel = Channel(identifier: identifier,
                                           name: name,
                                           lastMessage: lastMessage,
                                           lastActivity: lastActivity)
-                    self?.onlineConversations.append(channel)
+                    self?.channelsList.append(channel)
                 }
-                self?.onlineConversations.sort(by: { (ch1, ch2) -> Bool in
+                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
                     let name1 = ch1.getName()
                     let name2 = ch2.getName()
                     return name1 < name2
@@ -88,14 +100,14 @@ class ConversationsListViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
+    
         newChannelImage?.image = UIImage(named: "pencil")
         if let height = newChannelButtonView?.bounds.height {
             newChannelButtonView?.layer.cornerRadius = height / 2
         }
         let newChannelGestureRec = UITapGestureRecognizer(target: self, action: #selector(addNewChannel))
         newChannelButtonView?.addGestureRecognizer(newChannelGestureRec)
-        guard let value = currentUser?.getThemeRawValue() else { return }
-        guard let theme = Theme(rawValue: value) else { return }
+        guard let value = currentUser?.getThemeRawValue(), let theme = Theme(rawValue: value) else { return }
         switch theme {
         case .classic:
             UIView.animate(withDuration: 1) {
@@ -111,6 +123,33 @@ class ConversationsListViewController: UIViewController {
             }
         }
         self.theme = theme
+    }
+    
+    private func listenToMessages() {
+        for channel in channelsList {
+            database.addListenerForMessages(in: channel, completion: { [weak self] (result) in
+                switch result {
+                case .success(let snap):
+                    let docs = snap.documents
+                    var messages = [Message]()
+                    docs.forEach { (doc) in
+                        let jsonData = doc.data()
+                        guard let content = jsonData["content"] as? String,
+                              let created = jsonData["created"] as? Double,
+                              let senderId = jsonData["senderId"] as? String,
+                              let senderName = jsonData["senderName"] as? String else { return }
+                        let mes = Message(content: content,
+                                          senderName: senderName,
+                                          created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                          senderId: senderId, identifier: doc.documentID)
+                        messages.append(mes)
+                    }
+                    self?.coreDataService.save(channel: channel, messages: messages)
+                case .failure(let error):
+                    assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
+                }
+            })
+        }
     }
 
     @objc func showProfile(_ sender: Any) {
@@ -271,10 +310,10 @@ enum MessageType: Int, CaseIterable {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == MessageType.channels.rawValue {
-            let conversationVC = getConversationViewController(for: onlineConversations[indexPath.row])
+            let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
             conversationVC.theme = theme
             self.database.getMessagesFor(
-                channel: onlineConversations[indexPath.row],
+                channel: channelsList[indexPath.row],
                 completion: { [weak conversationVC, weak self] (res) in
                     switch res {
                     case .success(let snap):
@@ -289,11 +328,11 @@ extension ConversationsListViewController: UITableViewDelegate {
                             let mes = Message(content: content,
                                               senderName: senderName,
                                               created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                              senderId: senderId)
+                                              senderId: senderId, identifier: doc.documentID)
                             messages.append(mes)
                         }
                         messages.sort { (message1, message2) -> Bool in
-                            return message1.created.timeIntervalSince1970 < message2.created.timeIntervalSince1970
+                            return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
                         }
                         conversationVC?.user = self?.currentUser
                         conversationVC?.messages = messages
@@ -324,11 +363,11 @@ extension ConversationsListViewController: UITableViewDataSource {
                 for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
         switch indexPath.section {
         case MessageType.channels.rawValue:
-            cell.configure(name: onlineConversations[indexPath.row].getName(),
-                           message: onlineConversations[indexPath.row].getLastMessage(),
-                           date: onlineConversations[indexPath.row].getLastActivity(),
+            cell.configure(name: channelsList[indexPath.row].getName(),
+                           message: channelsList[indexPath.row].getLastMessage(),
+                           date: channelsList[indexPath.row].getLastActivity(),
                            online: true,
-                           hasUnreadMessages: true) // fix
+                           hasUnreadMessages: true)
             changeThemeForCell(cell: cell)
             cell.isUserInteractionEnabled = true
         default:
@@ -363,7 +402,7 @@ extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case MessageType.channels.rawValue:
-            return onlineConversations.count
+            return channelsList.count
         default:
             return 0
         }
