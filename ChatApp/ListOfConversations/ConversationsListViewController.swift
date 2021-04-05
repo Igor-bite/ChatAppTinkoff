@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
@@ -17,9 +18,11 @@ class ConversationsListViewController: UIViewController {
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
-    let coreDataService = CoreDataService()
+    var coreDataService: CoreDataService?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        coreDataService = CoreDataService(delegate: self)
         title = navControllerTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
                                                             target: self,
@@ -32,7 +35,7 @@ class ConversationsListViewController: UIViewController {
         tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
                                   bundle: nil),
                             forCellReuseIdentifier: cellIdentifier)
-        tableView?.dataSource = self
+//        tableView?.dataSource = self
         tableView?.delegate = self
         
         database.getChannels { [weak self] (result) in
@@ -123,6 +126,10 @@ class ConversationsListViewController: UIViewController {
             }
         }
         self.theme = theme
+        
+        self.tableView?.dataSource = self.tableViewDataSource
+        coreDataService?.fetchChannels()
+        
     }
     
     private func listenToMessages() {
@@ -144,7 +151,7 @@ class ConversationsListViewController: UIViewController {
                                           senderId: senderId, identifier: doc.documentID)
                         messages.append(mes)
                     }
-                    self?.coreDataService.save(channel: channel, messages: messages)
+                    self?.coreDataService?.save(channel: channel, messages: messages)
                 case .failure(let error):
                     assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
                 }
@@ -183,6 +190,10 @@ class ConversationsListViewController: UIViewController {
 
     private let cellIdentifier = String(describing: ConversationTableViewCell.self)
     @IBOutlet weak var tableView: UITableView?
+    
+    private lazy var tableViewDataSource: UITableViewDataSource? = {
+        coreDataService?.getTableViewDataSource(cellIdentifier: self.cellIdentifier)
+    }()
 
     func changeToClassic() {
         theme = .classic
@@ -310,6 +321,7 @@ enum MessageType: Int, CaseIterable {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == MessageType.channels.rawValue {
+//            let curCell = tableView.cellForRow(at: indexPath) as? ConversationTableViewCell
             let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
             conversationVC.theme = theme
             self.database.getMessagesFor(
@@ -356,69 +368,93 @@ extension ConversationsListViewController: UITableViewDelegate {
     }
 }
 
-extension ConversationsListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: cellIdentifier,
-                for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
-        switch indexPath.section {
-        case MessageType.channels.rawValue:
-            cell.configure(name: channelsList[indexPath.row].getName(),
-                           message: channelsList[indexPath.row].getLastMessage(),
-                           date: channelsList[indexPath.row].getLastActivity(),
-                           online: true,
-                           hasUnreadMessages: true)
-            changeThemeForCell(cell: cell)
-            cell.isUserInteractionEnabled = true
+//extension ConversationsListViewController: UITableViewDataSource {
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        guard let cell = tableView.dequeueReusableCell(
+//                withIdentifier: cellIdentifier,
+//                for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
+//        switch indexPath.section {
+//        case MessageType.channels.rawValue:
+//            cell.configure(name: channelsList[indexPath.row].getName(),
+//                           message: channelsList[indexPath.row].getLastMessage(),
+//                           date: channelsList[indexPath.row].getLastActivity(),
+//                           online: true,
+//                           hasUnreadMessages: true)
+//            changeThemeForCell(cell: cell)
+//            cell.isUserInteractionEnabled = true
+//        default:
+//            break
+//        }
+//        return cell
+//    }
+
+//    func changeThemeForCell(cell: ConversationTableViewCell) {
+//        switch theme {
+//        case .classic:
+//            cell.backgroundColor = .white
+//            let color = UIColor.black
+//            cell.nameLabel?.textColor = color
+//            cell.lastMessageLabel?.textColor = color
+//            cell.dateLabel?.textColor = color
+//        case .day:
+//            cell.backgroundColor = .white
+//            let color = UIColor.black
+//            cell.nameLabel?.textColor = color
+//            cell.lastMessageLabel?.textColor = color
+//            cell.dateLabel?.textColor = color
+//        case .night:
+//            cell.backgroundColor = .black
+//            let color = UIColor.white
+//            cell.nameLabel?.textColor = color
+//            cell.lastMessageLabel?.textColor = color
+//            cell.dateLabel?.textColor = color
+//        }
+//    }
+
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        switch section {
+//        case MessageType.channels.rawValue:
+//            return channelsList.count
+//        default:
+//            return 0
+//        }
+//        guard let sections = self.coreDataService?.sections else {
+//            fatalError("No sections in fetchedResultsController")
+//        }
+//        let sectionInfo = sections[section]
+//        return sectionInfo.numberOfObjects
+//    }
+
+    
+//}
+
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            guard let newIndexPath = newIndexPath else { return }
+            tableView?.insertRows(at: [newIndexPath], with: .automatic)
+        case .move:
+            guard let indexPath = indexPath, let newIndexPath = newIndexPath else { return }
+            tableView?.deleteRows(at: [indexPath], with: .automatic)
+            tableView?.insertRows(at: [newIndexPath], with: .automatic)
+        case .update:
+            guard let indexPath = indexPath else { return }
+            tableView?.reloadRows(at: [indexPath], with: .automatic)
+        case .delete:
+            guard let indexPath = indexPath else { return }
+            tableView?.deleteRows(at: [indexPath], with: .automatic)
         default:
-            break
-        }
-        return cell
-    }
-
-    func changeThemeForCell(cell: ConversationTableViewCell) {
-        switch theme {
-        case .classic:
-            cell.backgroundColor = .white
-            let color = UIColor.black
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        case .day:
-            cell.backgroundColor = .white
-            let color = UIColor.black
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        case .night:
-            cell.backgroundColor = .black
-            let color = UIColor.white
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
+            print("Unsupported type")
         }
     }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case MessageType.channels.rawValue:
-            return channelsList.count
-        default:
-            return 0
-        }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView?.beginUpdates()
     }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case MessageType.channels.rawValue:
-            return "Channels"
-        default:
-            return ""
-        }
-    }
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return MessageType.allCases.count
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView?.endUpdates()
     }
 }
 
