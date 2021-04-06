@@ -91,4 +91,10 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
                                              lastActivity: channel.lastActivity))
         }
     }
+    
+    func getChannel(at indexPath: IndexPath) -> Channel {
+        let channel_db = fetchedResultsController.object(at: indexPath)
+        guard let id = channel_db.identifier, let name = channel_db.name else { fatalError("Channel without identifier or name") }
+        return Channel(identifier: id, name: name, lastMessage: channel_db.lastMessage, lastActivity: channel_db.lastActivity)
+    }
 }

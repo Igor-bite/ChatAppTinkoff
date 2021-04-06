@@ -230,10 +230,13 @@ class ConversationsListViewController: UIViewController {
 
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
+        let dataSource = self.tableView?.dataSource as? ChannelsTableViewDataSource
+        let selectedChannel = dataSource?.getChannel(at: indexPath)
+        guard let channel = selectedChannel else { return }
+        let conversationVC = getConversationViewController(for: channel)
         conversationVC.theme = theme
         self.database.getMessagesFor(
-            channel: channelsList[indexPath.row],
+            channel: channel,
             completion: { [weak conversationVC, weak self] (res) in
                 switch res {
                 case .success(let snap):

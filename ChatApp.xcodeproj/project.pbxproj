@@ -107,6 +107,16 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A50AA553261CFF0C0078295C /* TableView */ = {
+			isa = PBXGroup;
+			children = (
+				A53DC608261BC8BD007329DD /* ChannelsTableViewDataSource.swift */,
+				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
+				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
+			);
+			path = TableView;
+			sourceTree = "<group>";
+		};
 		A51FF244260D0887004BAB8E /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -180,9 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */,
-				A53DC608261BC8BD007329DD /* ChannelsTableViewDataSource.swift */,
-				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
-				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
+				A50AA553261CFF0C0078295C /* TableView */,
 			);
 			path = ListOfConversations;
 			sourceTree = "<group>";

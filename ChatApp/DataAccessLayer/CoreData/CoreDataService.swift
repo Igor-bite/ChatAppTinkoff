@@ -34,6 +34,11 @@ class CoreDataService {
                                         lastMessage: channel.getLastMessage(),
                                         in: context)
             var messages_db = [Message_db]()
+            do {
+                try context.obtainPermanentIDs(for: [channel_db])
+            } catch {
+                print(error.localizedDescription)
+            }
             guard let messages = messages else { return }
             for message in messages {
                 guard let identifier = message.getIdentifier() else {
@@ -61,15 +66,17 @@ class CoreDataService {
         if let object = object {
             if object.count == 1 {
                 context.delete(object[0])
+            } else if object.count == 0 {
+                fatalError("There no channels with id: \(channel.getId()) and name \(channel.getName())")
             } else {
                 fatalError("There more than 1 channels with id: \(channel.getId()) and name \(channel.getName())")
             }
         } else {
-            print("There is no channel with name \(channel.getName())")
+            print("There is no channel with name \(channel.getName()) and id \(channel.getId())")
         }
     }
     
-    func delete(message: Message) {
+    func delete(message: Message, in channel: Channel) {
         let fetchRequest: NSFetchRequest<Message_db> = Message_db.fetchRequest()
         guard let message_identifier = message.getIdentifier() else { return }
         fetchRequest.predicate = NSPredicate(format: "identifier == %@", message_identifier)
@@ -109,7 +116,7 @@ class CoreDataService {
         
         let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
         
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(Channel_db.lastActivity), ascending: true)
         request.sortDescriptors = [sortDescriptor]
         
         let frc = NSFetchedResultsController(fetchRequest: request,

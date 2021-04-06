@@ -104,12 +104,21 @@ class Database {
     }
     
     func delete(channel: Channel) {
-        coreDataService?.delete(channel: channel)
-        // ToDo: update firebase
+        reference.document(channel.getId()).delete { (error) in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+        }
     }
     
-    func delete(message: Message) {
-        coreDataService?.delete(message: message)
-        // ToDo: update firebase
+    func delete(message: Message, in channel: Channel) {
+        guard let id = message.getIdentifier() else { return }
+        reference.document(channel.getId()).collection("messages").document(id).delete { (error) in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+        }
     }
 }
