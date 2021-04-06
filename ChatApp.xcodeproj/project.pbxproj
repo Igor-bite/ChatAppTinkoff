@@ -180,9 +180,9 @@
 			isa = PBXGroup;
 			children = (
 				A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */,
+				A53DC608261BC8BD007329DD /* TableViewDataSource.swift */,
 				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
 				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
-				A53DC608261BC8BD007329DD /* TableViewDataSource.swift */,
 			);
 			path = ListOfConversations;
 			sourceTree = "<group>";

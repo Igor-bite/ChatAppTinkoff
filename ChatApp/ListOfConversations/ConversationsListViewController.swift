@@ -19,6 +19,7 @@ class ConversationsListViewController: UIViewController {
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
     var coreDataService: CoreDataService?
+    var tableViewDataSource: UITableViewDataSource?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +36,8 @@ class ConversationsListViewController: UIViewController {
         tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
                                   bundle: nil),
                             forCellReuseIdentifier: cellIdentifier)
-//        tableView?.dataSource = self
+        self.tableViewDataSource = coreDataService?.getTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme)
+        tableView?.dataSource = self.tableViewDataSource
         tableView?.delegate = self
         
         database.getChannels { [weak self] (result) in
@@ -46,7 +48,7 @@ class ConversationsListViewController: UIViewController {
                 docs.forEach { (doc) in
                     let jsonData = doc.data()
                     guard let name = jsonData["name"] as? String else { return }
-                    let identifier = doc.documentID // jsonData["identifier"] as? String else { return }
+                    let identifier = doc.documentID
                     let lastMessage = jsonData["lastMessage"] as? String
                     let timestamp = jsonData["lastActivity"] as? Timestamp
                     let lastActivity = timestamp?.dateValue()
@@ -67,7 +69,7 @@ class ConversationsListViewController: UIViewController {
                         return false
                     }
                 })
-                self?.tableView?.reloadData()
+//                self?.tableView?.reloadData()
                 self?.listenToMessages()
             case .failure(let error):
                 print(error.localizedDescription)
@@ -98,7 +100,7 @@ class ConversationsListViewController: UIViewController {
                     let name2 = ch2.getName()
                     return name1 < name2
                 })
-                self?.tableView?.reloadData()
+//                self?.tableView?.reloadData()
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -126,10 +128,6 @@ class ConversationsListViewController: UIViewController {
             }
         }
         self.theme = theme
-        
-        self.tableView?.dataSource = self.tableViewDataSource
-        coreDataService?.fetchChannels()
-        
     }
     
     private func listenToMessages() {
@@ -190,10 +188,6 @@ class ConversationsListViewController: UIViewController {
 
     private let cellIdentifier = String(describing: ConversationTableViewCell.self)
     @IBOutlet weak var tableView: UITableView?
-    
-    private lazy var tableViewDataSource: UITableViewDataSource? = {
-        coreDataService?.getTableViewDataSource(cellIdentifier: self.cellIdentifier)
-    }()
 
     func changeToClassic() {
         theme = .classic
@@ -320,8 +314,8 @@ enum MessageType: Int, CaseIterable {
 
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(#function)
         if indexPath.section == MessageType.channels.rawValue {
-//            let curCell = tableView.cellForRow(at: indexPath) as? ConversationTableViewCell
             let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
             conversationVC.theme = theme
             self.database.getMessagesFor(
@@ -368,68 +362,12 @@ extension ConversationsListViewController: UITableViewDelegate {
     }
 }
 
-//extension ConversationsListViewController: UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = tableView.dequeueReusableCell(
-//                withIdentifier: cellIdentifier,
-//                for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
-//        switch indexPath.section {
-//        case MessageType.channels.rawValue:
-//            cell.configure(name: channelsList[indexPath.row].getName(),
-//                           message: channelsList[indexPath.row].getLastMessage(),
-//                           date: channelsList[indexPath.row].getLastActivity(),
-//                           online: true,
-//                           hasUnreadMessages: true)
-//            changeThemeForCell(cell: cell)
-//            cell.isUserInteractionEnabled = true
-//        default:
-//            break
-//        }
-//        return cell
-//    }
-
-//    func changeThemeForCell(cell: ConversationTableViewCell) {
-//        switch theme {
-//        case .classic:
-//            cell.backgroundColor = .white
-//            let color = UIColor.black
-//            cell.nameLabel?.textColor = color
-//            cell.lastMessageLabel?.textColor = color
-//            cell.dateLabel?.textColor = color
-//        case .day:
-//            cell.backgroundColor = .white
-//            let color = UIColor.black
-//            cell.nameLabel?.textColor = color
-//            cell.lastMessageLabel?.textColor = color
-//            cell.dateLabel?.textColor = color
-//        case .night:
-//            cell.backgroundColor = .black
-//            let color = UIColor.white
-//            cell.nameLabel?.textColor = color
-//            cell.lastMessageLabel?.textColor = color
-//            cell.dateLabel?.textColor = color
-//        }
-//    }
-
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        switch section {
-//        case MessageType.channels.rawValue:
-//            return channelsList.count
-//        default:
-//            return 0
-//        }
-//        guard let sections = self.coreDataService?.sections else {
-//            fatalError("No sections in fetchedResultsController")
-//        }
-//        let sectionInfo = sections[section]
-//        return sectionInfo.numberOfObjects
-//    }
-
-    
-//}
-
 extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
         switch type {
         case .insert:
             guard let newIndexPath = newIndexPath else { return }
@@ -447,14 +385,17 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         default:
             print("Unsupported type")
         }
+        print(#function)
     }
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView?.beginUpdates()
+        print(#function)
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView?.endUpdates()
+        print(#function)
     }
 }
 

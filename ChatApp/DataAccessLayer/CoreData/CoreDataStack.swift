@@ -111,24 +111,24 @@ class CoreDataStack {
     
     @objc
     private func managedObjectContextObjectsDidChange(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
+//        guard let userInfo = notification.userInfo else { return }
         
-        didUpdateDataBase?(self)
+//        didUpdateDataBase?(self)
 
-        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
-           inserts.count > 0 {
-            print("Добавлено объектов: ", inserts.count)
-        }
-
-        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>,
-           updates.count > 0 {
-            print("Обновлено объектов: ", updates.count)
-        }
-
-        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>,
-           deletes.count > 0 {
-            print("Удалено объектов: ", deletes.count)
-        }
+//        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
+//           inserts.count > 0 {
+//            print("Добавлено объектов: ", inserts.count)
+//        }
+//
+//        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>,
+//           updates.count > 0 {
+//            print("Обновлено объектов: ", updates.count)
+//        }
+//
+//        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>,
+//           deletes.count > 0 {
+//            print("Удалено объектов: ", deletes.count)
+//        }
     }
 
     // MARK: - Core Data Logs

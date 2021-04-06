@@ -10,6 +10,7 @@ import CoreData
 
 public enum CoreDataError: Error {
     case fetchProblem
+    case saveProblem
 }
 
 class CoreDataService {
@@ -51,28 +52,25 @@ class CoreDataService {
         }
     }
     
-    func fetchChannels() {
-        CoreDataService.coreDataStack.performSave { (context) in
-            let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
-            request.returnsObjectsAsFaults = true
-            let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-            request.sortDescriptors = [sortDescriptor]
-            let frc = NSFetchedResultsController(fetchRequest: request,
-                                                 managedObjectContext: CoreDataService.coreDataStack.mainContext, // is it Ok to use main context here????
-                                                 sectionNameKeyPath: nil,
-                                                 cacheName: nil)
-            frc.delegate = self.delegate
-            try? frc.performFetch()
-            _ = frc.fetchedObjects
-//                let channels = try channels_db?.map({ (channel_db) -> Channel in
-//                    guard let name = channel_db.name, let id = channel_db.identifier else { throw CoreDataError.fetchProblem }
-//                    return Channel(identifier: id, name: name, lastMessage: channel_db.lastMessage, lastActivity: channel_db.lastActivity)
-//                })
-//                guard let channelsUnwrapped = channels else { throw CoreDataError.fetchProblem }
-        }
+    func getChannels() -> [Channel]? {
+        let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
+        request.returnsObjectsAsFaults = true
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        request.sortDescriptors = [sortDescriptor]
+        let frc = NSFetchedResultsController(fetchRequest: request,
+                                             managedObjectContext: CoreDataService.coreDataStack.mainContext,
+                                             sectionNameKeyPath: nil,
+                                             cacheName: nil)
+        try? frc.performFetch()
+        let channels_db = frc.fetchedObjects
+        let channels = try? channels_db?.map({ (channel_db) -> Channel in
+            guard let name = channel_db.name, let id = channel_db.identifier else { throw CoreDataError.fetchProblem }
+            return Channel(identifier: id, name: name, lastMessage: channel_db.lastMessage, lastActivity: channel_db.lastActivity)
+        })
+        return channels
     }
-    
-    func getTableViewDataSource(cellIdentifier: String) -> UITableViewDataSource {
+
+    func getTableViewDataSource(cellIdentifier: String, theme: Theme) -> UITableViewDataSource {
         let context = CoreDataService.coreDataStack.mainContext
         
         let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
@@ -81,11 +79,10 @@ class CoreDataService {
         request.sortDescriptors = [sortDescriptor]
         
         let frc = NSFetchedResultsController(fetchRequest: request,
-                                             managedObjectContext: context, // is it Ok to use main context here????
+                                             managedObjectContext: context,
                                              sectionNameKeyPath: nil,
                                              cacheName: nil)
-        
         frc.delegate = self.delegate
-        return TableViewDataSource(fetchedResultsController: frc, cellId: cellIdentifier)
+        return TableViewDataSource(fetchedResultsController: frc, cellId: cellIdentifier, theme: theme)
     }
 }

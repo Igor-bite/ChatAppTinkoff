@@ -9,14 +9,23 @@ import UIKit
 import CoreData
 
 class TableViewDataSource: NSObject, UITableViewDataSource {
-    let fetchedResultsController: NSFetchedResultsController<Channel_db>
+    private let fetchedResultsController: NSFetchedResultsController<Channel_db>
     
     private let cellIdentifier: String
+    private var theme: Theme
     
-    init(fetchedResultsController: NSFetchedResultsController<Channel_db>, cellId: String) {
+    init(fetchedResultsController: NSFetchedResultsController<Channel_db>, cellId: String, theme: Theme) {
         cellIdentifier = cellId
+        self.theme = theme
         self.fetchedResultsController = fetchedResultsController
-        try? self.fetchedResultsController.performFetch()
+        self.fetchedResultsController.fetchRequest.fetchBatchSize = 16 // ToDo: calculations
+        do {
+            try self.fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Fetching channels crashed")
+        }
+        
+        print(#function)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -24,6 +33,7 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
             fatalError("No sections in frc")
         }
         let sectionInfo = sections[section]
+        print(#function)
         return sectionInfo.numberOfObjects
     }
     
@@ -32,23 +42,17 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
                 withIdentifier: cellIdentifier,
                 for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
         let channel = self.fetchedResultsController.object(at: indexPath)
-        switch indexPath.section {
-        case MessageType.channels.rawValue:
-            cell.configure(name: channel.name ?? "",
-                           message: channel.lastMessage,
-                           date: channel.lastActivity,
-                           online: true,
-                           hasUnreadMessages: true)
-            changeThemeForCell(cell: cell)
-            cell.isUserInteractionEnabled = true
-        default:
-            break
-        }
+        cell.configure(name: channel.name ?? "no name",
+                       message: channel.lastMessage,
+                       date: channel.lastActivity,
+                       online: true,
+                       hasUnreadMessages: true)
+        changeThemeForCell(cell: cell)
+        print(#function)
         return cell
     }
     
     private func changeThemeForCell(cell: ConversationTableViewCell) {
-        let theme = Theme.classic // ToDo: change
         switch theme {
         case .classic:
             cell.backgroundColor = .white
@@ -69,18 +73,12 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
             cell.lastMessageLabel?.textColor = color
             cell.dateLabel?.textColor = color
         }
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case MessageType.channels.rawValue:
-            return "Channels"
-        default:
-            return ""
-        }
+        print(#function)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return MessageType.allCases.count
+        guard let numOfSections = self.fetchedResultsController.sections?.count else { return 0 }
+        print(#function)
+        return numOfSections
     }
 }
