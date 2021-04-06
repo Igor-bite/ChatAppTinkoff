@@ -14,14 +14,41 @@ import UIKit
 class Database {
     lazy var dbInstance = Firestore.firestore()
     lazy var reference = dbInstance.collection("channels")
+    weak var coreDataService: CoreDataService?
 
-    func addListenerForChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
+    func addListenerForChannels(completion: @escaping (Error?) -> Void) {
         reference.addSnapshotListener { snapshot, error in
             if let error = error {
-                completion(.failure(error))
+                completion(error)
             }
             guard let snap = snapshot else { return }
-            completion(.success(snap))
+            let changes = snap.documentChanges
+            
+            changes.forEach { (change) in
+                let jsonData = change.document.data()
+                guard let name = jsonData["name"] as? String else { return }
+                let identifier = change.document.documentID
+                let lastMessage = jsonData["lastMessage"] as? String
+                let timestamp = jsonData["lastActivity"] as? Timestamp
+                let lastActivity = timestamp?.dateValue()
+                let channel = Channel(identifier: identifier,
+                                      name: name,
+                                      lastMessage: lastMessage,
+                                      lastActivity: lastActivity)
+                // ToDo: correct deleting only messages not whole channels
+                switch change.type {
+                case .added:
+                    self.coreDataService?.save(channel: channel)
+                case .modified:
+                    self.coreDataService?.save(channel: channel)
+                case .removed:
+                    self.coreDataService?.delete(channel: channel)
+                default:
+                    print("Unsupported type")
+                }
+            }
+            
+            completion(nil) // ToDo: correct!
         }
     }
     
@@ -74,5 +101,15 @@ class Database {
         } catch let error {
             print("Error writing to Firestore: \(error)")
         }
+    }
+    
+    func delete(channel: Channel) {
+        coreDataService?.delete(channel: channel)
+        // ToDo: update firebase
+    }
+    
+    func delete(message: Message) {
+        coreDataService?.delete(message: message)
+        // ToDo: update firebase
     }
 }

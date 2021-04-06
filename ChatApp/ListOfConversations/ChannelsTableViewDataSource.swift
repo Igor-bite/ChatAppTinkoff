@@ -8,13 +8,14 @@
 import UIKit
 import CoreData
 
-class TableViewDataSource: NSObject, UITableViewDataSource {
+class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
     private let fetchedResultsController: NSFetchedResultsController<Channel_db>
-    
     private let cellIdentifier: String
     private var theme: Theme
+    private let database = Database()
     
-    init(fetchedResultsController: NSFetchedResultsController<Channel_db>, cellId: String, theme: Theme) {
+    init(fetchedResultsController: NSFetchedResultsController<Channel_db>, coreDataService: CoreDataService, cellId: String, theme: Theme) {
+        database.coreDataService = coreDataService
         cellIdentifier = cellId
         self.theme = theme
         self.fetchedResultsController = fetchedResultsController
@@ -24,8 +25,6 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
         } catch {
             fatalError("Fetching channels crashed")
         }
-        
-        print(#function)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -33,7 +32,6 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
             fatalError("No sections in frc")
         }
         let sectionInfo = sections[section]
-        print(#function)
         return sectionInfo.numberOfObjects
     }
     
@@ -48,7 +46,6 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
                        online: true,
                        hasUnreadMessages: true)
         changeThemeForCell(cell: cell)
-        print(#function)
         return cell
     }
     
@@ -73,12 +70,25 @@ class TableViewDataSource: NSObject, UITableViewDataSource {
             cell.lastMessageLabel?.textColor = color
             cell.dateLabel?.textColor = color
         }
-        print(#function)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
         guard let numOfSections = self.fetchedResultsController.sections?.count else { return 0 }
-        print(#function)
         return numOfSections
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let channel = self.fetchedResultsController.object(at: indexPath)
+            guard let id = channel.identifier, let name = channel.name else { return }
+            database.delete(channel: Channel(identifier: id,
+                                             name: name,
+                                             lastMessage: channel.lastMessage,
+                                             lastActivity: channel.lastActivity))
+        }
     }
 }

@@ -24,6 +24,7 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         coreDataService = CoreDataService(delegate: self)
+        database.coreDataService = coreDataService
         title = navControllerTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
                                                             target: self,
@@ -33,79 +34,17 @@ class ConversationsListViewController: UIViewController {
                                                            target: self,
                                                            action: #selector(showThemePicker))
         navigationItem.leftBarButtonItem?.tintColor = .darkGray
-        tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
-                                  bundle: nil),
-                            forCellReuseIdentifier: cellIdentifier)
-        self.tableViewDataSource = coreDataService?.getTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme)
-        tableView?.dataSource = self.tableViewDataSource
-        tableView?.delegate = self
         
-        database.getChannels { [weak self] (result) in
-            switch result {
-            case .success(let snap):
-                let docs = snap.documents
-                self?.channelsList = []
-                docs.forEach { (doc) in
-                    let jsonData = doc.data()
-                    guard let name = jsonData["name"] as? String else { return }
-                    let identifier = doc.documentID
-                    let lastMessage = jsonData["lastMessage"] as? String
-                    let timestamp = jsonData["lastActivity"] as? Timestamp
-                    let lastActivity = timestamp?.dateValue()
-                    let channel = Channel(identifier: identifier,
-                                          name: name,
-                                          lastMessage: lastMessage,
-                                          lastActivity: lastActivity)
-                    self?.channelsList.append(channel)
-                }
-                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
-                    if let date1 = ch1.getLastActivity()?.timeIntervalSince1970 {
-                        if let date2 = ch2.getLastActivity()?.timeIntervalSince1970 {
-                            return date1 > date2
-                        } else {
-                            return true
-                        }
-                    } else {
-                        return false
-                    }
-                })
-//                self?.tableView?.reloadData()
-                self?.listenToMessages()
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+        configureTableView()
         
         getUserImage()
-        database.addListenerForChannels { [weak self] (result) in
-            switch result {
-            case .success(let snap):
-                let docs = snap.documents
-                self?.channelsList = []
-                docs.forEach { (doc) in
-                    let jsonData = doc.data()
-                    guard let name = jsonData["name"] as? String else { return }
-                    let identifier = doc.documentID
-                    let lastMessage = jsonData["lastMessage"] as? String
-                    let timestamp = jsonData["lastActivity"] as? Timestamp
-                    let lastActivity = timestamp?.dateValue()
-                    let channel = Channel(identifier: identifier,
-                                          name: name,
-                                          lastMessage: lastMessage,
-                                          lastActivity: lastActivity)
-                    self?.channelsList.append(channel)
-                }
-                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
-                    let name1 = ch1.getName()
-                    let name2 = ch2.getName()
-                    return name1 < name2
-                })
-//                self?.tableView?.reloadData()
-            case .failure(let error):
-                print(error.localizedDescription)
+        
+        database.addListenerForChannels { (error) in
+            if let error = error {
+                print(error.localizedDescription) // ToDo: correctly handle errors
             }
         }
-    
+        
         newChannelImage?.image = UIImage(named: "pencil")
         if let height = newChannelButtonView?.bounds.height {
             newChannelButtonView?.layer.cornerRadius = height / 2
@@ -130,33 +69,15 @@ class ConversationsListViewController: UIViewController {
         self.theme = theme
     }
     
-    private func listenToMessages() {
-        for channel in channelsList {
-            database.addListenerForMessages(in: channel, completion: { [weak self] (result) in
-                switch result {
-                case .success(let snap):
-                    let docs = snap.documents
-                    var messages = [Message]()
-                    docs.forEach { (doc) in
-                        let jsonData = doc.data()
-                        guard let content = jsonData["content"] as? String,
-                              let created = jsonData["created"] as? Double,
-                              let senderId = jsonData["senderId"] as? String,
-                              let senderName = jsonData["senderName"] as? String else { return }
-                        let mes = Message(content: content,
-                                          senderName: senderName,
-                                          created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                          senderId: senderId, identifier: doc.documentID)
-                        messages.append(mes)
-                    }
-                    self?.coreDataService?.save(channel: channel, messages: messages)
-                case .failure(let error):
-                    assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
-                }
-            })
-        }
+    private func configureTableView() {
+        tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
+                                  bundle: nil),
+                            forCellReuseIdentifier: cellIdentifier)
+        self.tableViewDataSource = coreDataService?.getChannelsTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme)
+        tableView?.dataSource = self.tableViewDataSource
+        tableView?.delegate = self
     }
-
+    
     @objc func showProfile(_ sender: Any) {
         let profileVC: ProfileViewController = self.storyboard?
             .instantiateViewController(withIdentifier: "ProfileVC") as? ProfileViewController ?? ProfileViewController()
@@ -271,7 +192,6 @@ class ConversationsListViewController: UIViewController {
     func getUserImage() {
         let saver = GCDSavingManager()
 //        let saver = OperationsSavingManager()
-
         saver.getImage { [weak self] (data, error) in
             if let data = data {
                 self?.userImage = UIImage(data: data)
@@ -308,48 +228,41 @@ class ConversationsListViewController: UIViewController {
     }
 }
 
-enum MessageType: Int, CaseIterable {
-    case channels = 0
-}
-
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(#function)
-        if indexPath.section == MessageType.channels.rawValue {
-            let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
-            conversationVC.theme = theme
-            self.database.getMessagesFor(
-                channel: channelsList[indexPath.row],
-                completion: { [weak conversationVC, weak self] (res) in
-                    switch res {
-                    case .success(let snap):
-                        let docs = snap.documents
-                        var messages = [Message]()
-                        docs.forEach { (doc) in
-                            let jsonData = doc.data()
-                            guard let content = jsonData["content"] as? String else { return }
-                            guard let created = jsonData["created"] as? Double else { return }
-                            guard let senderId = jsonData["senderId"] as? String else { return }
-                            guard let senderName = jsonData["senderName"] as? String else { return }
-                            let mes = Message(content: content,
-                                              senderName: senderName,
-                                              created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                              senderId: senderId, identifier: doc.documentID)
-                            messages.append(mes)
-                        }
-                        messages.sort { (message1, message2) -> Bool in
-                            return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
-                        }
-                        conversationVC?.user = self?.currentUser
-                        conversationVC?.messages = messages
-                        conversationVC?.tableView?.reloadData()
-                    case .failure(let error):
-                        print(error.localizedDescription)
+        let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
+        conversationVC.theme = theme
+        self.database.getMessagesFor(
+            channel: channelsList[indexPath.row],
+            completion: { [weak conversationVC, weak self] (res) in
+                switch res {
+                case .success(let snap):
+                    let docs = snap.documents
+                    var messages = [Message]()
+                    docs.forEach { (doc) in
+                        let jsonData = doc.data()
+                        guard let content = jsonData["content"] as? String else { return }
+                        guard let created = jsonData["created"] as? Double else { return }
+                        guard let senderId = jsonData["senderId"] as? String else { return }
+                        guard let senderName = jsonData["senderName"] as? String else { return }
+                        let mes = Message(content: content,
+                                          senderName: senderName,
+                                          created: Date(timeIntervalSince1970: TimeInterval(created)) ,
+                                          senderId: senderId, identifier: doc.documentID)
+                        messages.append(mes)
                     }
-                })
-            navigationController?.pushViewController(conversationVC, animated: true)
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
+                    messages.sort { (message1, message2) -> Bool in
+                        return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
+                    }
+                    conversationVC?.user = self?.currentUser
+                    conversationVC?.messages = messages
+                    conversationVC?.tableView?.reloadData()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            })
+        navigationController?.pushViewController(conversationVC, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     func getConversationViewController(for channel: Channel) -> ConversationViewController {
@@ -385,17 +298,14 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         default:
             print("Unsupported type")
         }
-        print(#function)
     }
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView?.beginUpdates()
-        print(#function)
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView?.endUpdates()
-        print(#function)
     }
 }
 

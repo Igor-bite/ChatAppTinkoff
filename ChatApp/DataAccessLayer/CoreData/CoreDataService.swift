@@ -21,7 +21,7 @@ class CoreDataService {
         self.delegate = delegate
     }
     
-    func save(channel: Channel, messages: [Message]) {
+    func save(channel: Channel, messages: [Message]? = nil) {
         CoreDataService.coreDataStack.didUpdateDataBase = { stack in
             stack.printDatabaseStatistice()
         }
@@ -34,6 +34,7 @@ class CoreDataService {
                                         lastMessage: channel.getLastMessage(),
                                         in: context)
             var messages_db = [Message_db]()
+            guard let messages = messages else { return }
             for message in messages {
                 guard let identifier = message.getIdentifier() else {
                     assertionFailure("There is no document id of message from firestore")
@@ -49,6 +50,39 @@ class CoreDataService {
             }
             
             channel_db.addToMessages(NSSet(array: messages_db))
+        }
+    }
+    
+    func delete(channel: Channel) {
+        let fetchRequest: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "identifier == %@", channel.getId())
+        let context = CoreDataService.coreDataStack.mainContext
+        let object = try? context.fetch(fetchRequest)
+        if let object = object {
+            if object.count == 1 {
+                context.delete(object[0])
+            } else {
+                fatalError("There more than 1 channels with id: \(channel.getId()) and name \(channel.getName())")
+            }
+        } else {
+            print("There is no channel with name \(channel.getName())")
+        }
+    }
+    
+    func delete(message: Message) {
+        let fetchRequest: NSFetchRequest<Message_db> = Message_db.fetchRequest()
+        guard let message_identifier = message.getIdentifier() else { return }
+        fetchRequest.predicate = NSPredicate(format: "identifier == %@", message_identifier)
+        let context = CoreDataService.coreDataStack.mainContext
+        let object = try? context.fetch(fetchRequest)
+        if let object = object {
+            if object.count == 1 {
+                context.delete(object[0])
+            } else {
+                fatalError("There more than 1 messages with id: \(message_identifier)) and text \(message.getContent())")
+            }
+        } else {
+            print("There is no message with id \(message_identifier)")
         }
     }
     
@@ -70,7 +104,7 @@ class CoreDataService {
         return channels
     }
 
-    func getTableViewDataSource(cellIdentifier: String, theme: Theme) -> UITableViewDataSource {
+    func getChannelsTableViewDataSource(cellIdentifier: String, theme: Theme) -> UITableViewDataSource {
         let context = CoreDataService.coreDataStack.mainContext
         
         let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
@@ -83,6 +117,6 @@ class CoreDataService {
                                              sectionNameKeyPath: nil,
                                              cacheName: nil)
         frc.delegate = self.delegate
-        return TableViewDataSource(fetchedResultsController: frc, cellId: cellIdentifier, theme: theme)
+        return ChannelsTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme)
     }
 }

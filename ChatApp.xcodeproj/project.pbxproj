@@ -13,7 +13,7 @@
 		A51FF24C260D08DC004BAB8E /* ChannelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF24B260D08DC004BAB8E /* ChannelModel.swift */; };
 		A51FF250260D090A004BAB8E /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF24F260D090A004BAB8E /* Database.swift */; };
 		A51FF253260D0955004BAB8E /* ProfileThemeChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */; };
-		A53DC609261BC8BD007329DD /* TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53DC608261BC8BD007329DD /* TableViewDataSource.swift */; };
+		A53DC609261BC8BD007329DD /* ChannelsTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53DC608261BC8BD007329DD /* ChannelsTableViewDataSource.swift */; };
 		A5484D4726136E77008AF909 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4526136E77008AF909 /* Chat.xcdatamodeld */; };
 		A5484D4B261374C7008AF909 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4A261374C7008AF909 /* CoreDataStack.swift */; };
 		A5484D4E2613766F008AF909 /* ObjectsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4D2613766F008AF909 /* ObjectsExtension.swift */; };
@@ -49,7 +49,7 @@
 		A51FF24B260D08DC004BAB8E /* ChannelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelModel.swift; sourceTree = "<group>"; };
 		A51FF24F260D090A004BAB8E /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileThemeChanger.swift; sourceTree = "<group>"; };
-		A53DC608261BC8BD007329DD /* TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDataSource.swift; sourceTree = "<group>"; };
+		A53DC608261BC8BD007329DD /* ChannelsTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsTableViewDataSource.swift; sourceTree = "<group>"; };
 		A5484D4626136E77008AF909 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		A5484D4A261374C7008AF909 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		A5484D4D2613766F008AF909 /* ObjectsExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsExtension.swift; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */,
-				A53DC608261BC8BD007329DD /* TableViewDataSource.swift */,
+				A53DC608261BC8BD007329DD /* ChannelsTableViewDataSource.swift */,
 				A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */,
 				A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */,
 			);
@@ -388,7 +388,7 @@
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
 				A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,
-				A53DC609261BC8BD007329DD /* TableViewDataSource.swift in Sources */,
+				A53DC609261BC8BD007329DD /* ChannelsTableViewDataSource.swift in Sources */,
 				A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */,
 				A51FF250260D090A004BAB8E /* Database.swift in Sources */,
 				A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */,
