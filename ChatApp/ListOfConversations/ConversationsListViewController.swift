@@ -41,7 +41,7 @@ class ConversationsListViewController: UIViewController {
         
         database.addListenerForChannels { (error) in
             if let error = error {
-                print(error.localizedDescription) // ToDo: correctly handle errors
+                self.showErrorAlert(message: error.localizedDescription)
             }
         }
         
@@ -214,6 +214,13 @@ class ConversationsListViewController: UIViewController {
         alertControl.addAction(UIAlertAction(title: "Да, уверен", style: .destructive, handler: {_ in
             deletion()
         }))
+
+        present(alertControl, animated: true)
+    }
+    
+    func showErrorAlert(message: String) {
+        let alertControl = UIAlertController(title: "Произошла ошибка", message: message, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
 
         present(alertControl, animated: true)
     }

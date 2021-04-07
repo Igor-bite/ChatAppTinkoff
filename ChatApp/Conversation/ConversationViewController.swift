@@ -58,7 +58,7 @@ class ConversationViewController: UIViewController {
         guard let channel = channel else { return }
         self.database?.addListenerForMessages(in: channel, completion: { (error) in
             if let error = error {
-                print(error.localizedDescription) // ToDo: correctly handle errors
+                self.showErrorAlert(message: error.localizedDescription)
             }
         })
         
@@ -71,7 +71,7 @@ class ConversationViewController: UIViewController {
         tableView?.allowsSelection = false
         database?.getMessagesFor(channel: channel, completion: { (error) in
             if let error = error {
-                print(error.localizedDescription) // ToDo: correctly handle errors
+                self.showErrorAlert(message: error.localizedDescription)
             }
         })
     }
@@ -108,6 +108,13 @@ class ConversationViewController: UIViewController {
     
     func showRightsAlert() {
         let alertControl = UIAlertController(title: "У вас недостаточно прав для этого действия", message: nil, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
+
+        present(alertControl, animated: true)
+    }
+    
+    func showErrorAlert(message: String) {
+        let alertControl = UIAlertController(title: "Произошла ошибка", message: message, preferredStyle: .alert)
         alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
 
         present(alertControl, animated: true)

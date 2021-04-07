@@ -47,7 +47,7 @@ class Database {
                 }
             }
             
-            completion(nil) // ToDo: correct!
+            completion(nil)
         }
     }
     
@@ -91,7 +91,7 @@ class Database {
                 }
             }
             
-            completion(nil) // ToDo: correct!
+            completion(nil)
         }
     }
     
