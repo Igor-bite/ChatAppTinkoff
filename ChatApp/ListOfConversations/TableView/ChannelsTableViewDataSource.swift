@@ -13,8 +13,14 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
     private let cellIdentifier: String
     private var theme: Theme
     private let database = Database()
+    private weak var delegate: ConversationsListViewController?
     
-    init(fetchedResultsController: NSFetchedResultsController<Channel_db>, coreDataService: CoreDataService, cellId: String, theme: Theme) {
+    init(fetchedResultsController: NSFetchedResultsController<Channel_db>,
+         coreDataService: CoreDataService,
+         cellId: String,
+         theme: Theme,
+         delegate: ConversationsListViewController) {
+        self.delegate = delegate
         database.coreDataService = coreDataService
         cellIdentifier = cellId
         self.theme = theme
@@ -85,10 +91,12 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
         if editingStyle == .delete {
             let channel = self.fetchedResultsController.object(at: indexPath)
             guard let id = channel.identifier, let name = channel.name else { return }
-            database.delete(channel: Channel(identifier: id,
-                                             name: name,
-                                             lastMessage: channel.lastMessage,
-                                             lastActivity: channel.lastActivity))
+            delegate?.showDeletionAlert {
+                self.database.delete(channel: Channel(identifier: id,
+                                                 name: name,
+                                                 lastMessage: channel.lastMessage,
+                                                 lastActivity: channel.lastActivity))
+            }
         }
     }
     

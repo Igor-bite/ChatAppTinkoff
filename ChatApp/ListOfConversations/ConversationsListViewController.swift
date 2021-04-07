@@ -73,7 +73,7 @@ class ConversationsListViewController: UIViewController {
         tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
                                   bundle: nil),
                             forCellReuseIdentifier: cellIdentifier)
-        self.tableViewDataSource = coreDataService.getChannelsTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme)
+        self.tableViewDataSource = coreDataService.getChannelsTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, delegate: self)
         tableView?.dataSource = self.tableViewDataSource
         tableView?.delegate = self
     }
@@ -208,10 +208,12 @@ class ConversationsListViewController: UIViewController {
         present(alertControl, animated: true)
     }
     
-    func showDeletionAlert() {
-        let alertControl = UIAlertController(title: "Вы уверены, что хотите удалить сообщение?", message: nil, preferredStyle: .alert)
+    func showDeletionAlert(deletion: @escaping () -> Void) {
+        let alertControl = UIAlertController(title: "Вы уверены, что хотите удалить этот канал?", message: nil, preferredStyle: .alert)
         alertControl.addAction(UIAlertAction(title: "Не удалять", style: .default, handler: {_ in }))
-        alertControl.addAction(UIAlertAction(title: "Да, уверен", style: .destructive, handler: {_ in }))
+        alertControl.addAction(UIAlertAction(title: "Да, уверен", style: .destructive, handler: {_ in
+            deletion()
+        }))
 
         present(alertControl, animated: true)
     }

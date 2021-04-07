@@ -13,8 +13,10 @@ class ConversationTableViewDataSource: NSObject, UITableViewDataSource {
     private let cellIdentifier: String
     private var theme: Theme
     private let database = Database()
+    private weak var delegate: ConversationViewController?
     
-    init(fetchedResultsController: NSFetchedResultsController<Message_db>, coreDataService: CoreDataService, cellId: String, theme: Theme) {
+    init(fetchedResultsController: NSFetchedResultsController<Message_db>, coreDataService: CoreDataService, cellId: String, theme: Theme, delegate: ConversationViewController) {
+        self.delegate = delegate
         database.coreDataService = coreDataService
         cellIdentifier = cellId
         self.theme = theme
@@ -105,7 +107,11 @@ class ConversationTableViewDataSource: NSObject, UITableViewDataSource {
                       let channel = try database.coreDataService?.getChannel(for: channel_db)
                 else { return }
                 if message.isMine() {
-                    database.delete(message: message, in: channel)
+                    delegate?.showDeletionAlert {
+                        self.database.delete(message: message, in: channel)
+                    }
+                } else {
+                    delegate?.showRightsAlert()
                 }
             } catch {
                 print(error.localizedDescription)

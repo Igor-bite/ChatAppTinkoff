@@ -62,7 +62,7 @@ class ConversationViewController: UIViewController {
             }
         })
         
-        self.tableViewDataSource = database?.coreDataService?.getConversationTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, channel: channel)
+        self.tableViewDataSource = database?.coreDataService?.getConversationTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, channel: channel, delegate: self)
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self),
                                   bundle: nil),
                             forCellReuseIdentifier: cellIdentifier)
@@ -94,6 +94,23 @@ class ConversationViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in }))
         
         present(alertController, animated: true)
+    }
+    
+    func showDeletionAlert(deletion: @escaping () -> Void) {
+        let alertControl = UIAlertController(title: "Вы уверены, что хотите удалить это сообщение?", message: nil, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Не удалять", style: .default, handler: {_ in }))
+        alertControl.addAction(UIAlertAction(title: "Да, уверен", style: .destructive, handler: {_ in
+            deletion()
+        }))
+
+        present(alertControl, animated: true)
+    }
+    
+    func showRightsAlert() {
+        let alertControl = UIAlertController(title: "У вас недостаточно прав для этого действия", message: nil, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
+
+        present(alertControl, animated: true)
     }
 }
 

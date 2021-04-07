@@ -128,7 +128,7 @@ class CoreDataService {
         return result
     }
 
-    func getChannelsTableViewDataSource(cellIdentifier: String, theme: Theme) -> UITableViewDataSource {
+    func getChannelsTableViewDataSource(cellIdentifier: String, theme: Theme, delegate: ConversationsListViewController) -> UITableViewDataSource {
         let context = CoreDataService.coreDataStack.mainContext
         
         let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
@@ -141,10 +141,10 @@ class CoreDataService {
                                              sectionNameKeyPath: nil,
                                              cacheName: nil)
         frc.delegate = self.channelsDelegate
-        return ChannelsTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme)
+        return ChannelsTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme, delegate: delegate)
     }
     
-    func getConversationTableViewDataSource(cellIdentifier: String, theme: Theme, channel: Channel) -> UITableViewDataSource {
+    func getConversationTableViewDataSource(cellIdentifier: String, theme: Theme, channel: Channel, delegate: ConversationViewController) -> UITableViewDataSource {
         let context = CoreDataService.coreDataStack.mainContext
         
         let request: NSFetchRequest<Message_db> = Message_db.fetchRequest()
@@ -157,7 +157,7 @@ class CoreDataService {
                                              sectionNameKeyPath: nil,
                                              cacheName: nil)
         frc.delegate = self.messagesDelegate
-        return ConversationTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme)
+        return ConversationTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme, delegate: delegate)
     }
     
     func getChannel(for channel: Channel_db) throws -> Channel {
