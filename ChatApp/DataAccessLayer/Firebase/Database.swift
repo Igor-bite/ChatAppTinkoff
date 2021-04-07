@@ -35,7 +35,6 @@ class Database {
                                       name: name,
                                       lastMessage: lastMessage,
                                       lastActivity: lastActivity)
-                // ToDo: correct deleting only messages not whole channels
                 switch change.type {
                 case .added:
                     self.coreDataService?.save(channel: channel)
@@ -52,16 +51,50 @@ class Database {
         }
     }
     
-    func addListenerForMessages(in channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
+    func addListenerForMessages(in channel: Channel, completion: @escaping (Error?) -> Void) {
+        print("adding listener for messages to channel with id:  \(channel.getId())")
         reference.document(channel.getId()).collection("messages").addSnapshotListener { snapshot, error in
             if let error = error {
-                completion(.failure(error))
+                completion(error)
             }
             guard let snap = snapshot else { return }
-            completion(.success(snap))
+            let changes = snap.documentChanges
+            
+            changes.forEach { (change) in
+                let jsonData = change.document.data()
+                print(jsonData)
+                guard let content = jsonData["content"] as? String,
+                      let senderId = jsonData["senderId"] as? String,
+                      let senderName = jsonData["senderName"] as? String,
+                      let timestamp = jsonData["created"] as? Timestamp
+                else {
+                    completion(CoreDataError.dataError)
+                    return
+                }
+                let identifier = change.document.documentID
+                let created = timestamp.dateValue()
+                let message = Message(content: content,
+                                      senderName: senderName,
+                                      created: created,
+                                      senderId: senderId,
+                                      identifier: identifier)
+                
+                switch change.type {
+                case .added:
+                    self.coreDataService?.save(channel: channel, message: message)
+                case .modified:
+                    self.coreDataService?.save(channel: channel, message: message)
+                case .removed:
+                    self.coreDataService?.delete(message: message, in: channel)
+                default:
+                    print("Unsupported type")
+                }
+            }
+            
+            completion(nil) // ToDo: correct!
         }
     }
-
+    
     func getChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
         reference.getDocuments { (snap, error) in
             if let error = error {
@@ -83,14 +116,33 @@ class Database {
         }
     }
 
-    func getMessagesFor(channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.document(channel.getId()).collection("messages").getDocuments { (snap, error) in
+    func getMessagesFor(channel: Channel, completion: @escaping (Error?) -> Void) {
+        reference.document(channel.getId()).collection("messages").getDocuments { [weak self] (snap, error) in
             if let error = error {
                 print(error.localizedDescription)
-                completion(.failure(error))
+                completion(error)
             }
             guard let snap = snap else { return }
-            completion(.success(snap))
+            let documents = snap.documents
+            
+            documents.forEach { (doc) in
+                let jsonData = doc.data()
+                guard let content = jsonData["content"] as? String,
+                      let senderId = jsonData["senderId"] as? String,
+                      let senderName = jsonData["senderName"] as? String,
+                      let timestamp = jsonData["created"] as? Timestamp else { return }
+                let identifier = doc.documentID
+                let created = timestamp.dateValue()
+                let message = Message(content: content,
+                                      senderName: senderName,
+                                      created: created,
+                                      senderId: senderId,
+                                      identifier: identifier)
+                print(message)
+                self?.coreDataService?.save(channel: channel, message: message)
+            }
+            
+            completion(nil)
         }
     }
 
@@ -98,6 +150,7 @@ class Database {
         let newMessageRef = reference.document(channel.getId()).collection("messages").document()
         do {
             try newMessageRef.setData(message.asDictionary())
+            print("added new message with text: \(message.getContent()) to channel: \(channel.getName())")
         } catch let error {
             print("Error writing to Firestore: \(error)")
         }

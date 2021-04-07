@@ -18,12 +18,12 @@ class ConversationsListViewController: UIViewController {
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
-    var coreDataService: CoreDataService?
+    var coreDataService = CoreDataService()
     var tableViewDataSource: UITableViewDataSource?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        coreDataService = CoreDataService(delegate: self)
+        coreDataService.channelsDelegate = self
         database.coreDataService = coreDataService
         title = navControllerTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
@@ -73,7 +73,7 @@ class ConversationsListViewController: UIViewController {
         tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
                                   bundle: nil),
                             forCellReuseIdentifier: cellIdentifier)
-        self.tableViewDataSource = coreDataService?.getChannelsTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme)
+        self.tableViewDataSource = coreDataService.getChannelsTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme)
         tableView?.dataSource = self.tableViewDataSource
         tableView?.delegate = self
     }
@@ -207,6 +207,14 @@ class ConversationsListViewController: UIViewController {
 
         present(alertControl, animated: true)
     }
+    
+    func showDeletionAlert() {
+        let alertControl = UIAlertController(title: "Вы уверены, что хотите удалить сообщение?", message: nil, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Не удалять", style: .default, handler: {_ in }))
+        alertControl.addAction(UIAlertAction(title: "Да, уверен", style: .destructive, handler: {_ in }))
+
+        present(alertControl, animated: true)
+    }
 
     @objc func addNewChannel() {
         let alertControl = UIAlertController(
@@ -215,7 +223,6 @@ class ConversationsListViewController: UIViewController {
             preferredStyle: .alert)
         alertControl.addTextField {_ in }
         alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] (_) in
-            print(alertControl.textFields?[0].text as Any)
             if let name = alertControl.textFields?[0].text {
                 self?.database.makeNewChannel(with: name)
             }
@@ -233,47 +240,36 @@ extension ConversationsListViewController: UITableViewDelegate {
         let dataSource = self.tableView?.dataSource as? ChannelsTableViewDataSource
         let selectedChannel = dataSource?.getChannel(at: indexPath)
         guard let channel = selectedChannel else { return }
-        let conversationVC = getConversationViewController(for: channel)
+        
+        let conversationVC = getConversationViewController()
         conversationVC.theme = theme
-        self.database.getMessagesFor(
-            channel: channel,
-            completion: { [weak conversationVC, weak self] (res) in
-                switch res {
-                case .success(let snap):
-                    let docs = snap.documents
-                    var messages = [Message]()
-                    docs.forEach { (doc) in
-                        let jsonData = doc.data()
-                        guard let content = jsonData["content"] as? String else { return }
-                        guard let created = jsonData["created"] as? Double else { return }
-                        guard let senderId = jsonData["senderId"] as? String else { return }
-                        guard let senderName = jsonData["senderName"] as? String else { return }
-                        let mes = Message(content: content,
-                                          senderName: senderName,
-                                          created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                          senderId: senderId, identifier: doc.documentID)
-                        messages.append(mes)
-                    }
-                    messages.sort { (message1, message2) -> Bool in
-                        return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
-                    }
-                    conversationVC?.user = self?.currentUser
-                    conversationVC?.messages = messages
-                    conversationVC?.tableView?.reloadData()
-                case .failure(let error):
-                    print(error.localizedDescription)
+        conversationVC.user = self.currentUser
+        conversationVC.database = self.database
+        
+        do {
+            conversationVC.channel = try coreDataService.getChannel(for: channel)
+            var messages = [Message]()
+            if let messages_db = channel.messages?.allObjects as? [Message_db] {
+                for message_db in messages_db {
+                    messages.append(try coreDataService.getMessage(for: message_db))
                 }
+            }
+            messages.sort(by: {  (message1, message2) -> Bool in
+                return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
             })
+            conversationVC.messages = messages
+        } catch {
+            print(error.localizedDescription)
+        }
         navigationController?.pushViewController(conversationVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    func getConversationViewController(for channel: Channel) -> ConversationViewController {
+    func getConversationViewController() -> ConversationViewController {
         guard let conversationVC = storyboard?
                 .instantiateViewController(withIdentifier: "ConversationVC") as? ConversationViewController else {
             fatalError("Couldn't load conversation view controller")
         }
-        conversationVC.channel = channel
         return conversationVC
     }
 }
@@ -318,6 +314,12 @@ extension Encodable {
     guard let dictionary = try JSONSerialization.jsonObject(with: data,
                                                             options: .allowFragments) as? [String: Any] else {
       throw NSError()
+    }
+    if let dateUnix = dictionary["created"] as? Double {
+        var result = dictionary
+        let date = Date(timeIntervalSince1970: dateUnix)
+        result["created"] = date
+        return result
     }
     return dictionary
   }

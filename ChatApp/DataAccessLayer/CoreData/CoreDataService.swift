@@ -11,17 +11,15 @@ import CoreData
 public enum CoreDataError: Error {
     case fetchProblem
     case saveProblem
+    case dataError
 }
 
 class CoreDataService {
     private static let coreDataStack = CoreDataStack()
-    weak var delegate: NSFetchedResultsControllerDelegate?
+    weak var channelsDelegate: NSFetchedResultsControllerDelegate?
+    weak var messagesDelegate: NSFetchedResultsControllerDelegate?
     
-    init(delegate: NSFetchedResultsControllerDelegate) {
-        self.delegate = delegate
-    }
-    
-    func save(channel: Channel, messages: [Message]? = nil) {
+    func save(channel: Channel, message: Message? = nil) {
         CoreDataService.coreDataStack.didUpdateDataBase = { stack in
             stack.printDatabaseStatistice()
         }
@@ -33,28 +31,31 @@ class CoreDataService {
                                         lastActivity: channel.getLastActivity(),
                                         lastMessage: channel.getLastMessage(),
                                         in: context)
-            var messages_db = [Message_db]()
+            
+            guard let message = message else {
+                do {
+                    try context.obtainPermanentIDs(for: [channel_db])
+                } catch {
+                    print(error.localizedDescription)
+                }
+                return
+            }
+            guard let identifier = message.getIdentifier() else {
+                assertionFailure("There is no document id of message from firestore")
+                return
+            }
+            let message_db = Message_db(content: message.getContent(),
+                                        created: message.getCreationDate(),
+                                        identifier: identifier,
+                                        senderId: message.getSenderId(),
+                                        senderName: message.getSenderName(),
+                                        in: context)
             do {
-                try context.obtainPermanentIDs(for: [channel_db])
+                try context.obtainPermanentIDs(for: [channel_db, message_db])
             } catch {
                 print(error.localizedDescription)
             }
-            guard let messages = messages else { return }
-            for message in messages {
-                guard let identifier = message.getIdentifier() else {
-                    assertionFailure("There is no document id of message from firestore")
-                    return
-                }
-                let message_db = Message_db(content: message.getContent(),
-                                            created: message.getCreationDate(),
-                                            identifier: identifier,
-                                            senderId: message.getSenderId(),
-                                            senderName: message.getSenderName(),
-                                            in: context)
-                messages_db.append(message_db)
-            }
-            
-            channel_db.addToMessages(NSSet(array: messages_db))
+            channel_db.addToMessages(message_db)
         }
     }
     
@@ -110,6 +111,22 @@ class CoreDataService {
         })
         return channels
     }
+    
+    func fetchMessages(for channel: Channel) -> [Message] {
+        let fetchRequest: NSFetchRequest<Message_db> = Message_db.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "channel.identifier == %@", channel.getId())
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(Message_db.created), ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        let context = CoreDataService.coreDataStack.mainContext
+        guard let messages_db = try? context.fetch(fetchRequest) else { return [] }
+        var result = [Message]()
+        for message_db in messages_db {
+            if let message = try? getMessage(for: message_db) {
+                result.append(message)
+            }
+        }
+        return result
+    }
 
     func getChannelsTableViewDataSource(cellIdentifier: String, theme: Theme) -> UITableViewDataSource {
         let context = CoreDataService.coreDataStack.mainContext
@@ -123,7 +140,41 @@ class CoreDataService {
                                              managedObjectContext: context,
                                              sectionNameKeyPath: nil,
                                              cacheName: nil)
-        frc.delegate = self.delegate
+        frc.delegate = self.channelsDelegate
         return ChannelsTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme)
+    }
+    
+    func getConversationTableViewDataSource(cellIdentifier: String, theme: Theme, channel: Channel) -> UITableViewDataSource {
+        let context = CoreDataService.coreDataStack.mainContext
+        
+        let request: NSFetchRequest<Message_db> = Message_db.fetchRequest()
+        request.predicate = NSPredicate(format: "channel.identifier = %@", channel.getId())
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(Message_db.created), ascending: true)
+        request.sortDescriptors = [sortDescriptor]
+        
+        let frc = NSFetchedResultsController(fetchRequest: request,
+                                             managedObjectContext: context,
+                                             sectionNameKeyPath: nil,
+                                             cacheName: nil)
+        frc.delegate = self.messagesDelegate
+        return ConversationTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme)
+    }
+    
+    func getChannel(for channel: Channel_db) throws -> Channel {
+        guard let id = channel.identifier, let name = channel.name else { throw CoreDataError.dataError }
+        return Channel(identifier: id,
+                       name: name,
+                       lastMessage: channel.lastMessage,
+                       lastActivity: channel.lastActivity)
+    }
+    
+    func getMessage(for message: Message_db) throws -> Message {
+        guard let id = message.identifier,
+              let text = message.content,
+              let senderName = message.senderName,
+              let created = message.created,
+              let senderId = message.senderId else { throw CoreDataError.dataError }
+        
+        return Message(content: text, senderName: senderName, created: created, senderId: senderId, identifier: id)
     }
 }
