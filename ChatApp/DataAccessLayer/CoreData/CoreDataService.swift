@@ -20,55 +20,70 @@ class CoreDataService {
     weak var messagesDelegate: NSFetchedResultsControllerDelegate?
     
     func save(channel: Channel, message: Message? = nil) {
-        CoreDataService.coreDataStack.didUpdateDataBase = { stack in
-            stack.printDatabaseStatistice()
-        }
-        CoreDataService.coreDataStack.enableObservers()
+//        CoreDataService.coreDataStack.didUpdateDataBase = { stack in
+//            stack.printDatabaseStatistice()
+//        }
+//        CoreDataService.coreDataStack.enableObservers()
         
-        CoreDataService.coreDataStack.performSave { context in
-            let channel_db = Channel_db(name: channel.getName(),
-                                        identifier: channel.getId(),
-                                        lastActivity: channel.getLastActivity(),
-                                        lastMessage: channel.getLastMessage(),
-                                        in: context)
-            
-            guard let message = message else {
+        let context = CoreDataService.coreDataStack.container.newBackgroundContext()
+        context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+        
+        let channel_db = Channel_db(name: channel.getName(),
+                                    identifier: channel.getId(),
+                                    lastActivity: channel.getLastActivity(),
+                                    lastMessage: channel.getLastMessage(),
+                                    in: context)
+
+        guard let message = message else {
+            if context.hasChanges {
                 do {
-                    try context.obtainPermanentIDs(for: [channel_db])
+                    try context.save()
                 } catch {
-                    print(error.localizedDescription)
+                    let nserror = error as NSError
+                    fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
                 }
-                return
             }
-            guard let identifier = message.getIdentifier() else {
-                assertionFailure("There is no document id of message from firestore")
-                return
-            }
-            let message_db = Message_db(content: message.getContent(),
-                                        created: message.getCreationDate(),
-                                        identifier: identifier,
-                                        senderId: message.getSenderId(),
-                                        senderName: message.getSenderName(),
-                                        in: context)
+            return
+        }
+        guard let identifier = message.getIdentifier() else {
+            assertionFailure("There is no document id of message from firestore")
+            return
+        }
+        let message_db = Message_db(content: message.getContent(),
+                                    created: message.getCreationDate(),
+                                    identifier: identifier,
+                                    senderId: message.getSenderId(),
+                                    senderName: message.getSenderName(),
+                                    in: context)
+        channel_db.addToMessages(message_db)
+        if context.hasChanges {
             do {
-                try context.obtainPermanentIDs(for: [channel_db, message_db])
+                try context.save()
             } catch {
-                print(error.localizedDescription)
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
-            channel_db.addToMessages(message_db)
         }
     }
     
     func delete(channel: Channel) {
         let fetchRequest: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "identifier == %@", channel.getId())
-        let context = CoreDataService.coreDataStack.mainContext
+        let context = CoreDataService.coreDataStack.container.newBackgroundContext()
         let object = try? context.fetch(fetchRequest)
         if let object = object {
             if object.count == 1 {
                 context.delete(object[0])
+                if context.hasChanges {
+                    do {
+                        try context.save()
+                    } catch {
+                        let nserror = error as NSError
+                        fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                    }
+                }
             } else if object.count == 0 {
-                fatalError("There no channels with id: \(channel.getId()) and name \(channel.getName())")
+                fatalError("There are no channels with id: \(channel.getId()) and name \(channel.getName())")
             } else {
                 fatalError("There more than 1 channels with id: \(channel.getId()) and name \(channel.getName())")
             }
@@ -81,11 +96,19 @@ class CoreDataService {
         let fetchRequest: NSFetchRequest<Message_db> = Message_db.fetchRequest()
         guard let message_identifier = message.getIdentifier() else { return }
         fetchRequest.predicate = NSPredicate(format: "identifier == %@", message_identifier)
-        let context = CoreDataService.coreDataStack.mainContext
+        let context = CoreDataService.coreDataStack.container.newBackgroundContext()
         let object = try? context.fetch(fetchRequest)
         if let object = object {
             if object.count == 1 {
                 context.delete(object[0])
+                if context.hasChanges {
+                    do {
+                        try context.save()
+                    } catch {
+                        let nserror = error as NSError
+                        fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                    }
+                }
             } else {
                 fatalError("There more than 1 messages with id: \(message_identifier)) and text \(message.getContent())")
             }
@@ -94,46 +117,14 @@ class CoreDataService {
         }
     }
     
-    func getChannels() -> [Channel]? {
-        let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
-        request.returnsObjectsAsFaults = true
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        request.sortDescriptors = [sortDescriptor]
-        let frc = NSFetchedResultsController(fetchRequest: request,
-                                             managedObjectContext: CoreDataService.coreDataStack.mainContext,
-                                             sectionNameKeyPath: nil,
-                                             cacheName: nil)
-        try? frc.performFetch()
-        let channels_db = frc.fetchedObjects
-        let channels = try? channels_db?.map({ (channel_db) -> Channel in
-            guard let name = channel_db.name, let id = channel_db.identifier else { throw CoreDataError.fetchProblem }
-            return Channel(identifier: id, name: name, lastMessage: channel_db.lastMessage, lastActivity: channel_db.lastActivity)
-        })
-        return channels
-    }
-    
-    func fetchMessages(for channel: Channel) -> [Message] {
-        let fetchRequest: NSFetchRequest<Message_db> = Message_db.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "channel.identifier == %@", channel.getId())
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(Message_db.created), ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        let context = CoreDataService.coreDataStack.mainContext
-        guard let messages_db = try? context.fetch(fetchRequest) else { return [] }
-        var result = [Message]()
-        for message_db in messages_db {
-            if let message = try? getMessage(for: message_db) {
-                result.append(message)
-            }
-        }
-        return result
-    }
-
     func getChannelsTableViewDataSource(cellIdentifier: String, theme: Theme, delegate: ConversationsListViewController) -> UITableViewDataSource {
-        let context = CoreDataService.coreDataStack.mainContext
+        let context = CoreDataService.coreDataStack.container.viewContext
+        context.automaticallyMergesChangesFromParent = true
+        context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         
         let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
         
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(Channel_db.lastActivity), ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
         request.sortDescriptors = [sortDescriptor]
         
         let frc = NSFetchedResultsController(fetchRequest: request,
@@ -145,11 +136,13 @@ class CoreDataService {
     }
     
     func getConversationTableViewDataSource(cellIdentifier: String, theme: Theme, channel: Channel, delegate: ConversationViewController) -> UITableViewDataSource {
-        let context = CoreDataService.coreDataStack.mainContext
+        let context = CoreDataService.coreDataStack.container.viewContext
+        context.automaticallyMergesChangesFromParent = true
+        context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         
         let request: NSFetchRequest<Message_db> = Message_db.fetchRequest()
         request.predicate = NSPredicate(format: "channel.identifier = %@", channel.getId())
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(Message_db.created), ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
         request.sortDescriptors = [sortDescriptor]
         
         let frc = NSFetchedResultsController(fetchRequest: request,

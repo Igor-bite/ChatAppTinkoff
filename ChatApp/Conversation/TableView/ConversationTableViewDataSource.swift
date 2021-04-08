@@ -21,7 +21,7 @@ class ConversationTableViewDataSource: NSObject, UITableViewDataSource {
         cellIdentifier = cellId
         self.theme = theme
         self.fetchedResultsController = fetchedResultsController
-        self.fetchedResultsController.fetchRequest.fetchBatchSize = 30 // ToDo: calculations
+        self.fetchedResultsController.fetchRequest.fetchBatchSize = 15 // ToDo: calculation
         do {
             try self.fetchedResultsController.performFetch()
         } catch {

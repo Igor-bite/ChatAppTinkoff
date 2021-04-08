@@ -52,7 +52,7 @@ class Database {
     }
     
     func addListenerForMessages(in channel: Channel, completion: @escaping (Error?) -> Void) {
-        print("adding listener for messages to channel with id:  \(channel.getId())")
+//        print("adding listener for messages to channel with id:  \(channel.getId())")
         reference.document(channel.getId()).collection("messages").addSnapshotListener { snapshot, error in
             if let error = error {
                 completion(error)
@@ -62,7 +62,6 @@ class Database {
             
             changes.forEach { (change) in
                 let jsonData = change.document.data()
-                print(jsonData)
                 guard let content = jsonData["content"] as? String,
                       let senderId = jsonData["senderId"] as? String,
                       let senderName = jsonData["senderName"] as? String,
@@ -78,7 +77,6 @@ class Database {
                                       created: created,
                                       senderId: senderId,
                                       identifier: identifier)
-                
                 switch change.type {
                 case .added:
                     self.coreDataService?.save(channel: channel, message: message)
@@ -113,36 +111,6 @@ class Database {
             try newChannelRef.setData(channel.asDictionary())
         } catch let error {
             print("Error writing to Firestore: \(error)")
-        }
-    }
-
-    func getMessagesFor(channel: Channel, completion: @escaping (Error?) -> Void) {
-        reference.document(channel.getId()).collection("messages").getDocuments { [weak self] (snap, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                completion(error)
-            }
-            guard let snap = snap else { return }
-            let documents = snap.documents
-            
-            documents.forEach { (doc) in
-                let jsonData = doc.data()
-                guard let content = jsonData["content"] as? String,
-                      let senderId = jsonData["senderId"] as? String,
-                      let senderName = jsonData["senderName"] as? String,
-                      let timestamp = jsonData["created"] as? Timestamp else { return }
-                let identifier = doc.documentID
-                let created = timestamp.dateValue()
-                let message = Message(content: content,
-                                      senderName: senderName,
-                                      created: created,
-                                      senderId: senderId,
-                                      identifier: identifier)
-                print(message)
-                self?.coreDataService?.save(channel: channel, message: message)
-            }
-            
-            completion(nil)
         }
     }
 

@@ -162,8 +162,8 @@
 			isa = PBXGroup;
 			children = (
 				A5484D4526136E77008AF909 /* Chat.xcdatamodeld */,
-				A5484D4A261374C7008AF909 /* CoreDataStack.swift */,
 				A5484D4D2613766F008AF909 /* ObjectsExtension.swift */,
+				A5484D4A261374C7008AF909 /* CoreDataStack.swift */,
 				A55F4B6D2616445E00613C1E /* CoreDataService.swift */,
 			);
 			path = CoreData;
@@ -569,7 +569,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.tinkoff.TinkoffChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -590,7 +590,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.tinkoff.TinkoffChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import CoreData
 
-class ConversationViewController: UIViewController {
+class ConversationViewController: UIViewController, UITableViewDelegate {
     var channel: Channel?
     var user: User?
     var messages: [Message]?
@@ -22,6 +22,7 @@ class ConversationViewController: UIViewController {
     var theme: Theme = .classic
     var database: Database?
     private var tableViewDataSource: UITableViewDataSource?
+    private var tableViewOriginY: CGFloat?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,11 +57,6 @@ class ConversationViewController: UIViewController {
         sendButtonView?.addGestureRecognizer(sendRec)
         
         guard let channel = channel else { return }
-        self.database?.addListenerForMessages(in: channel, completion: { (error) in
-            if let error = error {
-                self.showErrorAlert(message: error.localizedDescription)
-            }
-        })
         
         self.tableViewDataSource = database?.coreDataService?.getConversationTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, channel: channel, delegate: self)
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self),
@@ -68,12 +64,15 @@ class ConversationViewController: UIViewController {
                             forCellReuseIdentifier: cellIdentifier)
         
         tableView?.dataSource = self.tableViewDataSource
+        tableView?.delegate = self
         tableView?.allowsSelection = false
-        database?.getMessagesFor(channel: channel, completion: { (error) in
+        
+        self.database?.addListenerForMessages(in: channel, completion: { (error) in
             if let error = error {
                 self.showErrorAlert(message: error.localizedDescription)
             }
         })
+        
     }
     
     @objc func sendTapped() {
@@ -126,7 +125,8 @@ extension ConversationViewController {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
                                 as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardSize.height
+                self.view.frame.origin.y -= keyboardSize.height - 12
+                self.tableView?.frame.origin.y += keyboardSize.height - 12
             }
         }
     }
@@ -134,7 +134,13 @@ extension ConversationViewController {
     @objc func keyboardWillHide(notification: NSNotification) {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
+            self.tableView?.frame.origin.y = self.tableViewOriginY!
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        self.tableViewOriginY = self.tableView?.frame.origin.y
     }
 }
 
@@ -144,22 +150,24 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
                     at indexPath: IndexPath?,
                     for type: NSFetchedResultsChangeType,
                     newIndexPath: IndexPath?) {
-        switch type {
-        case .insert:
-            guard let newIndexPath = newIndexPath else { return }
-            tableView?.insertRows(at: [newIndexPath], with: .automatic)
-        case .move:
-            guard let indexPath = indexPath, let newIndexPath = newIndexPath else { return }
-            tableView?.deleteRows(at: [indexPath], with: .automatic)
-            tableView?.insertRows(at: [newIndexPath], with: .automatic)
-        case .update:
-            guard let indexPath = indexPath else { return }
-            tableView?.reloadRows(at: [indexPath], with: .automatic)
-        case .delete:
-            guard let indexPath = indexPath else { return }
-            tableView?.deleteRows(at: [indexPath], with: .automatic)
-        default:
-            print("Unsupported type")
+        UIView.performWithoutAnimation {
+            switch type {
+            case .insert:
+                guard let newIndexPath = newIndexPath else { return }
+                tableView?.insertRows(at: [newIndexPath], with: .automatic)
+            case .move:
+                guard let indexPath = indexPath, let newIndexPath = newIndexPath else { return }
+                tableView?.deleteRows(at: [indexPath], with: .automatic)
+                tableView?.insertRows(at: [newIndexPath], with: .automatic)
+            case .update:
+                guard let indexPath = indexPath else { return }
+                tableView?.reloadRows(at: [indexPath], with: .automatic)
+            case .delete:
+                guard let indexPath = indexPath else { return }
+                tableView?.deleteRows(at: [indexPath], with: .automatic)
+            default:
+                print("Unsupported type")
+            }
         }
     }
     

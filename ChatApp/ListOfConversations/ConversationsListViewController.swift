@@ -231,7 +231,7 @@ class ConversationsListViewController: UIViewController {
             message: "Enter name of a new channel",
             preferredStyle: .alert)
         alertControl.addTextField {_ in }
-        alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] (_) in
+        alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] _ in
             if let name = alertControl.textFields?[0].text {
                 self?.database.makeNewChannel(with: name)
             }
