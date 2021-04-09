@@ -28,13 +28,25 @@ class CoreDataService {
         let context = CoreDataService.coreDataStack.container.newBackgroundContext()
         context.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         
-        let channel_db = Channel_db(name: channel.getName(),
-                                    identifier: channel.getId(),
-                                    lastActivity: channel.getLastActivity(),
-                                    lastMessage: channel.getLastMessage(),
-                                    in: context)
-
-        guard let message = message else {
+        if let message = message {
+            let request: NSFetchRequest<Channel_db> = Channel_db.fetchRequest()
+            request.predicate = NSPredicate(format: "identifier == %@", channel.getId())
+            let channelDb = try? context.fetch(request)
+            guard let channel_db = channelDb, let identifier = message.getIdentifier() else {
+                assertionFailure("There is no document id of message from firestore")
+                return
+            }
+            if channel_db.count > 1 {
+                assertionFailure("There is more than one channels with the same id")
+                return
+            }
+            let message_db = Message_db(content: message.getContent(),
+                                        created: message.getCreationDate(),
+                                        identifier: identifier,
+                                        senderId: message.getSenderId(),
+                                        senderName: message.getSenderName(),
+                                        in: context)
+            channel_db[0].addToMessages(message_db)
             if context.hasChanges {
                 do {
                     try context.save()
@@ -45,17 +57,13 @@ class CoreDataService {
             }
             return
         }
-        guard let identifier = message.getIdentifier() else {
-            assertionFailure("There is no document id of message from firestore")
-            return
-        }
-        let message_db = Message_db(content: message.getContent(),
-                                    created: message.getCreationDate(),
-                                    identifier: identifier,
-                                    senderId: message.getSenderId(),
-                                    senderName: message.getSenderName(),
+        
+        _ = Channel_db(name: channel.getName(),
+                                    identifier: channel.getId(),
+                                    lastActivity: channel.getLastActivity(),
+                                    lastMessage: channel.getLastMessage(),
                                     in: context)
-        channel_db.addToMessages(message_db)
+
         if context.hasChanges {
             do {
                 try context.save()
@@ -64,6 +72,7 @@ class CoreDataService {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+        
     }
     
     func delete(channel: Channel) {
