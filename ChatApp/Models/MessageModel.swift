@@ -50,4 +50,8 @@ struct Message: Codable {
     func getIdentifier() -> String? {
         return identifier
     }
+    
+    func isMine() -> Bool {
+        return senderId == UIDevice.current.identifierForVendor!.uuidString
+    }
 }

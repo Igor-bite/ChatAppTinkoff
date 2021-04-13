@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
@@ -17,9 +18,13 @@ class ConversationsListViewController: UIViewController {
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
     @IBOutlet weak var newChannelImage: UIImageView?
-    let coreDataService = CoreDataService()
+    var coreDataService = CoreDataService()
+    var tableViewDataSource: UITableViewDataSource?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        coreDataService.channelsDelegate = self
+        database.coreDataService = coreDataService
         title = navControllerTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
                                                             target: self,
@@ -29,78 +34,17 @@ class ConversationsListViewController: UIViewController {
                                                            target: self,
                                                            action: #selector(showThemePicker))
         navigationItem.leftBarButtonItem?.tintColor = .darkGray
-        tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
-                                  bundle: nil),
-                            forCellReuseIdentifier: cellIdentifier)
-        tableView?.dataSource = self
-        tableView?.delegate = self
         
-        database.getChannels { [weak self] (result) in
-            switch result {
-            case .success(let snap):
-                let docs = snap.documents
-                self?.channelsList = []
-                docs.forEach { (doc) in
-                    let jsonData = doc.data()
-                    guard let name = jsonData["name"] as? String else { return }
-                    let identifier = doc.documentID // jsonData["identifier"] as? String else { return }
-                    let lastMessage = jsonData["lastMessage"] as? String
-                    let timestamp = jsonData["lastActivity"] as? Timestamp
-                    let lastActivity = timestamp?.dateValue()
-                    let channel = Channel(identifier: identifier,
-                                          name: name,
-                                          lastMessage: lastMessage,
-                                          lastActivity: lastActivity)
-                    self?.channelsList.append(channel)
-                }
-                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
-                    if let date1 = ch1.getLastActivity()?.timeIntervalSince1970 {
-                        if let date2 = ch2.getLastActivity()?.timeIntervalSince1970 {
-                            return date1 > date2
-                        } else {
-                            return true
-                        }
-                    } else {
-                        return false
-                    }
-                })
-                self?.tableView?.reloadData()
-                self?.listenToMessages()
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+        configureTableView()
         
         getUserImage()
-        database.addListenerForChannels { [weak self] (result) in
-            switch result {
-            case .success(let snap):
-                let docs = snap.documents
-                self?.channelsList = []
-                docs.forEach { (doc) in
-                    let jsonData = doc.data()
-                    guard let name = jsonData["name"] as? String else { return }
-                    let identifier = doc.documentID
-                    let lastMessage = jsonData["lastMessage"] as? String
-                    let timestamp = jsonData["lastActivity"] as? Timestamp
-                    let lastActivity = timestamp?.dateValue()
-                    let channel = Channel(identifier: identifier,
-                                          name: name,
-                                          lastMessage: lastMessage,
-                                          lastActivity: lastActivity)
-                    self?.channelsList.append(channel)
-                }
-                self?.channelsList.sort(by: { (ch1, ch2) -> Bool in
-                    let name1 = ch1.getName()
-                    let name2 = ch2.getName()
-                    return name1 < name2
-                })
-                self?.tableView?.reloadData()
-            case .failure(let error):
-                print(error.localizedDescription)
+        
+        database.addListenerForChannels { (error) in
+            if let error = error {
+                self.showErrorAlert(message: error.localizedDescription)
             }
         }
-    
+        
         newChannelImage?.image = UIImage(named: "pencil")
         if let height = newChannelButtonView?.bounds.height {
             newChannelButtonView?.layer.cornerRadius = height / 2
@@ -125,33 +69,15 @@ class ConversationsListViewController: UIViewController {
         self.theme = theme
     }
     
-    private func listenToMessages() {
-        for channel in channelsList {
-            database.addListenerForMessages(in: channel, completion: { [weak self] (result) in
-                switch result {
-                case .success(let snap):
-                    let docs = snap.documents
-                    var messages = [Message]()
-                    docs.forEach { (doc) in
-                        let jsonData = doc.data()
-                        guard let content = jsonData["content"] as? String,
-                              let created = jsonData["created"] as? Double,
-                              let senderId = jsonData["senderId"] as? String,
-                              let senderName = jsonData["senderName"] as? String else { return }
-                        let mes = Message(content: content,
-                                          senderName: senderName,
-                                          created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                          senderId: senderId, identifier: doc.documentID)
-                        messages.append(mes)
-                    }
-                    self?.coreDataService.save(channel: channel, messages: messages)
-                case .failure(let error):
-                    assertionFailure("Can't get any messages for channel: \(channel)\n\(error.localizedDescription)")
-                }
-            })
-        }
+    private func configureTableView() {
+        tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self),
+                                  bundle: nil),
+                            forCellReuseIdentifier: cellIdentifier)
+        self.tableViewDataSource = coreDataService.getChannelsTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, delegate: self)
+        tableView?.dataSource = self.tableViewDataSource
+        tableView?.delegate = self
     }
-
+    
     @objc func showProfile(_ sender: Any) {
         let profileVC: ProfileViewController = self.storyboard?
             .instantiateViewController(withIdentifier: "ProfileVC") as? ProfileViewController ?? ProfileViewController()
@@ -266,7 +192,6 @@ class ConversationsListViewController: UIViewController {
     func getUserImage() {
         let saver = GCDSavingManager()
 //        let saver = OperationsSavingManager()
-
         saver.getImage { [weak self] (data, error) in
             if let data = data {
                 self?.userImage = UIImage(data: data)
@@ -282,6 +207,23 @@ class ConversationsListViewController: UIViewController {
 
         present(alertControl, animated: true)
     }
+    
+    func showDeletionAlert(deletion: @escaping () -> Void) {
+        let alertControl = UIAlertController(title: "Вы уверены, что хотите удалить этот канал?", message: nil, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Не удалять", style: .default, handler: {_ in }))
+        alertControl.addAction(UIAlertAction(title: "Да, уверен", style: .destructive, handler: {_ in
+            deletion()
+        }))
+
+        present(alertControl, animated: true)
+    }
+    
+    func showErrorAlert(message: String) {
+        let alertControl = UIAlertController(title: "Произошла ошибка", message: message, preferredStyle: .alert)
+        alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
+
+        present(alertControl, animated: true)
+    }
 
     @objc func addNewChannel() {
         let alertControl = UIAlertController(
@@ -289,8 +231,7 @@ class ConversationsListViewController: UIViewController {
             message: "Enter name of a new channel",
             preferredStyle: .alert)
         alertControl.addTextField {_ in }
-        alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] (_) in
-            print(alertControl.textFields?[0].text as Any)
+        alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] _ in
             if let name = alertControl.textFields?[0].text {
                 self?.database.makeNewChannel(with: name)
             }
@@ -303,122 +244,76 @@ class ConversationsListViewController: UIViewController {
     }
 }
 
-enum MessageType: Int, CaseIterable {
-    case channels = 0
-}
-
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == MessageType.channels.rawValue {
-            let conversationVC = getConversationViewController(for: channelsList[indexPath.row])
-            conversationVC.theme = theme
-            self.database.getMessagesFor(
-                channel: channelsList[indexPath.row],
-                completion: { [weak conversationVC, weak self] (res) in
-                    switch res {
-                    case .success(let snap):
-                        let docs = snap.documents
-                        var messages = [Message]()
-                        docs.forEach { (doc) in
-                            let jsonData = doc.data()
-                            guard let content = jsonData["content"] as? String else { return }
-                            guard let created = jsonData["created"] as? Double else { return }
-                            guard let senderId = jsonData["senderId"] as? String else { return }
-                            guard let senderName = jsonData["senderName"] as? String else { return }
-                            let mes = Message(content: content,
-                                              senderName: senderName,
-                                              created: Date(timeIntervalSince1970: TimeInterval(created)) ,
-                                              senderId: senderId, identifier: doc.documentID)
-                            messages.append(mes)
-                        }
-                        messages.sort { (message1, message2) -> Bool in
-                            return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
-                        }
-                        conversationVC?.user = self?.currentUser
-                        conversationVC?.messages = messages
-                        conversationVC?.tableView?.reloadData()
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
-                })
-            navigationController?.pushViewController(conversationVC, animated: true)
-            tableView.deselectRow(at: indexPath, animated: true)
+        let dataSource = self.tableView?.dataSource as? ChannelsTableViewDataSource
+        let selectedChannel = dataSource?.getChannel(at: indexPath)
+        guard let channel = selectedChannel else { return }
+        
+        let conversationVC = getConversationViewController()
+        conversationVC.theme = theme
+        conversationVC.user = self.currentUser
+        conversationVC.database = self.database
+        
+        do {
+            conversationVC.channel = try coreDataService.getChannel(for: channel)
+            var messages = [Message]()
+            if let messages_db = channel.messages?.allObjects as? [Message_db] {
+                for message_db in messages_db {
+                    messages.append(try coreDataService.getMessage(for: message_db))
+                }
+            }
+            messages.sort(by: {  (message1, message2) -> Bool in
+                return message1.getCreationDate().timeIntervalSince1970 < message2.getCreationDate().timeIntervalSince1970
+            })
+            conversationVC.messages = messages
+        } catch {
+            print(error.localizedDescription)
         }
+        navigationController?.pushViewController(conversationVC, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    func getConversationViewController(for channel: Channel) -> ConversationViewController {
+    func getConversationViewController() -> ConversationViewController {
         guard let conversationVC = storyboard?
                 .instantiateViewController(withIdentifier: "ConversationVC") as? ConversationViewController else {
             fatalError("Couldn't load conversation view controller")
         }
-        conversationVC.channel = channel
         return conversationVC
     }
 }
 
-extension ConversationsListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: cellIdentifier,
-                for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
-        switch indexPath.section {
-        case MessageType.channels.rawValue:
-            cell.configure(name: channelsList[indexPath.row].getName(),
-                           message: channelsList[indexPath.row].getLastMessage(),
-                           date: channelsList[indexPath.row].getLastActivity(),
-                           online: true,
-                           hasUnreadMessages: true)
-            changeThemeForCell(cell: cell)
-            cell.isUserInteractionEnabled = true
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            guard let newIndexPath = newIndexPath else { return }
+            tableView?.insertRows(at: [newIndexPath], with: .automatic)
+        case .move:
+            guard let indexPath = indexPath, let newIndexPath = newIndexPath else { return }
+            tableView?.deleteRows(at: [indexPath], with: .automatic)
+            tableView?.insertRows(at: [newIndexPath], with: .automatic)
+        case .update:
+            guard let indexPath = indexPath else { return }
+            tableView?.reloadRows(at: [indexPath], with: .automatic)
+        case .delete:
+            guard let indexPath = indexPath else { return }
+            tableView?.deleteRows(at: [indexPath], with: .automatic)
         default:
-            break
-        }
-        return cell
-    }
-
-    func changeThemeForCell(cell: ConversationTableViewCell) {
-        switch theme {
-        case .classic:
-            cell.backgroundColor = .white
-            let color = UIColor.black
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        case .day:
-            cell.backgroundColor = .white
-            let color = UIColor.black
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        case .night:
-            cell.backgroundColor = .black
-            let color = UIColor.white
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
+            print("Unsupported type")
         }
     }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case MessageType.channels.rawValue:
-            return channelsList.count
-        default:
-            return 0
-        }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView?.beginUpdates()
     }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case MessageType.channels.rawValue:
-            return "Channels"
-        default:
-            return ""
-        }
-    }
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return MessageType.allCases.count
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView?.endUpdates()
     }
 }
 
@@ -428,6 +323,12 @@ extension Encodable {
     guard let dictionary = try JSONSerialization.jsonObject(with: data,
                                                             options: .allowFragments) as? [String: Any] else {
       throw NSError()
+    }
+    if let dateUnix = dictionary["created"] as? Double {
+        var result = dictionary
+        let date = Date(timeIntervalSince1970: dateUnix)
+        result["created"] = date
+        return result
     }
     return dictionary
   }
