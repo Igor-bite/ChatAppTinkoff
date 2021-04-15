@@ -316,11 +316,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3JA-ez-AaQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="316.82242990654203" y="-690.06479481641475"/>
+            <point key="canvasLocation" x="-233" y="-605"/>
         </scene>
         <!--Themes View Controller-->
         <scene sceneID="6KB-4a-qzS">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="n4G-ow-FuF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="ThemesVC" id="PA2-0C-VaR" customClass="ThemesViewController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ol2-zn-DQy">
                         <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
@@ -546,9 +547,8 @@
                         <outlet property="saveIndicator" destination="R1c-wH-zs6" id="RBB-51-XZ9"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="n4G-ow-FuF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1347.1962616822429" y="-690.71274298056164"/>
+            <point key="canvasLocation" x="798" y="-606"/>
         </scene>
         <!--Launch View Controller-->
         <scene sceneID="hJ9-HQ-G5y">

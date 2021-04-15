@@ -169,6 +169,34 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		A557B5FD2628EFB5000DEB51 /* Presentation Layer */ = {
+			isa = PBXGroup;
+			children = (
+				A51FF256260D09F9004BAB8E /* Profile */,
+				A56F761525FA1D510080AC1F /* ListOfConversations */,
+				A56F761325FA1D3A0080AC1F /* Conversation */,
+				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
+				A55F4B5F2616413900613C1E /* Storyboards */,
+				A5AF547826035CE000446B0D /* LaunchViewController.swift */,
+			);
+			path = "Presentation Layer";
+			sourceTree = "<group>";
+		};
+		A557B5FE2628F024000DEB51 /* Core Layer */ = {
+			isa = PBXGroup;
+			children = (
+				A55F4B5E261640FC00613C1E /* DataAccessLayer */,
+			);
+			path = "Core Layer";
+			sourceTree = "<group>";
+		};
+		A557B6002628F10E000DEB51 /* Service Layer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Service Layer";
+			sourceTree = "<group>";
+		};
 		A55F4B5E261640FC00613C1E /* DataAccessLayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,16 +266,12 @@
 		A5A5B94125DA85D500F61A26 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				A557B6002628F10E000DEB51 /* Service Layer */,
+				A557B5FE2628F024000DEB51 /* Core Layer */,
+				A557B5FD2628EFB5000DEB51 /* Presentation Layer */,
 				A5A5B94225DA85D500F61A26 /* AppDelegate.swift */,
-				A55F4B5E261640FC00613C1E /* DataAccessLayer */,
-				A51FF256260D09F9004BAB8E /* Profile */,
 				A51FF244260D0887004BAB8E /* Models */,
-				A56F761525FA1D510080AC1F /* ListOfConversations */,
-				A56F761325FA1D3A0080AC1F /* Conversation */,
-				A56F761025FA1BB30080AC1F /* ThemesViewController.swift */,
-				A55F4B5F2616413900613C1E /* Storyboards */,
 				A5A5B94B25DA85D600F61A26 /* Assets.xcassets */,
-				A5AF547826035CE000446B0D /* LaunchViewController.swift */,
 				A55A16432608D700004749E2 /* GoogleService-Info.plist */,
 				A5A5B95025DA85D600F61A26 /* Info.plist */,
 			);
