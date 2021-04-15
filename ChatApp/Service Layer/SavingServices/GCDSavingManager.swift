@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GCDSavingManager: ISavingManager {
+class GCDSavingManager: ISaver {
     private let queue = DispatchQueue.global(qos: .utility)
 
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void) {

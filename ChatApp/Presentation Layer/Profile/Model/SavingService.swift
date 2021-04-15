@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+protocol ISavingService {
+    func saveUser(user: User)
+    func saveImage(imageData: Data)
+}
+
 class SavingService {
     private let gcdSaver = GCDSavingManager()
     private let operationsSaver = OperationsSavingManager()

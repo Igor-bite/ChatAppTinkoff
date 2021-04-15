@@ -24,7 +24,7 @@
 		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
 		A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */; };
 		A599D8DC2600F6AC0002D3B8 /* ISavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */; };
-		A599D8E02600F9A20002D3B8 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DF2600F9A20002D3B8 /* Common.swift */; };
+		A599D8E02600F9A20002D3B8 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DF2600F9A20002D3B8 /* FileManager.swift */; };
 		A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94225DA85D500F61A26 /* AppDelegate.swift */; };
 		A5A5B94A25DA85D500F61A26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94825DA85D500F61A26 /* Main.storyboard */; };
 		A5A5B94C25DA85D600F61A26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A5B94B25DA85D600F61A26 /* Assets.xcassets */; };
@@ -61,7 +61,7 @@
 		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
 		A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationsSavingManager.swift; sourceTree = "<group>"; };
 		A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISavingManager.swift; sourceTree = "<group>"; };
-		A599D8DF2600F9A20002D3B8 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		A599D8DF2600F9A20002D3B8 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		A5A5B93F25DA85D500F61A26 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5A5B94225DA85D500F61A26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5A5B94925DA85D500F61A26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -142,7 +142,8 @@
 			children = (
 				A51FF24F260D090A004BAB8E /* Database.swift */,
 			);
-			path = Firebase;
+			name = Firebase;
+			path = DataAccessLayer/CoreData/Firebase;
 			sourceTree = "<group>";
 		};
 		A51FF256260D09F9004BAB8E /* Profile */ = {
@@ -162,7 +163,8 @@
 				A5484D4A261374C7008AF909 /* CoreDataStack.swift */,
 				A55F4B6D2616445E00613C1E /* CoreDataService.swift */,
 			);
-			path = CoreData;
+			name = CoreData;
+			path = DataAccessLayer/CoreData;
 			sourceTree = "<group>";
 		};
 		A557B5FD2628EFB5000DEB51 /* Presentation Layer */ = {
@@ -181,7 +183,9 @@
 		A557B5FE2628F024000DEB51 /* Core Layer */ = {
 			isa = PBXGroup;
 			children = (
-				A55F4B5E261640FC00613C1E /* DataAccessLayer */,
+				A51FF24E260D08FC004BAB8E /* Firebase */,
+				A599D8DF2600F9A20002D3B8 /* FileManager.swift */,
+				A5484D4426136E60008AF909 /* CoreData */,
 			);
 			path = "Core Layer";
 			sourceTree = "<group>";
@@ -189,6 +193,7 @@
 		A557B6002628F10E000DEB51 /* Service Layer */ = {
 			isa = PBXGroup;
 			children = (
+				A599D8D92600F5F40002D3B8 /* SavingServices */,
 			);
 			path = "Service Layer";
 			sourceTree = "<group>";
@@ -204,8 +209,8 @@
 		A557B6052628F25D000DEB51 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */,
 				A5E83450260D536B001975EC /* SavingService.swift */,
+				A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */,
 				A5E83453260D55D8001975EC /* ImagePickerManager.swift */,
 			);
 			path = Model;
@@ -308,16 +313,6 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		A55F4B5E261640FC00613C1E /* DataAccessLayer */ = {
-			isa = PBXGroup;
-			children = (
-				A599D8D92600F5F40002D3B8 /* SavingManagers */,
-				A5484D4426136E60008AF909 /* CoreData */,
-				A51FF24E260D08FC004BAB8E /* Firebase */,
-			);
-			path = DataAccessLayer;
-			sourceTree = "<group>";
-		};
 		A55F4B5F2616413900613C1E /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,15 +341,14 @@
 			path = ListOfConversations;
 			sourceTree = "<group>";
 		};
-		A599D8D92600F5F40002D3B8 /* SavingManagers */ = {
+		A599D8D92600F5F40002D3B8 /* SavingServices */ = {
 			isa = PBXGroup;
 			children = (
 				A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */,
 				A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */,
 				A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */,
-				A599D8DF2600F9A20002D3B8 /* Common.swift */,
 			);
-			path = SavingManagers;
+			path = SavingServices;
 			sourceTree = "<group>";
 		};
 		A5A5B93625DA85D500F61A26 = {
@@ -378,9 +372,9 @@
 		A5A5B94125DA85D500F61A26 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				A557B5FE2628F024000DEB51 /* Core Layer */,
 				A51FF244260D0887004BAB8E /* Models */,
 				A557B6002628F10E000DEB51 /* Service Layer */,
-				A557B5FE2628F024000DEB51 /* Core Layer */,
 				A557B5FD2628EFB5000DEB51 /* Presentation Layer */,
 				A5A5B94225DA85D500F61A26 /* AppDelegate.swift */,
 				A5A5B94B25DA85D600F61A26 /* Assets.xcassets */,
@@ -532,7 +526,7 @@
 				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
 				A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */,
 				A5484D4E2613766F008AF909 /* ObjectsExtension.swift in Sources */,
-				A599D8E02600F9A20002D3B8 /* Common.swift in Sources */,
+				A599D8E02600F9A20002D3B8 /* FileManager.swift in Sources */,
 				A51FF246260D0894004BAB8E /* UserModel.swift in Sources */,
 				A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */,
 				A51FF24C260D08DC004BAB8E /* ChannelModel.swift in Sources */,

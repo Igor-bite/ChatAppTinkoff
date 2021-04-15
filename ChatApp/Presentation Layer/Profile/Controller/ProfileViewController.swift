@@ -96,7 +96,7 @@ class ProfileViewController: UIViewController {
     }
 // MARK: - OnTapFunctions
 
-    fileprivate func saveUser(with saver: ISavingManager) {
+    fileprivate func saveUser(with saver: ISaver) {
         if isEditingUserData || isImageChanged {
             if isEditingUserData {
                 UIHelper.toggleUserDetailsHeight()
@@ -115,7 +115,7 @@ class ProfileViewController: UIViewController {
         }
     }
 
-    fileprivate func saveImage(with saver: ISavingManager) {
+    fileprivate func saveImage(with saver: ISaver) {
         if isImageChanged && !isAvatarGenerated {
             if let image = userImage?.image {
                 if let imageData = image.jpegData(compressionQuality: 1) {

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OperationsSavingManager: ISavingManager {
+class OperationsSavingManager: ISaver {
     private let queue = OperationQueue()
     var saveUserOperation: SaveUserOperation?
     var saveImageOperation: SaveImageDataOperation?
