@@ -14,7 +14,46 @@ public enum CoreDataError: Error {
     case dataError
 }
 
-class CoreDataService {
+protocol Converting {
+    func getChannel(for channel: Channel_db) throws -> Channel
+    func getMessage(for message: Message_db) throws -> Message
+}
+
+extension Converting {
+    func getChannel(for channel: Channel_db) throws -> Channel {
+        guard let id = channel.identifier, let name = channel.name else { throw CoreDataError.dataError }
+        return Channel(identifier: id,
+                       name: name,
+                       lastMessage: channel.lastMessage,
+                       lastActivity: channel.lastActivity)
+    }
+    
+    func getMessage(for message: Message_db) throws -> Message {
+        guard let id = message.identifier,
+              let text = message.content,
+              let senderName = message.senderName,
+              let created = message.created,
+              let senderId = message.senderId else { throw CoreDataError.dataError }
+        
+        return Message(content: text, senderName: senderName, created: created, senderId: senderId, identifier: id)
+    }
+}
+
+protocol ICoreDataService: Converting {
+    var channelsDelegate: NSFetchedResultsControllerDelegate? { get set }
+    var messagesDelegate: NSFetchedResultsControllerDelegate? { get set }
+    func save(channel: Channel, message: Message?)
+    func delete(channel: Channel)
+    func delete(message: Message, in channel: Channel)
+    func getChannelsTableViewDataSource(cellIdentifier: String, theme: Theme, delegate: ConversationsListViewController) -> UITableViewDataSource
+    func getConversationTableViewDataSource(cellIdentifier: String, theme: Theme, channel: Channel, delegate: ConversationViewController) -> UITableViewDataSource
+}
+
+extension ICoreDataService {
+    func save(channel: Channel, message: Message? = nil) {}
+}
+
+class CoreDataService: ICoreDataService {
     private static let coreDataStack = CoreDataStack()
     weak var channelsDelegate: NSFetchedResultsControllerDelegate?
     weak var messagesDelegate: NSFetchedResultsControllerDelegate?
@@ -160,23 +199,5 @@ class CoreDataService {
                                              cacheName: nil)
         frc.delegate = self.messagesDelegate
         return ConversationTableViewDataSource(fetchedResultsController: frc, coreDataService: self, cellId: cellIdentifier, theme: theme, delegate: delegate)
-    }
-    
-    func getChannel(for channel: Channel_db) throws -> Channel {
-        guard let id = channel.identifier, let name = channel.name else { throw CoreDataError.dataError }
-        return Channel(identifier: id,
-                       name: name,
-                       lastMessage: channel.lastMessage,
-                       lastActivity: channel.lastActivity)
-    }
-    
-    func getMessage(for message: Message_db) throws -> Message {
-        guard let id = message.identifier,
-              let text = message.content,
-              let senderName = message.senderName,
-              let created = message.created,
-              let senderId = message.senderId else { throw CoreDataError.dataError }
-        
-        return Message(content: text, senderName: senderName, created: created, senderId: senderId, identifier: id)
     }
 }

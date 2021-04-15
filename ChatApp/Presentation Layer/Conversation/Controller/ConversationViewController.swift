@@ -20,13 +20,13 @@ class ConversationViewController: UIViewController, UITableViewDelegate {
     @IBOutlet weak var sendImage: UIImageView?
     let cellIdentifier = String(describing: MessageTableViewCell.self)
     var theme: Theme = .classic
-    var database: Database?
+    var dataService: IDataService?
     private var tableViewDataSource: UITableViewDataSource?
     private var tableViewOriginY: CGFloat?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        database?.coreDataService?.messagesDelegate = self
+        dataService?.coreDataService.messagesDelegate = self
         
         title = channel?.getName()
         
@@ -58,7 +58,7 @@ class ConversationViewController: UIViewController, UITableViewDelegate {
         
         guard let channel = channel else { return }
         
-        self.tableViewDataSource = database?.coreDataService?.getConversationTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, channel: channel, delegate: self)
+        self.tableViewDataSource = dataService?.coreDataService.getConversationTableViewDataSource(cellIdentifier: cellIdentifier, theme: theme, channel: channel, delegate: self)
         tableView?.register(UINib(nibName: String(describing: MessageTableViewCell.self),
                                   bundle: nil),
                             forCellReuseIdentifier: cellIdentifier)
@@ -67,7 +67,7 @@ class ConversationViewController: UIViewController, UITableViewDelegate {
         tableView?.delegate = self
         tableView?.allowsSelection = false
         
-        self.database?.addListenerForMessages(in: channel, completion: { (error) in
+        self.dataService?.listenToMessages(in: channel, completion: { (error) in
             if let error = error {
                 self.showErrorAlert(message: error.localizedDescription)
             }
@@ -83,7 +83,7 @@ class ConversationViewController: UIViewController, UITableViewDelegate {
         if let text = text, let channel = channel {
             
             let message = Message(content: text, userName: user?.getName() ?? User.getUnknownUserName())
-            database?.addMessageToChannel(message: message, channel: channel)
+            dataService?.addMessageToChannel(message: message, channel: channel)
             messageTextField?.text = ""
         }
     }

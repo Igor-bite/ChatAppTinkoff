@@ -12,12 +12,12 @@ class ConversationTableViewDataSource: NSObject, UITableViewDataSource {
     private let fetchedResultsController: NSFetchedResultsController<Message_db>
     private let cellIdentifier: String
     private var theme: Theme
-    private let database = Database()
+    private let database: IDataService
     private weak var delegate: ConversationViewController?
     
-    init(fetchedResultsController: NSFetchedResultsController<Message_db>, coreDataService: CoreDataService, cellId: String, theme: Theme, delegate: ConversationViewController) {
+    init(fetchedResultsController: NSFetchedResultsController<Message_db>, coreDataService: ICoreDataService, cellId: String, theme: Theme, delegate: ConversationViewController) {
         self.delegate = delegate
-        database.coreDataService = coreDataService
+        self.database = DataService(database: FirestoreDatabase(), coreDataService: coreDataService)
         cellIdentifier = cellId
         self.theme = theme
         self.fetchedResultsController = fetchedResultsController
@@ -102,10 +102,10 @@ class ConversationTableViewDataSource: NSObject, UITableViewDataSource {
         if editingStyle == .delete {
             let message_db = self.fetchedResultsController.object(at: indexPath)
             do {
-                guard let message = try database.coreDataService?.getMessage(for: message_db),
-                      let channel_db = message_db.channel,
-                      let channel = try database.coreDataService?.getChannel(for: channel_db)
-                else { return }
+                guard let channel_db = message_db.channel
+                      else { return }
+                let message = try database.coreDataService.getMessage(for: message_db)
+                let channel = try database.coreDataService.getChannel(for: channel_db)
                 if message.isMine() {
                     delegate?.showDeletionAlert {
                         self.database.delete(message: message, in: channel)

@@ -11,7 +11,16 @@ import UIKit
 
 // MARK: - Firebase/Firestore
 
-class Database {
+protocol IDatabase {
+    func addListenerForChannels(completion: @escaping (Error?) -> Void)
+    func addListenerForMessages(in channel: Channel, completion: @escaping (Error?) -> Void)
+    func makeNewChannel(with name: String)
+    func addMessageToChannel(message: Message, channel: Channel)
+    func delete(channel: Channel)
+    func delete(message: Message, in channel: Channel)
+}
+
+class FirestoreDatabase: IDatabase {
     lazy var dbInstance = Firestore.firestore()
     lazy var reference = dbInstance.collection("channels")
     weak var coreDataService: CoreDataService?
@@ -52,7 +61,6 @@ class Database {
     }
     
     func addListenerForMessages(in channel: Channel, completion: @escaping (Error?) -> Void) {
-//        print("adding listener for messages to channel with id:  \(channel.getId())")
         reference.document(channel.getId()).collection("messages").addSnapshotListener { snapshot, error in
             if let error = error {
                 completion(error)
@@ -93,17 +101,6 @@ class Database {
         }
     }
     
-    func getChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
-        reference.getDocuments { (snap, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                completion(.failure(error))
-            }
-            
-            guard let snapshot = snap else { return }
-            completion(.success(snapshot))
-        }
-    }
     func makeNewChannel(with name: String) {
         let newChannelRef = reference.document()
         let channel = Channel(name: name, identifier: newChannelRef.documentID)

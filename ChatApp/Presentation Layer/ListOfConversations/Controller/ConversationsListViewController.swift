@@ -13,7 +13,7 @@ class ConversationsListViewController: UIViewController {
     private let navControllerTitle: String = "Tinkoff Chat"
     var currentUser: User?
     var userImage: UIImage?
-    let database: Database = Database()
+    var dataService: IDataService?
     var channelsList: [Channel] = []
     var theme: Theme = .classic
     @IBOutlet weak var newChannelButtonView: UIView?
@@ -24,7 +24,7 @@ class ConversationsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         coreDataService.channelsDelegate = self
-        database.coreDataService = coreDataService
+        self.dataService = DataService(database: FirestoreDatabase(), coreDataService: coreDataService)
         title = navControllerTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit,
                                                             target: self,
@@ -39,7 +39,7 @@ class ConversationsListViewController: UIViewController {
         
         getUserImage()
         
-        database.addListenerForChannels { (error) in
+        dataService?.listenToChannels { (error) in
             if let error = error {
                 self.showErrorAlert(message: error.localizedDescription)
             }
@@ -233,7 +233,7 @@ class ConversationsListViewController: UIViewController {
         alertControl.addTextField {_ in }
         alertControl.addAction(UIAlertAction(title: "Make", style: .default, handler: {[weak self] _ in
             if let name = alertControl.textFields?[0].text {
-                self?.database.makeNewChannel(with: name)
+                self?.dataService?.makeNewChannel(with: name)
             }
         }))
         alertControl.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
@@ -253,7 +253,7 @@ extension ConversationsListViewController: UITableViewDelegate {
         let conversationVC = getConversationViewController()
         conversationVC.theme = theme
         conversationVC.user = self.currentUser
-        conversationVC.database = self.database
+        conversationVC.dataService = self.dataService
         
         do {
             conversationVC.channel = try coreDataService.getChannel(for: channel)

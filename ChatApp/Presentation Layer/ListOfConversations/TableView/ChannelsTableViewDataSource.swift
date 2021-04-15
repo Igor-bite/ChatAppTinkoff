@@ -12,16 +12,16 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
     private let fetchedResultsController: NSFetchedResultsController<Channel_db>
     private let cellIdentifier: String
     private var theme: Theme
-    private let database = Database()
+    private let database: IDataService
     private weak var delegate: ConversationsListViewController?
     
     init(fetchedResultsController: NSFetchedResultsController<Channel_db>,
-         coreDataService: CoreDataService,
+         coreDataService: ICoreDataService,
          cellId: String,
          theme: Theme,
          delegate: ConversationsListViewController) {
         self.delegate = delegate
-        database.coreDataService = coreDataService
+        database = DataService(database: FirestoreDatabase(), coreDataService: coreDataService)
         cellIdentifier = cellId
         self.theme = theme
         self.fetchedResultsController = fetchedResultsController
