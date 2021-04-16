@@ -7,13 +7,15 @@
 
 import UIKit
 
-class OperationsSavingManager: ISaver {
+class OperationsSavingManager: ISavingManager {
     private let queue = OperationQueue()
     var saveUserOperation: SaveUserOperation?
     var saveImageOperation: SaveImageDataOperation?
+    private let saveService: ISavingService = SavingUserService()
 
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void) {
-        saveUserOperation = SaveUserOperation(user: user)
+        saveUserOperation = SaveUserOperation(user: user, saveService: saveService)
+        
         saveUserOperation?.completionBlock = {
             OperationQueue.main.addOperation {
                 if let result = self.saveUserOperation?.result {
@@ -28,7 +30,7 @@ class OperationsSavingManager: ISaver {
     }
 
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
-        saveImageOperation = SaveImageDataOperation(data: data)
+        saveImageOperation = SaveImageDataOperation(data: data, saveService: saveService)
         saveImageOperation?.completionBlock = {
             OperationQueue.main.addOperation {
                 if let result = self.saveImageOperation?.result {
@@ -114,9 +116,11 @@ protocol IDataSaveOperation {
 class SaveUserOperation: AsyncOperation, IDataSaveOperation {
     private let user: User
     private(set) var result: FileOperationError?
-
-    init(user: User) {
+    private let saveService: ISavingService
+    
+    init(user: User, saveService: ISavingService) {
         self.user = user
+        self.saveService = saveService
         super.init()
     }
 
@@ -125,7 +129,7 @@ class SaveUserOperation: AsyncOperation, IDataSaveOperation {
             state = .finished
             return
         }
-        saveUserData(user: user, completion: { [weak self] result in
+        saveService.saveUserData(user: user, completion: { [weak self] result in
             self?.result = result
             self?.state = .finished
         })
@@ -137,9 +141,11 @@ class SaveUserOperation: AsyncOperation, IDataSaveOperation {
 class SaveImageDataOperation: AsyncOperation, IDataSaveOperation {
     private let data: Data
     private(set) var result: FileOperationError?
+    private let saveService: ISavingService
 
-    init(data: Data) {
+    init(data: Data, saveService: ISavingService) {
         self.data = data
+        self.saveService = saveService
         super.init()
     }
 
@@ -149,7 +155,7 @@ class SaveImageDataOperation: AsyncOperation, IDataSaveOperation {
             return
         }
 
-        saveUserImageData(data: data) { [weak self] (result) in
+        saveService.saveUserImageData(data: data) { [weak self] (result) in
             self?.result = result
             self?.state = .finished
         }

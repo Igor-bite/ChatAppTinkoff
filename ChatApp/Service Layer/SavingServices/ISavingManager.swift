@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ISaver {
+protocol ISavingManager {
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void)
 
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void)

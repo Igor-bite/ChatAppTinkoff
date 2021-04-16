@@ -50,7 +50,9 @@ protocol ICoreDataService: Converting {
 }
 
 extension ICoreDataService {
-    func save(channel: Channel, message: Message? = nil) {}
+    func save(channel: Channel, message: Message? = nil) {
+        return save(channel: channel, message: message)
+    }
 }
 
 class CoreDataService: ICoreDataService {

@@ -12,7 +12,7 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
     private let fetchedResultsController: NSFetchedResultsController<Channel_db>
     private let cellIdentifier: String
     private var theme: Theme
-    private let database: IDataService
+    private let dataService: IDataService
     private weak var delegate: ConversationsListViewController?
     
     init(fetchedResultsController: NSFetchedResultsController<Channel_db>,
@@ -21,7 +21,7 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
          theme: Theme,
          delegate: ConversationsListViewController) {
         self.delegate = delegate
-        database = DataService(database: FirestoreDatabase(), coreDataService: coreDataService)
+        dataService = DataService(database: FirestoreDatabase(), coreDataService: coreDataService)
         cellIdentifier = cellId
         self.theme = theme
         self.fetchedResultsController = fetchedResultsController
@@ -38,6 +38,7 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
             fatalError("No sections in frc")
         }
         let sectionInfo = sections[section]
+        print(sectionInfo.numberOfObjects)
         return sectionInfo.numberOfObjects
     }
     
@@ -51,33 +52,10 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
                        date: channel.lastActivity,
                        online: true,
                        hasUnreadMessages: true)
-        changeThemeForCell(cell: cell)
+        cell.changeTheme(theme: theme)
         return cell
     }
     
-    private func changeThemeForCell(cell: ConversationTableViewCell) {
-        switch theme {
-        case .classic:
-            cell.backgroundColor = .white
-            let color = UIColor.black
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        case .day:
-            cell.backgroundColor = .white
-            let color = UIColor.black
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        case .night:
-            cell.backgroundColor = .black
-            let color = UIColor.white
-            cell.nameLabel?.textColor = color
-            cell.lastMessageLabel?.textColor = color
-            cell.dateLabel?.textColor = color
-        }
-    }
-
     func numberOfSections(in tableView: UITableView) -> Int {
         guard let numOfSections = self.fetchedResultsController.sections?.count else { return 0 }
         return numOfSections
@@ -92,7 +70,7 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
             let channel = self.fetchedResultsController.object(at: indexPath)
             guard let id = channel.identifier, let name = channel.name else { return }
             delegate?.showDeletionAlert {
-                self.database.delete(channel: Channel(identifier: id,
+                self.dataService.delete(channel: Channel(identifier: id,
                                                  name: name,
                                                  lastMessage: channel.lastMessage,
                                                  lastActivity: channel.lastActivity))

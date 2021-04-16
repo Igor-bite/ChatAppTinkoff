@@ -7,12 +7,13 @@
 
 import UIKit
 
-class GCDSavingManager: ISaver {
+class GCDSavingManager: ISavingManager {
     private let queue = DispatchQueue.global(qos: .utility)
+    private let saveService: ISavingService = SavingUserService()
 
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void) {
         queue.async {
-            saveUserData(user: user) { result in
+            self.saveService.saveUserData(user: user) { result in
                 DispatchQueue.main.async { completion(result) }
             }
         }
@@ -20,7 +21,7 @@ class GCDSavingManager: ISaver {
 
     func saveImage(of data: Data, completion: @escaping (FileOperationError?) -> Void) {
         queue.async {
-            saveUserImageData(data: data) { result in
+            self.saveService.saveUserImageData(data: data) { result in
                 DispatchQueue.main.async { completion(result) }
             }
         }
@@ -28,7 +29,7 @@ class GCDSavingManager: ISaver {
 
     func saveTheme(theme: Theme, completion: @escaping (FileOperationError?) -> Void) {
         queue.async {
-            saveUserTheme(theme: theme.rawValue) { result in
+            self.saveService.saveUserTheme(theme: theme.rawValue) { result in
                 DispatchQueue.main.async { completion(result) }
             }
         }
@@ -36,7 +37,7 @@ class GCDSavingManager: ISaver {
 
     func getUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
         queue.async {
-            getAllUserData { user, data, error in
+            self.saveService.getAllUserData { user, data, error in
                 DispatchQueue.main.async { completion(user, data, error) }
             }
         }
@@ -44,7 +45,7 @@ class GCDSavingManager: ISaver {
 
     func getUser(completion: @escaping (User?, FileOperationError?) -> Void) {
         queue.async {
-            getUserOnly { user, error in
+            self.saveService.getUserOnly { user, error in
                 DispatchQueue.main.async { completion(user, error) }
             }
         }
@@ -52,7 +53,7 @@ class GCDSavingManager: ISaver {
 
     func getImage(completion: @escaping (Data?, FileOperationError?) -> Void) {
         queue.async {
-            getUserImage { data, error in
+            self.saveService.getUserImage { data, error in
                 DispatchQueue.main.async { completion(data, error) }
             }
         }

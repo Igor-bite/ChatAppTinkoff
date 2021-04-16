@@ -44,49 +44,8 @@ class ConversationTableViewDataSource: NSObject, UITableViewDataSource {
         let message = self.fetchedResultsController.object(at: indexPath)
         guard let text = message.content else { return UITableViewCell() }
         cell.configure(text: text, userName: message.senderName, isFromMe: message.senderId == UIDevice.current.identifierForVendor!.uuidString)
-        changeThemeForCell(cell: cell)
+        cell.changeTheme(theme: theme)
         return cell
-    }
-    
-    func changeThemeForCell(cell: MessageTableViewCell) {
-        guard let isFromMe = cell.isFromMe else { return }
-        if isFromMe {
-            switch theme {
-            case .classic:
-                cell.messageView?.backgroundColor = UIColor(named: "classicMessageOut")
-                cell.backgroundColor = .white
-                let color = UIColor.black
-                cell.messageLabel?.textColor = color
-            case .day:
-                cell.messageView?.backgroundColor = UIColor(named: "dayMessageOut")
-                cell.backgroundColor = .white
-                let color = UIColor.black
-                cell.messageLabel?.textColor = color
-            case .night:
-                cell.messageView?.backgroundColor = UIColor(named: "nightMessageOut")
-                cell.backgroundColor = .black
-                let color = UIColor.white
-                cell.messageLabel?.textColor = color
-            }
-        } else {
-            switch theme {
-            case .classic:
-                cell.messageView?.backgroundColor = UIColor(named: "classicMessageIn")
-                cell.backgroundColor = .white
-                let color = UIColor.black
-                cell.messageLabel?.textColor = color
-            case .day:
-                cell.messageView?.backgroundColor = UIColor(named: "dayMessageIn")
-                cell.backgroundColor = .white
-                let color = UIColor.black
-                cell.messageLabel?.textColor = color
-            case .night:
-                cell.messageView?.backgroundColor = UIColor(named: "nightMessageIn")
-                cell.backgroundColor = .black
-                let color = UIColor.white
-                cell.messageLabel?.textColor = color
-            }
-        }
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {

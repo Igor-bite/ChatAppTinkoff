@@ -85,6 +85,7 @@ class ConversationsListViewController: UIViewController {
         profileVC.userToRecover = currentUser
         profileVC.imageToRecover = userImage
         profileVC.delegate = self
+        profileVC.dataService = self.dataService
         self.present(profileVC, animated: true, completion: nil)
     }
 

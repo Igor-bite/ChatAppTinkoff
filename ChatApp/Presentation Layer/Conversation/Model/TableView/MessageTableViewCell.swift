@@ -50,4 +50,45 @@ class MessageTableViewCell: UITableViewCell {
         }
         messageView?.translatesAutoresizingMaskIntoConstraints = false
     }
+    
+    func changeTheme(theme: Theme) {
+        guard let isFromMe = self.isFromMe else { return }
+        if isFromMe {
+            switch theme {
+            case .classic:
+                self.messageView?.backgroundColor = UIColor(named: "classicMessageOut")
+                self.backgroundColor = .white
+                let color = UIColor.black
+                self.messageLabel?.textColor = color
+            case .day:
+                self.messageView?.backgroundColor = UIColor(named: "dayMessageOut")
+                self.backgroundColor = .white
+                let color = UIColor.black
+                self.messageLabel?.textColor = color
+            case .night:
+                self.messageView?.backgroundColor = UIColor(named: "nightMessageOut")
+                self.backgroundColor = .black
+                let color = UIColor.white
+                self.messageLabel?.textColor = color
+            }
+        } else {
+            switch theme {
+            case .classic:
+                self.messageView?.backgroundColor = UIColor(named: "classicMessageIn")
+                self.backgroundColor = .white
+                let color = UIColor.black
+                self.messageLabel?.textColor = color
+            case .day:
+                self.messageView?.backgroundColor = UIColor(named: "dayMessageIn")
+                self.backgroundColor = .white
+                let color = UIColor.black
+                self.messageLabel?.textColor = color
+            case .night:
+                self.messageView?.backgroundColor = UIColor(named: "nightMessageIn")
+                self.backgroundColor = .black
+                let color = UIColor.white
+                self.messageLabel?.textColor = color
+            }
+        }
+    }
 }

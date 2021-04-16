@@ -50,13 +50,12 @@ class ProfileViewController: UIViewController {
 
     let gcdSaver = GCDSavingManager()
     let operationsSaver = OperationsSavingManager()
-    let saveService = SavingService()
+    var dataService: IDataService?
+    
 // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         UIHelper.viewControl = self
-        themeChanger.profileVC = self
-        saveService.profileVC = self
 
         NSLog("\nView did load : \(#function)")
         editButtonView?.layer.cornerRadius = buttonCornerRadius
@@ -95,8 +94,9 @@ class ProfileViewController: UIViewController {
         userDetailsHeightGreater?.isActive = true
     }
 // MARK: - OnTapFunctions
+    private let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
 
-    fileprivate func saveUser(with saver: ISaver) {
+    fileprivate func saveUser() {
         if isEditingUserData || isImageChanged {
             if isEditingUserData {
                 UIHelper.toggleUserDetailsHeight()
@@ -111,15 +111,105 @@ class ProfileViewController: UIViewController {
                                      description: description,
                                      isOnline: true,
                                      prefersGeneratedAvatar: isAvatarGenerated)
-            saveService.saveUser(user: curUser)
+            dataService?.saveUser(user: curUser) { [weak self] (error) in
+                if let error = error {
+                    self?.showFailureAlert()
+                    switch error {
+                    case .badDirCreation:
+                        print("dir creation problems")
+                        return
+                    case .badFileCreation:
+                        print("file creation problems")
+                        return
+                    case .unspecified:
+                        print("unspecified problem")
+                        return
+                    case .badWritingOperation:
+                        print("badWritingOperation")
+                        return
+                    case .badReadingOperation:
+                        print("badReadingOperation")
+                        return
+                    }
+                }
+                
+            }
+        }
+        
+        func saveImage(imageData: Data) {
+            dataService?.saveImage(imageData: imageData, completion: { [weak self] error in
+                if let error = error {
+                    self?.showFailureAlert()
+                    switch error {
+                    case .unspecified:
+                        print("unspecified")
+                    case .badDirCreation:
+                        print("badDirCreation")
+                    case .badFileCreation:
+                        print("badFileCreation")
+                    case .badWritingOperation:
+                        print("badWritingOperation")
+                    case .badReadingOperation:
+                        print("badReadingOperation")
+                    }
+                } else {
+                    self?.saveImageInConcurrent()
+                }
+            })
+        }
+    }
+    
+    private func saveUserInConcurrent() {
+        self.concurrentSaveQueue.async { [weak self] in
+            guard let isImageChanged = self?.isImageChanged else { return }
+            guard let isAvatarGenerated = self?.isAvatarGenerated else { return }
+            if !isImageChanged && !isAvatarGenerated {
+                DispatchQueue.main.async {
+                    self?.saveImageCheckmark?.isHidden = false
+                    self?.saveActivityIndicator?.stopAnimating()
+                    self?.showSuccessAlert()
+                    self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
+                    self?.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
+                }
+            } else if isAvatarGenerated {
+                DispatchQueue.main.async {
+                    self?.saveImageCheckmark?.isHidden = false
+                    self?.saveActivityIndicator?.stopAnimating()
+                    self?.showSuccessAlert()
+                    self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
+                    self?.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
+                }
+            } else {
+                self?.isImageChanged = false
+            }
+        }
+    }
+    
+    private func saveImageInConcurrent() {
+        concurrentSaveQueue.async {
+            if !self.isImageChanged {
+                DispatchQueue.main.async {
+                    self.saveImageCheckmark?.isHidden = false
+                    self.saveActivityIndicator?.stopAnimating()
+                    self.showSuccessAlert()
+                    self.saveImageCheckmark?.image = UIImage(named: "checkmark")
+                    self.changeButtonText(buttonView: self.editButtonView, text: "Edit")
+                }
+            } else {
+                self.isImageChanged = false
+            }
         }
     }
 
-    fileprivate func saveImage(with saver: ISaver) {
+    fileprivate func saveImage() {
         if isImageChanged && !isAvatarGenerated {
             if let image = userImage?.image {
                 if let imageData = image.jpegData(compressionQuality: 1) {
-                    saveService.saveImage(imageData: imageData)
+                    dataService?.saveImage(imageData: imageData) { [weak self] error in
+                        if error != nil {
+                            self?.showFailureAlert()
+                        }
+                    }
                 }
             }
         }
@@ -131,8 +221,8 @@ class ProfileViewController: UIViewController {
         UIHelper.toggleSaveButtonsAlpha()
         saveImageCheckmark?.isHidden = true
         saveActivityIndicator?.startAnimating()
-        saveUser(with: gcdSaver)
-        saveImage(with: gcdSaver)
+        saveUser()
+        saveImage()
     }
 
     @objc func saveOperationsTapped() {
@@ -141,8 +231,8 @@ class ProfileViewController: UIViewController {
         UIHelper.toggleSaveButtonsAlpha()
         saveImageCheckmark?.isHidden = true
         saveActivityIndicator?.startAnimating()
-        saveUser(with: operationsSaver)
-        saveImage(with: operationsSaver)
+        saveUser()
+        saveImage()
     }
 
     @IBAction func closeProfile(_ sender: Any) {
@@ -435,27 +525,6 @@ private class UIHelper {
 extension ProfileViewController {
 // MARK: - ViewController LifeCycle
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        NSLog("\nView did appear : \(#function)")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NSLog("\nView will appear : \(#function)")
-        setUpUserData()
-    }
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        NSLog("\nView will layout subviews : \(#function)")
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        NSLog("\nView did layout subviews : \(#function)")
-    }
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NSLog("\nView will disappear : \(#function)")
@@ -472,10 +541,5 @@ extension ProfileViewController {
                                      isOnline: true,
                                      prefersGeneratedAvatar: isAvatarGenerated,
                                      theme: theme.rawValue)
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NSLog("\nView did disappear : \(#function)")
     }
 }

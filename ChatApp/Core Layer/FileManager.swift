@@ -15,73 +15,83 @@ public enum FileOperationError: Error {
     case unspecified
 }
 
-func saveUserData(user: User, completion: @escaping (FileOperationError?) -> Void) {
-    let manager = SavingManager()
-    do {
-        try manager.saveUserData(user: user)
-        completion(nil)
-    } catch {
-        completion(FileOperationError.unspecified) // fix catching specific errors
-    }
+protocol ISavingService {
+    func saveUserData(user: User, completion: @escaping (FileOperationError?) -> Void)
+
+    func saveUserImageData(data: Data, completion: @escaping (FileOperationError?) -> Void)
+
+    func getAllUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void)
+
+    func saveUserTheme(theme: String, completion: @escaping (FileOperationError?) -> Void)
+
+    func getUserOnly(completion: @escaping (User?, FileOperationError?) -> Void)
+
+    func getUserImage(completion: @escaping (Data?, FileOperationError?) -> Void)
 }
 
-func saveUserImageData(data: Data, completion: @escaping (FileOperationError?) -> Void) {
-    let manager = SavingManager()
-    do {
-        try manager.saveData(data: data)
-        completion(nil)
-    } catch {
-        completion(error as? FileOperationError)
+class SavingUserService: ISavingService {
+    func saveUserData(user: User, completion: @escaping (FileOperationError?) -> Void) {
+        let manager = SavingManager()
+        do {
+            try manager.saveUserData(user: user)
+            completion(nil)
+        } catch {
+            completion(FileOperationError.unspecified) // fix catching specific errors
+        }
     }
-}
 
-func getAllUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
-    let manager = SavingManager()
-    do {
-        let user = try manager.getUserData()
-        let imageData = try manager.getImageData()
-        completion(user, imageData, nil)
-    } catch {
-        completion(nil, nil, error as? FileOperationError)
+    func saveUserImageData(data: Data, completion: @escaping (FileOperationError?) -> Void) {
+        let manager = SavingManager()
+        do {
+            try manager.saveData(data: data)
+            completion(nil)
+        } catch {
+            completion(error as? FileOperationError)
+        }
     }
-}
 
-func saveUserTheme(theme: String, completion: @escaping (FileOperationError?) -> Void) {
-    let manager = SavingManager()
-    do {
-        let user = try manager.getUserData()
-        user?.changeUserTheme(theme: theme)
-        guard let userUnwrapped = user else { return }
-        try manager.saveUserData(user: userUnwrapped)
-        completion(nil)
-    } catch {
-        completion(error as? FileOperationError)
+    func getAllUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
+        let manager = SavingManager()
+        do {
+            let user = try manager.getUserData()
+            let imageData = try manager.getImageData()
+            completion(user, imageData, nil)
+        } catch {
+            completion(nil, nil, error as? FileOperationError)
+        }
     }
-}
 
-func getUserOnly(completion: @escaping (User?, FileOperationError?) -> Void) {
-    let manager = SavingManager()
-    do {
-        let user = try manager.getUserData()
-        completion(user, nil)
-    } catch {
-        completion(nil, error as? FileOperationError)
+    func saveUserTheme(theme: String, completion: @escaping (FileOperationError?) -> Void) {
+        let manager = SavingManager()
+        do {
+            let user = try manager.getUserData()
+            user?.changeUserTheme(theme: theme)
+            guard let userUnwrapped = user else { return }
+            try manager.saveUserData(user: userUnwrapped)
+            completion(nil)
+        } catch {
+            completion(error as? FileOperationError)
+        }
     }
-}
 
-func getUserImage(completion: @escaping (Data?, FileOperationError?) -> Void) {
-    let manager = SavingManager()
-    do {
-        let imageData = try manager.getImageData()
-        completion(imageData, nil)
-    } catch {
-        completion(nil, error as? FileOperationError)
+    func getUserOnly(completion: @escaping (User?, FileOperationError?) -> Void) {
+        let manager = SavingManager()
+        do {
+            let user = try manager.getUserData()
+            completion(user, nil)
+        } catch {
+            completion(nil, error as? FileOperationError)
+        }
     }
-}
 
-extension FileManager {
-    func documentDirectory() -> URL {
-        return self.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    func getUserImage(completion: @escaping (Data?, FileOperationError?) -> Void) {
+        let manager = SavingManager()
+        do {
+            let imageData = try manager.getImageData()
+            completion(imageData, nil)
+        } catch {
+            completion(nil, error as? FileOperationError)
+        }
     }
 }
 
@@ -160,5 +170,11 @@ class SavingManager {
         } catch {
             throw FileOperationError.badWritingOperation
         }
+    }
+}
+
+extension FileManager {
+    func documentDirectory() -> URL {
+        return self.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }

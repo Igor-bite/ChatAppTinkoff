@@ -29,7 +29,7 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
     @IBOutlet weak var lastMessageLabel: UILabel?
     @IBOutlet weak var dateLabel: UILabel?
 
-    func configure(name: String, message: String?, date: Date?, online: Bool, hasUnreadMessages: Bool) { // ToDo: add here change theme method
+    func configure(name: String, message: String?, date: Date?, online: Bool, hasUnreadMessages: Bool) {
         self.name = name
         self.message = message
         self.date = date
@@ -85,5 +85,28 @@ class ConversationTableViewCell: UITableViewCell, ConversationCellConfiguration 
                                                                  blue: 43 / 255,
                                                                  alpha: 1).cgColor
                                                         : UIColor.gray.cgColor // бледно жёлтый или серый
+    }
+    
+    func changeTheme(theme: Theme) {
+        switch theme {
+        case .classic:
+            self.backgroundColor = .white
+            let color = UIColor.black
+            self.nameLabel?.textColor = color
+            self.lastMessageLabel?.textColor = color
+            self.dateLabel?.textColor = color
+        case .day:
+            self.backgroundColor = .white
+            let color = UIColor.black
+            self.nameLabel?.textColor = color
+            self.lastMessageLabel?.textColor = color
+            self.dateLabel?.textColor = color
+        case .night:
+            self.backgroundColor = .black
+            let color = UIColor.white
+            self.nameLabel?.textColor = color
+            self.lastMessageLabel?.textColor = color
+            self.dateLabel?.textColor = color
+        }
     }
 }

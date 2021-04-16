@@ -12,8 +12,8 @@ import UIKit
 // MARK: - Firebase/Firestore
 
 protocol IDatabase {
-    func addListenerForChannels(completion: @escaping (Error?) -> Void)
-    func addListenerForMessages(in channel: Channel, completion: @escaping (Error?) -> Void)
+    func addListenerForChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void)
+    func addListenerForMessages(in channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void)
     func makeNewChannel(with name: String)
     func addMessageToChannel(message: Message, channel: Channel)
     func delete(channel: Channel)
@@ -25,79 +25,24 @@ class FirestoreDatabase: IDatabase {
     lazy var reference = dbInstance.collection("channels")
     weak var coreDataService: CoreDataService?
 
-    func addListenerForChannels(completion: @escaping (Error?) -> Void) {
+    func addListenerForChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
         reference.addSnapshotListener { snapshot, error in
             if let error = error {
-                completion(error)
+                completion(.failure(error))
             }
+            
             guard let snap = snapshot else { return }
-            let changes = snap.documentChanges
-            
-            changes.forEach { (change) in
-                let jsonData = change.document.data()
-                guard let name = jsonData["name"] as? String else { return }
-                let identifier = change.document.documentID
-                let lastMessage = jsonData["lastMessage"] as? String
-                let timestamp = jsonData["lastActivity"] as? Timestamp
-                let lastActivity = timestamp?.dateValue()
-                let channel = Channel(identifier: identifier,
-                                      name: name,
-                                      lastMessage: lastMessage,
-                                      lastActivity: lastActivity)
-                switch change.type {
-                case .added:
-                    self.coreDataService?.save(channel: channel)
-                case .modified:
-                    self.coreDataService?.save(channel: channel)
-                case .removed:
-                    self.coreDataService?.delete(channel: channel)
-                default:
-                    print("Unsupported type")
-                }
-            }
-            
-            completion(nil)
+            completion(.success(snap))
         }
     }
     
-    func addListenerForMessages(in channel: Channel, completion: @escaping (Error?) -> Void) {
+    func addListenerForMessages(in channel: Channel, completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
         reference.document(channel.getId()).collection("messages").addSnapshotListener { snapshot, error in
             if let error = error {
-                completion(error)
+                completion(.failure(error))
             }
             guard let snap = snapshot else { return }
-            let changes = snap.documentChanges
-            
-            changes.forEach { (change) in
-                let jsonData = change.document.data()
-                guard let content = jsonData["content"] as? String,
-                      let senderId = jsonData["senderId"] as? String,
-                      let senderName = jsonData["senderName"] as? String,
-                      let timestamp = jsonData["created"] as? Timestamp
-                else {
-                    completion(CoreDataError.dataError)
-                    return
-                }
-                let identifier = change.document.documentID
-                let created = timestamp.dateValue()
-                let message = Message(content: content,
-                                      senderName: senderName,
-                                      created: created,
-                                      senderId: senderId,
-                                      identifier: identifier)
-                switch change.type {
-                case .added:
-                    self.coreDataService?.save(channel: channel, message: message)
-                case .modified:
-                    self.coreDataService?.save(channel: channel, message: message)
-                case .removed:
-                    self.coreDataService?.delete(message: message, in: channel)
-                default:
-                    print("Unsupported type")
-                }
-            }
-            
-            completion(nil)
+            completion(.success(snap))
         }
     }
     
