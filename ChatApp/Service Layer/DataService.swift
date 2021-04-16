@@ -52,16 +52,10 @@ class DataService: IDataService {
             case .failure(let error):
                 completion(error)
             case .success(let snap):
-//                snap.documents.forEach { doc in
-//                    print(doc.data())
-//                }
                 let changes = snap.documentChanges
                 
                 changes.forEach { (change) in
                     let jsonData = change.document.data()
-                    print("-------")
-                    print(jsonData)
-                    print("-------")
                     guard let name = jsonData["name"] as? String else { return }
                     let identifier = change.document.documentID
                     let lastMessage = jsonData["lastMessage"] as? String

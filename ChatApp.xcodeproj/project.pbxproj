@@ -40,6 +40,7 @@
 		A5E83451260D536B001975EC /* SavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83450260D536B001975EC /* SavingService.swift */; };
 		A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83453260D55D8001975EC /* ImagePickerManager.swift */; };
 		A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */; };
+		A5FCE1AE26292C3A0011FCE5 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 		A5E83450260D536B001975EC /* SavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingService.swift; sourceTree = "<group>"; };
 		A5E83453260D55D8001975EC /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
 		A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +224,7 @@
 				A5E83450260D536B001975EC /* SavingService.swift */,
 				A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */,
 				A5E83453260D55D8001975EC /* ImagePickerManager.swift */,
+				A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -546,6 +549,7 @@
 				A5AF547926035CE000446B0D /* LaunchViewController.swift in Sources */,
 				A51FF249260D08A6004BAB8E /* MessageModel.swift in Sources */,
 				A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */,
+				A5FCE1AE26292C3A0011FCE5 /* Alerts.swift in Sources */,
 				A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */,
 				A5190382261E16900097CA61 /* ConversationTableViewDataSource.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,

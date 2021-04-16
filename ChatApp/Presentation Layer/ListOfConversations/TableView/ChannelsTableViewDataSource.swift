@@ -38,7 +38,6 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
             fatalError("No sections in frc")
         }
         let sectionInfo = sections[section]
-        print(sectionInfo.numberOfObjects)
         return sectionInfo.numberOfObjects
     }
     

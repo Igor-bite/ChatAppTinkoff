@@ -8,8 +8,8 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
-
 // MARK: - Outlets
+    
     @IBOutlet weak var editButtonView: UIView?
     @IBOutlet weak var userNameTextField: UITextField?
     @IBOutlet weak var userDetailsTextView: UITextView?
@@ -23,13 +23,12 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var saveOperationsButtonView: UIView?
     @IBOutlet weak var saveActivityIndicator: UIActivityIndicatorView?
     @IBOutlet weak var saveImageCheckmark: UIImageView?
-
 // MARK: - Variables
 
     private let buttonCornerRadius: CGFloat = 14
     private let userImageViewCornerRadius: CGFloat = 120
     var theme: Theme = .classic
-    private var isEditingUserData = false
+    var isEditingUserData = false
     var isImageChanged = false {
         didSet {
             if isImageChanged == true && !isEditingUserData {
@@ -51,11 +50,13 @@ class ProfileViewController: UIViewController {
     let gcdSaver = GCDSavingManager()
     let operationsSaver = OperationsSavingManager()
     var dataService: IDataService?
-    
+    var alertPresenter: AlertPresenter?
 // MARK: - viewDidLoad
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         UIHelper.viewControl = self
+        self.alertPresenter = AlertPresenter(profileVC: self)
 
         NSLog("\nView did load : \(#function)")
         editButtonView?.layer.cornerRadius = buttonCornerRadius
@@ -94,6 +95,7 @@ class ProfileViewController: UIViewController {
         userDetailsHeightGreater?.isActive = true
     }
 // MARK: - OnTapFunctions
+    
     private let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
 
     fileprivate func saveUser() {
@@ -114,23 +116,7 @@ class ProfileViewController: UIViewController {
             dataService?.saveUser(user: curUser) { [weak self] (error) in
                 if let error = error {
                     self?.showFailureAlert()
-                    switch error {
-                    case .badDirCreation:
-                        print("dir creation problems")
-                        return
-                    case .badFileCreation:
-                        print("file creation problems")
-                        return
-                    case .unspecified:
-                        print("unspecified problem")
-                        return
-                    case .badWritingOperation:
-                        print("badWritingOperation")
-                        return
-                    case .badReadingOperation:
-                        print("badReadingOperation")
-                        return
-                    }
+                    self?.processError(error: error)
                 }
                 
             }
@@ -140,22 +126,26 @@ class ProfileViewController: UIViewController {
             dataService?.saveImage(imageData: imageData, completion: { [weak self] error in
                 if let error = error {
                     self?.showFailureAlert()
-                    switch error {
-                    case .unspecified:
-                        print("unspecified")
-                    case .badDirCreation:
-                        print("badDirCreation")
-                    case .badFileCreation:
-                        print("badFileCreation")
-                    case .badWritingOperation:
-                        print("badWritingOperation")
-                    case .badReadingOperation:
-                        print("badReadingOperation")
-                    }
+                    self?.processError(error: error)
                 } else {
                     self?.saveImageInConcurrent()
                 }
             })
+        }
+    }
+    
+    private func processError(error: FileOperationError) {
+        switch error {
+        case .unspecified:
+            print("unspecified")
+        case .badDirCreation:
+            print("badDirCreation")
+        case .badFileCreation:
+            print("badFileCreation")
+        case .badWritingOperation:
+            print("badWritingOperation")
+        case .badReadingOperation:
+            print("badReadingOperation")
         }
     }
     
@@ -291,6 +281,7 @@ class ProfileViewController: UIViewController {
         }
     }
 // MARK: - Helping Functions
+    
     func changeButtonText(buttonView: UIView?, text: String) {
         UIHelper.changeButtonText(buttonView: buttonView, text: text)
     }
@@ -357,8 +348,20 @@ class ProfileViewController: UIViewController {
         guard let data = imageToRecover?.jpegData(compressionQuality: 1) else { return }
         operationsSaver.saveImage(of: data) { _ in }
     }
+    
+    func showSuccessAlert() {
+        self.alertPresenter?.showSuccessAlert()
+    }
 
+    func showCancelAlert() {
+        self.alertPresenter?.showCancelAlert()
+    }
+
+    func showFailureAlert() {
+        self.alertPresenter?.showFailureAlert()
+    }
 // MARK: - RestoringData
+    
     func setUpUserData() {
         saveImageCheckmark?.image = UIImage(named: "checkmark")
         saveImageCheckmark?.isHidden = false
@@ -382,7 +385,6 @@ class ProfileViewController: UIViewController {
                 saveActivityIndicator?.startAnimating()
                 userImageView?.isHidden = true
                 let manager = GCDSavingManager()
-//                let manager = OperationsSavingManager()
                 manager.getImage { [weak self] (data, error) in
                     if let data = data {
                         self?.userImage?.image = UIImage(data: data)
@@ -400,8 +402,10 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+    func toggleUserDetailsHeight() {
+        UIHelper.toggleUserDetailsHeight()
+    }
 }
-
 // MARK: - Extensions
 
 extension ProfileViewController: UITextViewDelegate {
@@ -425,59 +429,6 @@ extension ProfileViewController {
     @objc func keyboardWillHide(notification: NSNotification) {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
-        }
-    }
-
-    func showSuccessAlert() {
-        let alertControl = UIAlertController(title: "Данные сохранены",
-                                   message: nil,
-                                   preferredStyle: .alert)
-        alertControl.addAction(UIAlertAction(title: "Ок", style: .default, handler: {_ in }))
-        isSaving = false
-        if !isSavingCancelled {
-            isSavingCancelled = false
-            present(alertControl, animated: true)
-            delegate?.userImage = userImage?.image
-        }
-    }
-
-    func showCancelAlert() {
-        let alertControl = UIAlertController(title: "Изменения профиля отменены",
-                                   message: nil,
-                                   preferredStyle: .alert)
-        alertControl.addAction(UIAlertAction(title: "Ок",
-                                   style: .default,
-                                   handler: {_ in }))
-        present(alertControl, animated: true)
-    }
-
-    func showFailureAlert() {
-        let alertControl = UIAlertController(title: "Ошибка",
-                                   message: "Не удалось сохранить данные",
-                                   preferredStyle: .alert)
-        alertControl.addAction(UIAlertAction(title: "Ок",
-                                   style: .default,
-                                   handler: {[weak self] _ in
-            self?.isSaving = false
-            self?.saveActivityIndicator?.stopAnimating()
-            self?.setUpUserData()
-        }))
-        alertControl.addAction(UIAlertAction(title: "Повторить",
-                                             style: .default,
-                                             handler: {[weak self] _ in
-            guard let isGCD = self?.isGCD else { return }
-            self?.isImageChanged = true
-            self?.isEditingUserData = true
-            if isGCD {
-                self?.saveGCDTapped()
-            } else {
-                self?.saveOperationsTapped()
-            }
-            UIHelper.toggleUserDetailsHeight()
-        }))
-        if !isSavingCancelled {
-            isSavingCancelled = false
-            present(alertControl, animated: true)
         }
     }
 }
@@ -524,7 +475,7 @@ private class UIHelper {
 
 extension ProfileViewController {
 // MARK: - ViewController LifeCycle
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NSLog("\nView will disappear : \(#function)")
