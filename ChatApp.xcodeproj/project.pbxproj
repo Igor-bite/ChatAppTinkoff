@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		28ACEA3EB0E9EC949746C78D /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A41EEB192829EFF64BD012 /* Pods_ChatApp.framework */; };
+		A5177B05262F8E1100E5CC8D /* AvatarImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5177B04262F8E1100E5CC8D /* AvatarImagePickerController.swift */; };
+		A5177B08262F925E00E5CC8D /* AvatarImagePicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5177B07262F925E00E5CC8D /* AvatarImagePicker.storyboard */; };
 		A5190382261E16900097CA61 /* ConversationTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5190381261E16900097CA61 /* ConversationTableViewDataSource.swift */; };
 		A51FF246260D0894004BAB8E /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF245260D0894004BAB8E /* UserModel.swift */; };
 		A51FF249260D08A6004BAB8E /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51FF248260D08A6004BAB8E /* MessageModel.swift */; };
@@ -47,6 +49,8 @@
 		00A41EEB192829EFF64BD012 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0294211437A3180C4DC43F1F /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
 		8F735FE4C435B1211CF7DA1E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A5177B04262F8E1100E5CC8D /* AvatarImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImagePickerController.swift; sourceTree = "<group>"; };
+		A5177B07262F925E00E5CC8D /* AvatarImagePicker.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AvatarImagePicker.storyboard; sourceTree = "<group>"; };
 		A5190381261E16900097CA61 /* ConversationTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewDataSource.swift; sourceTree = "<group>"; };
 		A51FF245260D0894004BAB8E /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		A51FF248260D08A6004BAB8E /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -122,6 +126,39 @@
 			path = TableView;
 			sourceTree = "<group>";
 		};
+		A5177B00262F8DC600E5CC8D /* AvatarImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				A5177B03262F8DE400E5CC8D /* View */,
+				A5177B02262F8DDF00E5CC8D /* Model */,
+				A5177B01262F8DD700E5CC8D /* Controller */,
+			);
+			path = AvatarImagePicker;
+			sourceTree = "<group>";
+		};
+		A5177B01262F8DD700E5CC8D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A5177B04262F8E1100E5CC8D /* AvatarImagePickerController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		A5177B02262F8DDF00E5CC8D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		A5177B03262F8DE400E5CC8D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A5177B07262F925E00E5CC8D /* AvatarImagePicker.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		A519037F261E166F0097CA61 /* TableView */ = {
 			isa = PBXGroup;
 			children = (
@@ -180,6 +217,7 @@
 		A557B5FD2628EFB5000DEB51 /* Presentation Layer */ = {
 			isa = PBXGroup;
 			children = (
+				A5177B00262F8DC600E5CC8D /* AvatarImagePicker */,
 				A557B61A2628F30C000DEB51 /* LaunchScreen */,
 				A51FF256260D09F9004BAB8E /* Profile */,
 				A56F761525FA1D510080AC1F /* ListOfConversations */,
@@ -462,6 +500,7 @@
 				A5A5B94F25DA85D600F61A26 /* LaunchScreen.storyboard in Resources */,
 				A5D666FD25F19BC300FC4AA0 /* MessageTableViewCell.xib in Resources */,
 				A55A16442608D701004749E2 /* GoogleService-Info.plist in Resources */,
+				A5177B08262F925E00E5CC8D /* AvatarImagePicker.storyboard in Resources */,
 				A5A5B94C25DA85D600F61A26 /* Assets.xcassets in Resources */,
 				A5A5B94A25DA85D500F61A26 /* Main.storyboard in Resources */,
 			);
@@ -537,6 +576,7 @@
 				A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */,
 				A5484D4726136E77008AF909 /* Chat.xcdatamodeld in Sources */,
 				A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */,
+				A5177B05262F8E1100E5CC8D /* AvatarImagePickerController.swift in Sources */,
 				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
 				A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */,
 				A5484D4E2613766F008AF909 /* ObjectsExtension.swift in Sources */,

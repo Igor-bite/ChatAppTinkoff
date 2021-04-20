@@ -33,6 +33,14 @@ extension ProfileViewController: UIImagePickerControllerDelegate,
             imagePicker.delegate = self
             self.present(imagePicker, animated: true)
         })
+        alertControl.addAction(UIAlertAction(title: "Upload",
+                                   style: .default,
+                                   handler: { (_) in
+                                    let avatarPicker: AvatarImagePickerController = UIStoryboard(name: "AvatarImagePicker", bundle: nil)
+                                        .instantiateViewController(withIdentifier: "AvatarPicker") as? AvatarImagePickerController ?? AvatarImagePickerController()
+                                    self.present(avatarPicker, animated: true)
+                                    
+        }))
         cameraAction.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         let generateAvatarAction = UIAlertAction(title: "Generated avatar",
                                                  style: .default,
