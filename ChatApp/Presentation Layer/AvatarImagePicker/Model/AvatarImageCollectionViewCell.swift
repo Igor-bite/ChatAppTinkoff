@@ -11,13 +11,19 @@ class AvatarImageCollectionViewCell: UICollectionViewCell {
     static let identifier = "avatarImageCell"
     
     var imageView = UIImageView()
+    let activityIndicator: UIActivityIndicatorView = {
+        let actIndic = UIActivityIndicatorView()
+        actIndic.hidesWhenStopped = true
+        return actIndic
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         if imageView.image == nil {
-            self.imageView.image = UIImage(named: "xmark")
+            activityIndicator.startAnimating()
         }
         contentView.addSubview(imageView)
+        contentView.addSubview(activityIndicator)
     }
     
     required init?(coder: NSCoder) {
@@ -31,5 +37,6 @@ class AvatarImageCollectionViewCell: UICollectionViewCell {
                                  y: 5,
                                  width: contentView.frame.size.width - 10,
                                  height: contentView.frame.size.height - 10)
+        activityIndicator.center = CGPoint(x: contentView.frame.size.width / 2, y: contentView.frame.size.height / 2)
     }
 }
