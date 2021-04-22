@@ -7,30 +7,32 @@
 
 import UIKit
 
-class DataSource: NSObject, UICollectionViewDataSource {
+class AvatarPickerDataSource: NSObject, UICollectionViewDataSource {
+    static let numberOfImages = 200
+    
     private let reuseIdentifier = "avatarImageCell"
+    var getImage: (IndexPath) -> UIImage?
+    
+    init(getImage: @escaping (IndexPath) -> UIImage?) {
+        self.getImage = getImage
+    }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 50
+        return AvatarPickerDataSource.numberOfImages
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        print("Configuring cell at index: \(indexPath.row)")
         let cell = collectionView.dequeueReusableCell(
               withReuseIdentifier: reuseIdentifier,
               for: indexPath) as? AvatarImageCollectionViewCell ?? AvatarImageCollectionViewCell()
         cell.backgroundColor = .white
-        guard let url = URL(string:
-                                "https://pixabay.com/get/g71b92833ebf27c6e5875bb09b397be96900911ef6505d3d393f4ca90b1da0bf2185375d914247a0cd0270bfb56a1795eee724b8c1cc3df9d9add9d38365339d4_1280.jpg"
-        )
-        else { return AvatarImageCollectionViewCell() }
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url) {
-                DispatchQueue.main.async {
-                    cell.imageView.image = UIImage(data: data)
-                    cell.activityIndicator.stopAnimating()
-                }
-            }
-        }
+        cell.indexPath = indexPath
+        cell.getImage = self.getImage
         return cell
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
 }

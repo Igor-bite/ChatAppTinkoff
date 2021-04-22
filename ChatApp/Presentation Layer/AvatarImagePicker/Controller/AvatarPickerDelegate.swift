@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Delegate: NSObject, UICollectionViewDelegate {
+class AvatarPickerDelegate: NSObject, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("selected")
     }

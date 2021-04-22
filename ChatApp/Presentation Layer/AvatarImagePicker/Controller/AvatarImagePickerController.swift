@@ -9,34 +9,40 @@ import UIKit
 
 class AvatarImagePickerController: UIViewController {
     private var collectionView: UICollectionView?
-    let dataSource = DataSource()
-    let delegate = Delegate()
-    private let betweenItems: CGFloat = 20
+    private var avatarService: AvatarService?
+    var dataSource: UICollectionViewDataSource?
+    let delegate = AvatarPickerDelegate()
+    private let betweenItems: CGFloat = 10
     private let numberOfItemsInRow: Int = 3
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.avatarService = AvatarImageService(updateView: { [weak self] in
+            self?.collectionView?.reloadData()
+        })
+        dataSource = avatarService?.getDataSource()
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.sectionInset = UIEdgeInsets(top: betweenItems,
                                             left: betweenItems,
-                                            bottom: 50.0,
+                                            bottom: 40.0,
                                             right: betweenItems)
         layout.minimumLineSpacing = betweenItems
         layout.minimumInteritemSpacing = betweenItems
         layout.itemSize = getSize()
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
         guard let collectionView = collectionView else { return }
         collectionView.register(AvatarImageCollectionViewCell.self,
                                 forCellWithReuseIdentifier: AvatarImageCollectionViewCell.identifier)
         collectionView.dataSource = self.dataSource
         collectionView.delegate = self.delegate
         self.view.addSubview(collectionView)
-        collectionView.frame = view.bounds
         collectionView.backgroundColor = .white
     }
     
     func getSize() -> CGSize {
-        let side: CGFloat = (view.frame.width - CGFloat(numberOfItemsInRow + 1) * betweenItems) / CGFloat(numberOfItemsInRow)
+        var side: CGFloat = (view.frame.width - CGFloat(numberOfItemsInRow + 1) * betweenItems) / CGFloat(numberOfItemsInRow)
+        side = side.rounded(.down)
         return CGSize(width: side, height: side)
     }
 }
