@@ -10,7 +10,6 @@ import UIKit
 
 class SavingService {
     private let gcdSaver = GCDSavingManager()
-    private let operationsSaver = OperationsSavingManager()
     private let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
     weak var profileVC: ProfileViewController?
     

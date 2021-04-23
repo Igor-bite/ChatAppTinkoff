@@ -9,6 +9,8 @@ import UIKit
 
 class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
     private var collectionView: UICollectionView?
+    private var titleLabel: UILabel?
+    private var cancelButton: UIButton?
     private var avatarService: AvatarService?
     var dataSource: UICollectionViewDataSource?
     private let betweenItems: CGFloat = 10
@@ -25,6 +27,20 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        titleLabel = UILabel(frame: CGRect(x: 10, y: 0, width: view.frame.width / 2, height: 50))
+        guard let titleLabel = titleLabel else { fatalError() }
+        titleLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        titleLabel.text = "New Avatar"
+        view.addSubview(titleLabel)
+        
+        cancelButton = UIButton(frame: CGRect(x: view.frame.width * 2 / 3, y: 0, width: view.frame.width / 3 - 10, height: 50))
+        guard let cancelButton = cancelButton else { fatalError() }
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.setTitleColor(.systemBlue, for: .normal)
+        cancelButton.addTarget(self, action: #selector(cancelAvatarPicking), for: .touchUpInside)
+        view.addSubview(cancelButton)
+        
         view.backgroundColor = .white
         view.addSubview(activityIndicator)
         activityIndicator.center = CGPoint(x: view.frame.size.width / 2, y: view.frame.size.height / 2 - 30)
@@ -50,7 +66,12 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
         layout.minimumLineSpacing = betweenItems
         layout.minimumInteritemSpacing = betweenItems
         layout.itemSize = getSize()
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        
+        collectionView = UICollectionView(frame: CGRect(x: 0,
+                                                        y: titleLabel.frame.height,
+                                                        width: view.bounds.width,
+                                                        height: view.bounds.height - titleLabel.frame.height),
+                                          collectionViewLayout: layout)
         guard let collectionView = collectionView else { return }
         collectionView.register(AvatarImageCollectionViewCell.self,
                                 forCellWithReuseIdentifier: AvatarImageCollectionViewCell.identifier)
@@ -59,6 +80,11 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
         self.view.addSubview(collectionView)
         collectionView.isHidden = true
         collectionView.backgroundColor = .white
+    }
+    
+    @objc func cancelAvatarPicking() {
+        print("cancel")
+        dismiss(animated: true)
     }
     
     func getSize() -> CGSize {

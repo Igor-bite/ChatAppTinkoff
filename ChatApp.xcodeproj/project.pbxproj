@@ -28,7 +28,6 @@
 		A55F4B6E2616445E00613C1E /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F4B6D2616445E00613C1E /* CoreDataService.swift */; };
 		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
 		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
-		A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */; };
 		A599D8DC2600F6AC0002D3B8 /* ISavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */; };
 		A599D8E02600F9A20002D3B8 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DF2600F9A20002D3B8 /* FileManager.swift */; };
 		A5A5B94325DA85D500F61A26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5B94225DA85D500F61A26 /* AppDelegate.swift */; };
@@ -79,7 +78,6 @@
 		A55F4B6D2616445E00613C1E /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CoreDataService.swift; path = "../Core Layer/DataAccessLayer/CoreData/CoreDataService.swift"; sourceTree = "<group>"; };
 		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
-		A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationsSavingManager.swift; sourceTree = "<group>"; };
 		A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISavingManager.swift; sourceTree = "<group>"; };
 		A599D8DF2600F9A20002D3B8 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		A5A5B93F25DA85D500F61A26 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -422,7 +420,6 @@
 			children = (
 				A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */,
 				A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */,
-				A599D8D62600F3600002D3B8 /* OperationsSavingManager.swift */,
 			);
 			path = SavingServices;
 			sourceTree = "<group>";
@@ -619,7 +616,6 @@
 				A5177B05262F8E1100E5CC8D /* AvatarImagePickerController.swift in Sources */,
 				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
 				A5B77B6B2631B66000DB9856 /* Request.swift in Sources */,
-				A599D8D72600F3600002D3B8 /* OperationsSavingManager.swift in Sources */,
 				A5484D4E2613766F008AF909 /* ObjectsExtension.swift in Sources */,
 				A599D8E02600F9A20002D3B8 /* FileManager.swift in Sources */,
 				A51FF246260D0894004BAB8E /* UserModel.swift in Sources */,

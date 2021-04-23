@@ -12,7 +12,7 @@
                 <viewController storyboardIdentifier="AvatarPicker" id="5YB-Ur-Jr4" customClass="AvatarImagePickerController" customModule="ChatApp" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Lk-Gl-hQH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="183" y="91"/>
+            <point key="canvasLocation" x="1092.753623188406" y="90.401785714285708"/>
         </scene>
     </scenes>
 </document>

@@ -20,7 +20,6 @@ class ProfileThemeChanger {
         profileVC?.profileLabel?.textColor = .black
         profileVC?.editButtonView?.backgroundColor = .lightGray
         profileVC?.saveGCDButtonView?.backgroundColor = .lightGray
-        profileVC?.saveOperationsButtonView?.backgroundColor = .lightGray
     }
 
     func changeToDay() {
@@ -31,7 +30,6 @@ class ProfileThemeChanger {
         profileVC?.profileLabel?.textColor = .black
         profileVC?.editButtonView?.backgroundColor = .lightGray
         profileVC?.saveGCDButtonView?.backgroundColor = .lightGray
-        profileVC?.saveOperationsButtonView?.backgroundColor = .lightGray
     }
 
     func changeToNight() {
@@ -42,6 +40,5 @@ class ProfileThemeChanger {
         profileVC?.profileLabel?.textColor = .white
         profileVC?.editButtonView?.backgroundColor = .darkGray
         profileVC?.saveGCDButtonView?.backgroundColor = .darkGray
-        profileVC?.saveOperationsButtonView?.backgroundColor = .darkGray
     }
 }
