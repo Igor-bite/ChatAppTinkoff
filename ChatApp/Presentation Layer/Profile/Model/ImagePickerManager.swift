@@ -38,6 +38,15 @@ extension ProfileViewController: UIImagePickerControllerDelegate,
                                    handler: { (_) in
                                     let avatarPicker: AvatarImagePickerController = UIStoryboard(name: "AvatarImagePicker", bundle: nil)
                                         .instantiateViewController(withIdentifier: "AvatarPicker") as? AvatarImagePickerController ?? AvatarImagePickerController()
+                                    avatarPicker.completion = { image in
+                                        DispatchQueue.main.async {
+                                            self.userImageLabel?.isHidden = true
+                                            self.imageToRecover = self.userImage?.image
+                                            self.userImage?.image = image
+                                            self.isAvatarGenerated = false
+                                            self.isImageChanged = true
+                                        }
+                                    }
                                     self.present(avatarPicker, animated: true)
                                     
         }))

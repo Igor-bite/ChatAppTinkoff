@@ -8,14 +8,10 @@
 import Foundation
 
 struct ImageList: Codable {
-    var total: Int?
-    var totalHits: Int?
     var hits: [Hit]?
 }
 
 struct Hit: Codable {
-    var id: Int?
-    var pageURL: String?
     var previewURL: String?
     var largeImageURL: String?
 }

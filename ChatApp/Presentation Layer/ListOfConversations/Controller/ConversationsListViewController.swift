@@ -79,14 +79,16 @@ class ConversationsListViewController: UIViewController {
     }
     
     @objc func showProfile(_ sender: Any) {
-        let profileVC: ProfileViewController = self.storyboard?
-            .instantiateViewController(withIdentifier: "ProfileVC") as? ProfileViewController ?? ProfileViewController()
-        profileVC.theme = self.theme
-        profileVC.userToRecover = currentUser
-        profileVC.imageToRecover = userImage
-        profileVC.delegate = self
-        profileVC.dataService = self.dataService
-        self.present(profileVC, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            let profileVC: ProfileViewController = self.storyboard?
+                .instantiateViewController(withIdentifier: "ProfileVC") as? ProfileViewController ?? ProfileViewController()
+            profileVC.theme = self.theme
+            profileVC.userToRecover = self.currentUser
+            profileVC.imageToRecover = self.userImage
+            profileVC.delegate = self
+            profileVC.dataService = self.dataService
+            self.present(profileVC, animated: true, completion: nil)
+        }
     }
 
     @objc func showThemePicker(_ sender: Any) {

@@ -13,11 +13,6 @@ class AvatarImageCollectionViewCell: UICollectionViewCell {
     var indexPath: IndexPath?
     var imageView: UIImageView?
     private var isPlaceholder = false
-    let activityIndicator: UIActivityIndicatorView = {
-        let actIndic = UIActivityIndicatorView()
-        actIndic.hidesWhenStopped = true
-        return actIndic
-    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,10 +23,8 @@ class AvatarImageCollectionViewCell: UICollectionViewCell {
         if imageView.image == nil {
             isPlaceholder = true
             imageView.image = UIImage(named: "AvatarImagePlaceholder")
-            activityIndicator.startAnimating()
         }
         self.addSubview(imageView)
-        self.addSubview(activityIndicator)
         self.layer.cornerRadius = 10
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.lightGray.cgColor
@@ -43,7 +36,6 @@ class AvatarImageCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        activityIndicator.center = CGPoint(x: contentView.frame.size.width / 2, y: contentView.frame.size.height / 2)
         if isPlaceholder {
             DispatchQueue.global().async { [weak self] in
                 guard let indexPath = self?.indexPath else { return }
@@ -51,8 +43,6 @@ class AvatarImageCollectionViewCell: UICollectionViewCell {
                     DispatchQueue.main.async {
                         guard let imageView = self?.imageView else { return }
                         imageView.image = image
-//                        print("\(indexPath.row) - set image")
-                        self?.activityIndicator.stopAnimating()
                     }
                 }
             }
