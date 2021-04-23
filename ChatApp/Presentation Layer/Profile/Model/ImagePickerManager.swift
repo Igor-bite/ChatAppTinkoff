@@ -40,6 +40,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate,
                                         .instantiateViewController(withIdentifier: "AvatarPicker") as? AvatarImagePickerController ?? AvatarImagePickerController()
                                     avatarPicker.completion = { image in
                                         DispatchQueue.main.async {
+                                            avatarPicker.dismiss(animated: true)
                                             self.userImageLabel?.isHidden = true
                                             self.imageToRecover = self.userImage?.image
                                             self.userImage?.image = image

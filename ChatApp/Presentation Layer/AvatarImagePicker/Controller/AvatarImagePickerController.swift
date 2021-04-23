@@ -19,6 +19,9 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
         return activityIndicator
     }()
     var completion: ((UIImage) -> Void)?
+    lazy var loadingAlertController = {
+        return UIAlertController(title: "Загрузка", message: "Новое изображение загружается, пожалуйста, подождите", preferredStyle: .alert)
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,10 +68,18 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let image = avatarService?.getLargeImage(for: indexPath) {
-            completion?(image)
+        showLoadingAlert { [weak self] in
+            if let image = self?.avatarService?.getLargeImage(for: indexPath) {
+                self?.completion?(image)
+            }
         }
-        self.dismiss(animated: true)
+        dismiss(animated: true)
+    }
+    
+    func showLoadingAlert(completion: @escaping () -> Void) {
+        self.present(loadingAlertController, animated: true) {
+            completion()
+        }
     }
     
     func showErrorAlert(message: String) {
