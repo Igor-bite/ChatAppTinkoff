@@ -52,15 +52,10 @@ class AlertPresenter {
         alertControl.addAction(UIAlertAction(title: "Повторить",
                                              style: .default,
                                              handler: { [weak self] _ in
-            guard let isGCD = self?.profileVC?.isGCD else { return }
             self?.profileVC?.isImageChanged = true
             self?.profileVC?.isEditingUserData = true
-            if isGCD {
-                self?.profileVC?.saveGCDTapped()
-            } else {
-                self?.profileVC?.saveOperationsTapped()
-            }
-                                                self?.profileVC?.toggleUserDetailsHeight()
+            self?.profileVC?.saveGCDTapped()
+            self?.profileVC?.toggleUserDetailsHeight()
         }))
         guard let isSavingCancelled = profileVC?.isSavingCancelled else { return }
         if !isSavingCancelled {

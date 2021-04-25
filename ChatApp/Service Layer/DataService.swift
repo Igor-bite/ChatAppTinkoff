@@ -21,7 +21,6 @@ protocol DatabaseSaveManager {
 
 protocol FileSaveManager {
     var gcdSaver: GCDSavingManager { get }
-    var operationsSaver: OperationsSavingManager { get }
     var concurrentSaveQueue: DispatchQueue { get }
     
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void)
@@ -36,7 +35,6 @@ protocol IDataService: DatabaseSaveManager, FileSaveManager, CoreDataSaveManager
 
 class DataService: IDataService {
     internal let gcdSaver = GCDSavingManager()
-    internal let operationsSaver = OperationsSavingManager()
     internal let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
     var coreDataService: ICoreDataService
     var database: IDatabase

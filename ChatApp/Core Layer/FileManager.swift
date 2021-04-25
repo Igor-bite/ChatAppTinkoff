@@ -141,6 +141,7 @@ class SavingManager {
             let user = try decoder.decode(User.self, from: jsonData)
             return user
         } catch {
+            print("Error getting user's data")
             throw FileOperationError.unspecified // fix
         }
     }

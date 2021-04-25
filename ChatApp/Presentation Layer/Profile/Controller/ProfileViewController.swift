@@ -20,7 +20,6 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var userImageLabel: UILabel?
     @IBOutlet weak var profileLabel: UILabel?
     @IBOutlet weak var saveGCDButtonView: UIView?
-    @IBOutlet weak var saveOperationsButtonView: UIView?
     @IBOutlet weak var saveActivityIndicator: UIActivityIndicatorView?
     @IBOutlet weak var saveImageCheckmark: UIImageView?
 // MARK: - Variables
@@ -32,7 +31,7 @@ class ProfileViewController: UIViewController {
     var isImageChanged = false {
         didSet {
             if isImageChanged == true && !isEditingUserData {
-                UIHelper.toggleSaveButtonsAlpha()
+                UIHelper.toggleSaveButtonAlpha()
                 saveImageCheckmark?.image = UIImage(named: "pencil")
                 UIHelper.changeButtonText(buttonView: editButtonView, text: "Cancel")
             }
@@ -42,13 +41,11 @@ class ProfileViewController: UIViewController {
     var isAvatarGenerated = true
     var imageToRecover: UIImage?
     var userToRecover: User?
-    var isGCD = true
     var isSaving = false
     var isSavingCancelled = false
     private var themeChanger: ProfileThemeChanger = ProfileThemeChanger()
 
     let gcdSaver = GCDSavingManager()
-    let operationsSaver = OperationsSavingManager()
     var dataService: IDataService?
     var alertPresenter: AlertPresenter?
 // MARK: - viewDidLoad
@@ -56,14 +53,13 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         UIHelper.viewControl = self
+        self.setUpUserData()
         self.alertPresenter = AlertPresenter(profileVC: self)
 
         NSLog("\nView did load : \(#function)")
         editButtonView?.layer.cornerRadius = buttonCornerRadius
         saveGCDButtonView?.layer.cornerRadius = buttonCornerRadius
-        saveOperationsButtonView?.layer.cornerRadius = buttonCornerRadius
         saveGCDButtonView?.isHidden = true
-        saveOperationsButtonView?.isHidden = true
         userImageView?.layer.cornerRadius = userImageViewCornerRadius
         saveImageCheckmark?.image = UIImage(named: "checkmark")
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
@@ -80,9 +76,9 @@ class ProfileViewController: UIViewController {
         editButtonView?.addGestureRecognizer(editRec)
         let saveGCDRec = UITapGestureRecognizer(target: self, action: #selector(saveGCDTapped))
         saveGCDButtonView?.addGestureRecognizer(saveGCDRec)
-        let saveOperationsRec = UITapGestureRecognizer(target: self, action: #selector(saveOperationsTapped))
-        saveOperationsButtonView?.addGestureRecognizer(saveOperationsRec)
-        UIHelper.putPlaceholder(to: userDetailsTextView, placeholder: "Bio")
+        if userDetailsTextView?.text == "" {
+            UIHelper.putPlaceholder(to: userDetailsTextView, placeholder: "Bio")
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,
@@ -93,6 +89,7 @@ class ProfileViewController: UIViewController {
                                                object: nil)
         userDetailsHeightEquals?.isActive = false
         userDetailsHeightGreater?.isActive = true
+        self.userImage?.contentMode = .scaleAspectFill
     }
 // MARK: - OnTapFunctions
     
@@ -118,7 +115,7 @@ class ProfileViewController: UIViewController {
                     self?.showFailureAlert()
                     self?.processError(error: error)
                 }
-                
+                self?.saveSuccessfullyCompleted()
             }
         }
         
@@ -127,9 +124,8 @@ class ProfileViewController: UIViewController {
                 if let error = error {
                     self?.showFailureAlert()
                     self?.processError(error: error)
-                } else {
-                    self?.saveImageInConcurrent()
                 }
+                self?.saveImageInConcurrent()
             })
         }
     }
@@ -154,21 +150,9 @@ class ProfileViewController: UIViewController {
             guard let isImageChanged = self?.isImageChanged else { return }
             guard let isAvatarGenerated = self?.isAvatarGenerated else { return }
             if !isImageChanged && !isAvatarGenerated {
-                DispatchQueue.main.async {
-                    self?.saveImageCheckmark?.isHidden = false
-                    self?.saveActivityIndicator?.stopAnimating()
-                    self?.showSuccessAlert()
-                    self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
-                    self?.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
-                }
+                self?.saveSuccessfullyCompleted()
             } else if isAvatarGenerated {
-                DispatchQueue.main.async {
-                    self?.saveImageCheckmark?.isHidden = false
-                    self?.saveActivityIndicator?.stopAnimating()
-                    self?.showSuccessAlert()
-                    self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
-                    self?.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
-                }
+                self?.saveSuccessfullyCompleted()
             } else {
                 self?.isImageChanged = false
             }
@@ -177,14 +161,8 @@ class ProfileViewController: UIViewController {
     
     private func saveImageInConcurrent() {
         concurrentSaveQueue.async {
-            if !self.isImageChanged {
-                DispatchQueue.main.async {
-                    self.saveImageCheckmark?.isHidden = false
-                    self.saveActivityIndicator?.stopAnimating()
-                    self.showSuccessAlert()
-                    self.saveImageCheckmark?.image = UIImage(named: "checkmark")
-                    self.changeButtonText(buttonView: self.editButtonView, text: "Edit")
-                }
+            if self.isImageChanged {
+                self.saveSuccessfullyCompleted()
             } else {
                 self.isImageChanged = false
             }
@@ -199,32 +177,32 @@ class ProfileViewController: UIViewController {
                         if error != nil {
                             self?.showFailureAlert()
                         }
+                        self?.saveSuccessfullyCompleted()
                     }
                 }
             }
         }
     }
+    
+    fileprivate func saveSuccessfullyCompleted() {
+        DispatchQueue.main.async { [weak self] in
+            self?.saveImageCheckmark?.isHidden = false
+            self?.saveActivityIndicator?.stopAnimating()
+            self?.showSuccessAlert()
+            self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
+            self?.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
+        }
+    }
 
     @objc func saveGCDTapped() {
         isSaving = true
-        isGCD = true
-        UIHelper.toggleSaveButtonsAlpha()
+        UIHelper.toggleSaveButtonAlpha()
         saveImageCheckmark?.isHidden = true
         saveActivityIndicator?.startAnimating()
         saveUser()
         saveImage()
     }
-
-    @objc func saveOperationsTapped() {
-        isSaving = true
-        isGCD = false
-        UIHelper.toggleSaveButtonsAlpha()
-        saveImageCheckmark?.isHidden = true
-        saveActivityIndicator?.startAnimating()
-        saveUser()
-        saveImage()
-    }
-
+    
     @IBAction func closeProfile(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -241,7 +219,7 @@ class ProfileViewController: UIViewController {
             saveImageCheckmark?.image = UIImage(named: "pencil")
             UIHelper.changeButtonText(buttonView: editButtonView, text: "Cancel")
             userDetailsTextView?.isEditable = true
-            UIHelper.toggleSaveButtonsAlpha()
+            UIHelper.toggleSaveButtonAlpha()
             switch theme {
             case .classic:
                 userDetailsTextView?.textColor = .black
@@ -257,7 +235,7 @@ class ProfileViewController: UIViewController {
         } else if !isEditingUserData && isImageChanged {
             saveImageCheckmark?.image = UIImage(named: "checkmark")
             UIHelper.changeButtonText(buttonView: editButtonView, text: "Edit")
-            UIHelper.toggleSaveButtonsAlpha()
+            UIHelper.toggleSaveButtonAlpha()
             userImage?.image = imageToRecover
             userImageLabel?.isHidden = true
             isImageChanged = false
@@ -272,7 +250,7 @@ class ProfileViewController: UIViewController {
             UIHelper.toggleUserDetailsHeight()
             isEditingUserData = false
             isImageChanged = false
-            UIHelper.toggleSaveButtonsAlpha()
+            UIHelper.toggleSaveButtonAlpha()
             saveImageCheckmark?.image = UIImage(named: "checkmark")
             UIHelper.changeButtonText(buttonView: editButtonView, text: "Edit")
             userDetailsTextView?.isEditable = false
@@ -325,11 +303,7 @@ class ProfileViewController: UIViewController {
 
     func cancelSaving() {
         isSavingCancelled = true
-        if isGCD {
-            cancelGCDSaving()
-        } else {
-            cancelOperationsSaving()
-        }
+        cancelGCDSaving()
         setUpUserData()
         showCancelAlert()
     }
@@ -339,14 +313,6 @@ class ProfileViewController: UIViewController {
         gcdSaver.saveUser(user: userToRecover) { _ in }
         guard let data = imageToRecover?.jpegData(compressionQuality: 1) else { return }
         gcdSaver.saveImage(of: data) { _ in }
-    }
-
-    func cancelOperationsSaving() {
-        operationsSaver.cancel()
-        guard let userToRecover = userToRecover else { return }
-        operationsSaver.saveUser(user: userToRecover) { _ in }
-        guard let data = imageToRecover?.jpegData(compressionQuality: 1) else { return }
-        operationsSaver.saveImage(of: data) { _ in }
     }
     
     func showSuccessAlert() {
@@ -389,11 +355,7 @@ class ProfileViewController: UIViewController {
                     if let data = data {
                         self?.userImage?.image = UIImage(data: data)
                         self?.userImageView?.isHidden = false
-                        self?.saveImageCheckmark?.isHidden = false
-                        self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
-                        UIHelper.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
-                        self?.saveActivityIndicator?.stopAnimating()
-                        self?.showSuccessAlert()
+                        self?.saveSuccessfullyCompleted()
                     } else {
                         self?.showFailureAlert()
                         print(error?.localizedDescription as Any)
@@ -454,9 +416,8 @@ private class UIHelper {
         textView?.text = placeholder
     }
 
-    static func toggleSaveButtonsAlpha() {
+    static func toggleSaveButtonAlpha() {
         viewControl?.saveGCDButtonView?.isHidden.toggle()
-        viewControl?.saveOperationsButtonView?.isHidden.toggle()
     }
 
     static func setDefault() {
