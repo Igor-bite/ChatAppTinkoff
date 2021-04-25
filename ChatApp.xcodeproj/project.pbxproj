@@ -50,6 +50,7 @@
 		A5D666FD25F19BC300FC4AA0 /* MessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */; };
 		A5E83451260D536B001975EC /* SavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83450260D536B001975EC /* SavingService.swift */; };
 		A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83453260D55D8001975EC /* ImagePickerManager.swift */; };
+		A5EB0DB5263630D700EA8CE0 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB0DB4263630D700EA8CE0 /* State.swift */; };
 		A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */; };
 		A5FCE1AE26292C3A0011FCE5 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */; };
 /* End PBXBuildFile section */
@@ -102,6 +103,7 @@
 		A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageTableViewCell.xib; sourceTree = "<group>"; };
 		A5E83450260D536B001975EC /* SavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingService.swift; sourceTree = "<group>"; };
 		A5E83453260D55D8001975EC /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
+		A5EB0DB4263630D700EA8CE0 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -285,6 +287,7 @@
 				A51FF252260D0955004BAB8E /* ProfileThemeChanger.swift */,
 				A5E83453260D55D8001975EC /* ImagePickerManager.swift */,
 				A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */,
+				A5EB0DB4263630D700EA8CE0 /* State.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -634,6 +637,7 @@
 				A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */,
 				A5B1F21526325F28001C8DB3 /* Errors.swift in Sources */,
 				A5190382261E16900097CA61 /* ConversationTableViewDataSource.swift in Sources */,
+				A5EB0DB5263630D700EA8CE0 /* State.swift in Sources */,
 				A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */,
 				A53DC609261BC8BD007329DD /* ChannelsTableViewDataSource.swift in Sources */,
 				A5B77B6E2631B68500DB9856 /* Parser.swift in Sources */,

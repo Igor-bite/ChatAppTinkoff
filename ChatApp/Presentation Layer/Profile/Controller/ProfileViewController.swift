@@ -48,10 +48,13 @@ class ProfileViewController: UIViewController {
     let gcdSaver = GCDSavingManager()
     var dataService: IDataService?
     var alertPresenter: AlertPresenter?
+    
+    var state: State?
 // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        state = SavedState(profileVC: self)
         UIHelper.viewControl = self
         self.setUpUserData()
         self.alertPresenter = AlertPresenter(profileVC: self)
@@ -195,6 +198,7 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func saveGCDTapped() {
+        state?.saveTapped()
         isSaving = true
         UIHelper.toggleSaveButtonAlpha()
         saveImageCheckmark?.isHidden = true
