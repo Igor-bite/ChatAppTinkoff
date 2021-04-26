@@ -25,20 +25,23 @@ extension State {
             profileVC.userNameTextField?.selectedTextRange = profileVC.userNameTextField?.textRange(from: end, to: end)
         }
     }
-    
+
     fileprivate func keyboardWill(show: Bool) {
-        guard let profileVC = profileVC else { return }
-        UIView.animateKeyframes(withDuration: 1, delay: .zero, options: .calculationModeCubicPaced, animations: {
-            guard let userImageViewY = profileVC.userImageView?.layer.position.y,
-                  let userNameTextFieldY = profileVC.userNameTextField?.layer.position.y,
-                  let userDetailsTextViewY = profileVC.userDetailsTextView?.layer.position.y
-            else { return }
-//            profileVC.userImageView?.layer.position.y = userImageViewY - 1000
-//            profileVC.userNameTextField?.layer.position.y = userNameTextFieldY - 1000
-//            profileVC.userDetailsTextView?.layer.position.y = userDetailsTextViewY - 1000
-            profileVC.userDetailsHeightEquals?.isActive = show
-            profileVC.userDetailsHeightGreater?.isActive = !show
-        })
+        if show {
+            UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+//                self.profileVC?.userImageView?.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+                self.profileVC?.userImageView?.transform = CGAffineTransform(translationX: 0, y: 260)
+                self.profileVC?.userNameTextField?.transform = CGAffineTransform(translationX: 0, y: 260)
+                self.profileVC?.userDetailsTextView?.transform = CGAffineTransform(translationX: 0, y: 260)
+            })
+        } else {
+            UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+                self.profileVC?.userImageView?.transform = CGAffineTransform(translationX: 0, y: 0)
+//                self.profileVC?.userImageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
+                self.profileVC?.userNameTextField?.transform = CGAffineTransform(translationX: 0, y: 0)
+                self.profileVC?.userDetailsTextView?.transform = CGAffineTransform(translationX: 0, y: 0)
+            })
+        }
     }
 }
 
@@ -60,12 +63,14 @@ class EditingState: State {
         print("saved in editing")
         guard let profileVC = profileVC else { return }
         profileVC.state = SavingState(profileVC: profileVC)
+        keyboardWill(show: false)
     }
     
     // cancel tapped
     func editTapped() {
         guard let profileVC = profileVC else { return }
         profileVC.state = SavedState(profileVC: profileVC)
+        keyboardWill(show: false)
     }
 }
 
@@ -80,7 +85,6 @@ class SavingState: State {
         profileVC.saveGCDButtonView?.isHidden = true
         profileVC.saveImageCheckmark?.isHidden = true
         UIHelper.changeButtonText(buttonView: profileVC.editButtonView, text: "Cancel")
-        keyboardWill(show: false)
         makeFields(enabled: false)
         profileVC.saveBackup()
         profileVC.saveData()
@@ -107,7 +111,6 @@ class SavedState: State {
         profileVC.isSaving = false
         profileVC.saveImageCheckmark?.isHidden = false
         profileVC.saveImageCheckmark?.image = UIImage(named: "checkmark")
-        keyboardWill(show: false)
         profileVC.saveGCDButtonView?.isHidden = true
         UIHelper.changeButtonText(buttonView: profileVC.editButtonView, text: "Edit")
         makeFields(enabled: false)

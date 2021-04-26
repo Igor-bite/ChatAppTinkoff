@@ -62,9 +62,7 @@ class ProfileViewController: UIViewController {
         NSLog("\nView did load : \(#function)")
         editButtonView?.layer.cornerRadius = buttonCornerRadius
         saveGCDButtonView?.layer.cornerRadius = buttonCornerRadius
-//        saveGCDButtonView?.isHidden = true
         userImageView?.layer.cornerRadius = userImageViewCornerRadius
-//        saveImageCheckmark?.image = UIImage(named: "checkmark")
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
         userImageView?.addGestureRecognizer(userImageRec)
         switch theme {
@@ -90,10 +88,7 @@ class ProfileViewController: UIViewController {
                                                selector: #selector(keyboardWillHide),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
-//        userDetailsHeightEquals?.isActive = false
-//        userDetailsHeightGreater?.isActive = true
         self.userImage?.contentMode = .scaleAspectFill
-//        userImageView?.isUserInteractionEnabled = false
     }
 // MARK: - OnTapFunctions
     
@@ -102,7 +97,6 @@ class ProfileViewController: UIViewController {
     fileprivate func saveUser() {
         if isEditingUserData || isImageChanged {
             if isEditingUserData {
-//                UIHelper.toggleUserDetailsHeight()
                 userDetailsTextView?.isEditable = false
                 userNameTextField?.isUserInteractionEnabled = false
                 isEditingUserData = false
