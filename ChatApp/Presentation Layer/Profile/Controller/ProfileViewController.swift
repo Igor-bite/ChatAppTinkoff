@@ -31,9 +31,9 @@ class ProfileViewController: UIViewController {
     var isImageChanged = false {
         didSet {
             if isImageChanged == true && !isEditingUserData {
-                UIHelper.toggleSaveButtonAlpha()
-                saveImageCheckmark?.image = UIImage(named: "pencil")
-                UIHelper.changeButtonText(buttonView: editButtonView, text: "Cancel")
+//                UIHelper.toggleSaveButtonAlpha()
+//                saveImageCheckmark?.image = UIImage(named: "pencil")
+//                UIHelper.changeButtonText(buttonView: editButtonView, text: "Cancel")
             }
         }
     }
@@ -62,9 +62,9 @@ class ProfileViewController: UIViewController {
         NSLog("\nView did load : \(#function)")
         editButtonView?.layer.cornerRadius = buttonCornerRadius
         saveGCDButtonView?.layer.cornerRadius = buttonCornerRadius
-        saveGCDButtonView?.isHidden = true
+//        saveGCDButtonView?.isHidden = true
         userImageView?.layer.cornerRadius = userImageViewCornerRadius
-        saveImageCheckmark?.image = UIImage(named: "checkmark")
+//        saveImageCheckmark?.image = UIImage(named: "checkmark")
         let userImageRec = UITapGestureRecognizer(target: self, action: #selector(userImageTapped))
         userImageView?.addGestureRecognizer(userImageRec)
         switch theme {
@@ -90,9 +90,10 @@ class ProfileViewController: UIViewController {
                                                selector: #selector(keyboardWillHide),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
-        userDetailsHeightEquals?.isActive = false
-        userDetailsHeightGreater?.isActive = true
+//        userDetailsHeightEquals?.isActive = false
+//        userDetailsHeightGreater?.isActive = true
         self.userImage?.contentMode = .scaleAspectFill
+//        userImageView?.isUserInteractionEnabled = false
     }
 // MARK: - OnTapFunctions
     
@@ -101,7 +102,7 @@ class ProfileViewController: UIViewController {
     fileprivate func saveUser() {
         if isEditingUserData || isImageChanged {
             if isEditingUserData {
-                UIHelper.toggleUserDetailsHeight()
+//                UIHelper.toggleUserDetailsHeight()
                 userDetailsTextView?.isEditable = false
                 userNameTextField?.isUserInteractionEnabled = false
                 isEditingUserData = false
@@ -178,9 +179,16 @@ class ProfileViewController: UIViewController {
                 if let imageData = image.jpegData(compressionQuality: 1) {
                     dataService?.saveImage(imageData: imageData) { [weak self] error in
                         if error != nil {
-                            self?.showFailureAlert()
+                            if let vc = self {
+                                vc.state = EditingState(profileVC: vc)
+                                vc.showFailureAlert()
+                            }
+                            
                         }
-                        self?.saveSuccessfullyCompleted()
+                        if let vc = self {
+                            vc.state = SavedState(profileVC: vc)
+                            self?.saveSuccessfullyCompleted()
+                        }
                     }
                 }
             }
@@ -189,20 +197,18 @@ class ProfileViewController: UIViewController {
     
     fileprivate func saveSuccessfullyCompleted() {
         DispatchQueue.main.async { [weak self] in
-            self?.saveImageCheckmark?.isHidden = false
-            self?.saveActivityIndicator?.stopAnimating()
-            self?.showSuccessAlert()
-            self?.saveImageCheckmark?.image = UIImage(named: "checkmark")
-            self?.changeButtonText(buttonView: self?.editButtonView, text: "Edit")
+            if let vc = self {
+                vc.state = SavedState(profileVC: vc)
+                vc.showSuccessAlert()
+            }
         }
     }
 
     @objc func saveGCDTapped() {
         state?.saveTapped()
-        isSaving = true
-        UIHelper.toggleSaveButtonAlpha()
-        saveImageCheckmark?.isHidden = true
-        saveActivityIndicator?.startAnimating()
+    }
+    
+    func saveData() {
         saveUser()
         saveImage()
     }
@@ -212,55 +218,7 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func editButtonTapped() {
-        if isSaving {
-            cancelSaving()
-            return
-        }
-        if !isEditingUserData && !isImageChanged {
-            UIHelper.toggleUserDetailsHeight()
-            saveBackup()
-            isEditingUserData = true
-            saveImageCheckmark?.image = UIImage(named: "pencil")
-            UIHelper.changeButtonText(buttonView: editButtonView, text: "Cancel")
-            userDetailsTextView?.isEditable = true
-            UIHelper.toggleSaveButtonAlpha()
-            switch theme {
-            case .classic:
-                userDetailsTextView?.textColor = .black
-            case .day:
-                userDetailsTextView?.textColor = .black
-            case .night:
-                userDetailsTextView?.textColor = .white
-            }
-            userNameTextField?.isUserInteractionEnabled = true
-            userNameTextField?.becomeFirstResponder()
-            guard let end = userNameTextField?.endOfDocument else { return }
-            userNameTextField?.selectedTextRange = userNameTextField?.textRange(from: end, to: end)
-        } else if !isEditingUserData && isImageChanged {
-            saveImageCheckmark?.image = UIImage(named: "checkmark")
-            UIHelper.changeButtonText(buttonView: editButtonView, text: "Edit")
-            UIHelper.toggleSaveButtonAlpha()
-            userImage?.image = imageToRecover
-            userImageLabel?.isHidden = true
-            isImageChanged = false
-            isAvatarGenerated = userToRecover?.getPrefersGeneratedAvatar() ?? true
-            if isAvatarGenerated {
-                userImageLabel?.isHidden = false
-            } else {
-                userImageLabel?.isHidden = true
-            }
-            recoverUserData()
-        } else {
-            UIHelper.toggleUserDetailsHeight()
-            isEditingUserData = false
-            isImageChanged = false
-            UIHelper.toggleSaveButtonAlpha()
-            saveImageCheckmark?.image = UIImage(named: "checkmark")
-            UIHelper.changeButtonText(buttonView: editButtonView, text: "Edit")
-            userDetailsTextView?.isEditable = false
-            userNameTextField?.isUserInteractionEnabled = false
-            recoverUserData()
-        }
+        state?.editTapped()
     }
 // MARK: - Helping Functions
     
@@ -304,14 +262,7 @@ class ProfileViewController: UIViewController {
             }
         }
     }
-
-    func cancelSaving() {
-        isSavingCancelled = true
-        cancelGCDSaving()
-        setUpUserData()
-        showCancelAlert()
-    }
-
+    
     func cancelGCDSaving() {
         guard let userToRecover = userToRecover else { return }
         gcdSaver.saveUser(user: userToRecover) { _ in }
@@ -333,14 +284,9 @@ class ProfileViewController: UIViewController {
 // MARK: - RestoringData
     
     func setUpUserData() {
-        saveImageCheckmark?.image = UIImage(named: "checkmark")
-        saveImageCheckmark?.isHidden = false
-        UIHelper.changeButtonText(buttonView: editButtonView, text: "Edit")
-        userImageView?.isHidden = true
         userNameTextField?.text = userToRecover?.getName()
         userDetailsTextView?.text = userToRecover?.getDescription()
         isAvatarGenerated = userToRecover?.getPrefersGeneratedAvatar() ?? true
-        userImageView?.isHidden = false
         if isAvatarGenerated {
             userImage?.isHidden = false
             userImageLabel?.isHidden = false
@@ -367,9 +313,6 @@ class ProfileViewController: UIViewController {
                 }
             }
         }
-    }
-    func toggleUserDetailsHeight() {
-        UIHelper.toggleUserDetailsHeight()
     }
 }
 // MARK: - Extensions
@@ -399,45 +342,6 @@ extension ProfileViewController {
     }
 }
 
-private class UIHelper {
-    static weak var viewControl: ProfileViewController?
-
-    static func toggleUserDetailsHeight() {
-        viewControl?.userDetailsHeightEquals?.isActive.toggle()
-        viewControl?.userDetailsHeightGreater?.isActive.toggle()
-    }
-
-    static func changeButtonText(buttonView: UIView?, text: String) {
-        guard let subviews = buttonView?.subviews else { return }
-        for subview in subviews where subview.tag == 1 {
-            guard let label: UILabel = subview as? UILabel else { return }
-            label.text = text
-        }
-    }
-
-    static func putPlaceholder(to textView: UITextView?, placeholder: String) {
-        textView?.textColor = .lightGray
-        textView?.text = placeholder
-    }
-
-    static func toggleSaveButtonAlpha() {
-        viewControl?.saveGCDButtonView?.isHidden.toggle()
-    }
-
-    static func setDefault() {
-        viewControl?.saveImageCheckmark?.isHidden = false
-        viewControl?.saveImageCheckmark?.image = UIImage(named: "checkmark")
-        changeButtonText(buttonView: viewControl?.editButtonView, text: "Edit")
-        viewControl?.saveActivityIndicator?.stopAnimating()
-        viewControl?.showSuccessAlert()
-        viewControl?.userImageLabel?.isHidden = false
-        viewControl?.userImageView?.isHidden = false
-        viewControl?.userNameTextField?.isHidden = false
-        viewControl?.userDetailsTextView?.isHidden = false
-        viewControl?.userImageLabel?.text = "HI"
-    }
-}
-
 extension ProfileViewController {
 // MARK: - ViewController LifeCycle
     
@@ -446,7 +350,7 @@ extension ProfileViewController {
         NSLog("\nView will disappear : \(#function)")
         guard let isAnimating = saveActivityIndicator?.isAnimating else { return }
         if isAnimating {
-            cancelSaving()
+            cancelGCDSaving()
             setUpUserData()
             delegate?.showCancelAlert()
         }

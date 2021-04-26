@@ -55,7 +55,6 @@ class AlertPresenter {
             self?.profileVC?.isImageChanged = true
             self?.profileVC?.isEditingUserData = true
             self?.profileVC?.saveGCDTapped()
-            self?.profileVC?.toggleUserDetailsHeight()
         }))
         guard let isSavingCancelled = profileVC?.isSavingCancelled else { return }
         if !isSavingCancelled {
