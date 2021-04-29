@@ -30,14 +30,20 @@ extension State {
         if show {
             let originalTransform = self.profileVC?.userImageView?.transform
             let scaledTransform = originalTransform?.scaledBy(x: 0.7, y: 0.7)
-            guard let scaledAndTranslatedTransform = scaledTransform?.translatedBy(x: 0.0, y: 320) else { return }
+            guard let heightParent = profileVC?.delegate?.view.frame.height,
+                  let height = profileVC?.view.frame.height,
+                  let userImageHeight = profileVC?.userImageView?.frame.height
+            else { return }
+            let gap = heightParent - height + userImageHeight * 0.7 + 5
+            guard let scaledAndTranslatedTransform = scaledTransform?.translatedBy(x: 0.0, y: gap) else { return }
             
             let originalDetailsView = self.profileVC?.userDetailsTextView?.transform
             let scaledDetailsView = originalDetailsView?.scaledBy(x: 1, y: 0.9)
-            guard let scaledAndTranslatedDetailsView = scaledDetailsView?.translatedBy(x: 0.0, y: 220) else { return }
+            let textFieldsOffset = userImageHeight * 0.7 / 2.0 + 20
+            guard let scaledAndTranslatedDetailsView = scaledDetailsView?.translatedBy(x: 0.0, y: textFieldsOffset) else { return }
             UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
                 self.profileVC?.userImageView?.transform = scaledAndTranslatedTransform
-                self.profileVC?.userNameTextField?.transform = CGAffineTransform(translationX: 0, y: 200)
+                self.profileVC?.userNameTextField?.transform = CGAffineTransform(translationX: 0, y: textFieldsOffset)
                 self.profileVC?.userDetailsTextView?.transform = scaledAndTranslatedDetailsView
             })
         } else {
@@ -54,7 +60,6 @@ class EditingState: State {
     weak var profileVC: ProfileViewController?
     
     init(profileVC: ProfileViewController) {
-        print("EditingState")
         self.profileVC = profileVC
         
         profileVC.saveImageCheckmark?.image = UIImage(named: "pencil")
@@ -67,7 +72,6 @@ class EditingState: State {
     }
     
     func saveTapped() {
-        print("saved in editing")
         profileVC?.buttonAnimator?.stop {
             guard let profileVC = self.profileVC else { return }
             profileVC.state = SavingState(profileVC: profileVC)
@@ -89,9 +93,9 @@ class SavingState: State {
     weak var profileVC: ProfileViewController?
     
     init(profileVC: ProfileViewController) {
-        print("SavingState")
         self.profileVC = profileVC
         
+        profileVC.changeUserImageLabel()
         profileVC.saveActivityIndicator?.startAnimating()
         profileVC.isSaving = true
         profileVC.saveGCDButtonView?.isHidden = true
@@ -108,11 +112,16 @@ class SavingState: State {
     
     // cancel tapped
     func editTapped() {
-        print("edit in saving")
         guard let profileVC = profileVC else { return }
-        profileVC.cancelGCDSaving()
-        profileVC.showCancelAlert()
+        
+        if profileVC.isSaving {
+            profileVC.cancelGCDSaving()
+            profileVC.showCancelAlert()
+            profileVC.state = SavedState(profileVC: profileVC)
+            return
+        }
         profileVC.state = SavedState(profileVC: profileVC)
+        profileVC.state?.editTapped()
     }
 }
 
@@ -120,8 +129,6 @@ class SavedState: State {
     weak var profileVC: ProfileViewController?
     
     init(profileVC: ProfileViewController) {
-        print("SavedState")
-        
         self.profileVC = profileVC
         profileVC.isSaving = false
         profileVC.saveImageCheckmark?.isHidden = false
