@@ -20,9 +20,11 @@ class ConversationsListViewController: UIViewController {
     @IBOutlet weak var newChannelImage: UIImageView?
     var coreDataService = CoreDataService()
     var tableViewDataSource: UITableViewDataSource?
+    let animator = MyCustomTransition()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         coreDataService.channelsDelegate = self
         self.dataService = DataService(database: FirestoreDatabase(), coreDataService: coreDataService)
         title = navControllerTitle
@@ -82,6 +84,7 @@ class ConversationsListViewController: UIViewController {
         DispatchQueue.main.async {
             let profileVC: ProfileViewController = self.storyboard?
                 .instantiateViewController(withIdentifier: "ProfileVC") as? ProfileViewController ?? ProfileViewController()
+            profileVC.transitioningDelegate = self
             profileVC.theme = self.theme
             profileVC.userToRecover = self.currentUser
             profileVC.imageToRecover = self.userImage
@@ -335,4 +338,15 @@ extension Encodable {
     }
     return dictionary
   }
+}
+
+extension ConversationsListViewController: UIViewControllerTransitioningDelegate {
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return animator
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return nil
+    }
 }
