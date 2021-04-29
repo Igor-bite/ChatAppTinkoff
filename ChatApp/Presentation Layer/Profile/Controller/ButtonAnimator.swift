@@ -19,9 +19,6 @@ class WigglingAnimator: Animator {
     var isAnimating: Bool = false
     var view: UIView
     var duration: Double
-//    private var positionAnimation: CAKeyframeAnimation?
-//    private var rotationAnimation: CAKeyframeAnimation?
-//    private var group: CAAnimationGroup?
     private var degreeFrom = NSNumber(value: Double.pi / 10)
     private var degreeTo = NSNumber(value: -Double.pi / 10)
     private var offset: CGFloat = CGFloat(5)
@@ -72,7 +69,7 @@ class WigglingAnimator: Animator {
         view.layer.removeAllAnimations()
         
         UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
-//            self.view.layer.position = self.initialPosition
+            self.view.layer.position = self.initialPosition
             self.view.transform = CGAffineTransform(rotationAngle: radian)
         }, completion: { (_) in
             completion()
