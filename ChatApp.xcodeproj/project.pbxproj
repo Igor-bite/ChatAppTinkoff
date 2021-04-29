@@ -28,6 +28,7 @@
 		A55F4B6E2616445E00613C1E /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F4B6D2616445E00613C1E /* CoreDataService.swift */; };
 		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
 		A598A5FF263AC71C00FE3A68 /* CustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A598A5FE263AC71C00FE3A68 /* CustomTransition.swift */; };
+		A598A605263B3A7900FE3A68 /* ButtonAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A598A604263B3A7900FE3A68 /* ButtonAnimator.swift */; };
 		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
 		A599D8DC2600F6AC0002D3B8 /* ISavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */; };
 		A599D8E02600F9A20002D3B8 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8DF2600F9A20002D3B8 /* FileManager.swift */; };
@@ -80,6 +81,7 @@
 		A55F4B6D2616445E00613C1E /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CoreDataService.swift; path = "../Core Layer/DataAccessLayer/CoreData/CoreDataService.swift"; sourceTree = "<group>"; };
 		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		A598A5FE263AC71C00FE3A68 /* CustomTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransition.swift; sourceTree = "<group>"; };
+		A598A604263B3A7900FE3A68 /* ButtonAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonAnimator.swift; sourceTree = "<group>"; };
 		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
 		A599D8DB2600F6AC0002D3B8 /* ISavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISavingManager.swift; sourceTree = "<group>"; };
 		A599D8DF2600F9A20002D3B8 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */,
+				A598A604263B3A7900FE3A68 /* ButtonAnimator.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -619,6 +622,7 @@
 				A5B1F21226325E81001C8DB3 /* RequestSender.swift in Sources */,
 				A5484D4726136E77008AF909 /* Chat.xcdatamodeld in Sources */,
 				A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */,
+				A598A605263B3A7900FE3A68 /* ButtonAnimator.swift in Sources */,
 				A5177B05262F8E1100E5CC8D /* AvatarImagePickerController.swift in Sources */,
 				A598A5FF263AC71C00FE3A68 /* CustomTransition.swift in Sources */,
 				A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */,
@@ -807,7 +811,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.Tinkoff.TinkoffChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -828,7 +832,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.Tinkoff.TinkoffChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

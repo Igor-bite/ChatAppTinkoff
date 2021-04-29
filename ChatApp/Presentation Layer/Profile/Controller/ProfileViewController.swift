@@ -28,19 +28,12 @@ class ProfileViewController: UIViewController {
     private let userImageViewCornerRadius: CGFloat = 120
     var theme: Theme = .classic
     var isEditingUserData = false
-    var isImageChanged = false {
-        didSet {
-            if isImageChanged == true && !isEditingUserData {
-//                UIHelper.toggleSaveButtonAlpha()
-//                saveImageCheckmark?.image = UIImage(named: "pencil")
-//                UIHelper.changeButtonText(buttonView: editButtonView, text: "Cancel")
-            }
-        }
-    }
+    var isImageChanged = false
     weak var delegate: ConversationsListViewController?
     var isAvatarGenerated = true
     var imageToRecover: UIImage?
     var userToRecover: User?
+    var curUser: User?
     var isSaving = false
     var isSavingCancelled = false
     private var themeChanger: ProfileThemeChanger = ProfileThemeChanger()
@@ -50,10 +43,15 @@ class ProfileViewController: UIViewController {
     var alertPresenter: AlertPresenter?
     
     var state: State?
+    
+    var buttonAnimator: Animator?
 // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let saveGCDButtonView = saveGCDButtonView {
+            self.buttonAnimator = WigglingAnimator(view: saveGCDButtonView)
+        }
         state = SavedState(profileVC: self)
         UIHelper.viewControl = self
         self.setUpUserData()
@@ -90,6 +88,7 @@ class ProfileViewController: UIViewController {
                                                object: nil)
         self.userImage?.contentMode = .scaleAspectFill
     }
+    
 // MARK: - OnTapFunctions
     
     private let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
@@ -179,10 +178,7 @@ class ProfileViewController: UIViewController {
                             }
                             
                         }
-                        if let vc = self {
-                            vc.state = SavedState(profileVC: vc)
-                            self?.saveSuccessfullyCompleted()
-                        }
+                        self?.saveSuccessfullyCompleted()
                     }
                 }
             }
@@ -203,8 +199,18 @@ class ProfileViewController: UIViewController {
     }
     
     func saveData() {
-        saveUser()
-        saveImage()
+        let curUser = User(name: userNameTextField?.text ?? "", description: userDetailsTextView?.text, isOnline: nil, prefersGeneratedAvatar: isAvatarGenerated)
+        guard let isChanged = userToRecover?.isEqual(to: curUser) else {
+            self.state = SavedState(profileVC: self)
+            return
+        }
+        if !isChanged {
+            saveUser()
+            saveImage()
+            self.state = SavedState(profileVC: self)
+        } else {
+            self.state = SavedState(profileVC: self)
+        }
     }
     
     @IBAction func closeProfile(_ sender: Any) {

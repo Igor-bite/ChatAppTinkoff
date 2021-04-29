@@ -14,8 +14,7 @@ class MyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning {
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
-        guard let toView = transitionContext.view(forKey: .to),
-              let navVC = transitionContext.viewController(forKey: .from) as? UINavigationController
+        guard let toView = transitionContext.view(forKey: .to)
         else { return }
         
         containerView.addSubview(toView)

@@ -87,6 +87,7 @@ class ConversationsListViewController: UIViewController {
             profileVC.transitioningDelegate = self
             profileVC.theme = self.theme
             profileVC.userToRecover = self.currentUser
+            profileVC.curUser = self.currentUser
             profileVC.imageToRecover = self.userImage
             profileVC.delegate = self
             profileVC.dataService = self.dataService

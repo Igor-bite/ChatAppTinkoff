@@ -81,4 +81,13 @@ class User: Codable {
     static func getUnknownUserName() -> String {
         return "Unknown User"
     }
+    
+    func isEqual(to user: User) -> Bool {
+        if user.getPrefersGeneratedAvatar() == self.prefersGeneratedAvatar &&
+            user.getName() == self.name &&
+            user.getDescription() == self.description {
+            return true
+        }
+        return false
+    }
 }
