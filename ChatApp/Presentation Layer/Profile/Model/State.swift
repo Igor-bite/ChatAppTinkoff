@@ -68,18 +68,20 @@ class EditingState: State {
     
     func saveTapped() {
         print("saved in editing")
-        profileVC?.buttonAnimator?.stop()
-        guard let profileVC = profileVC else { return }
-        profileVC.state = SavingState(profileVC: profileVC)
-        keyboardWill(show: false)
+        profileVC?.buttonAnimator?.stop {
+            guard let profileVC = self.profileVC else { return }
+            profileVC.state = SavingState(profileVC: profileVC)
+            self.keyboardWill(show: false)
+        }
     }
     
     // cancel tapped
     func editTapped() {
-        profileVC?.buttonAnimator?.stop()
-        guard let profileVC = profileVC else { return }
-        profileVC.state = SavedState(profileVC: profileVC)
-        keyboardWill(show: false)
+        profileVC?.buttonAnimator?.stop {
+            guard let profileVC = self.profileVC else { return }
+            profileVC.state = SavedState(profileVC: profileVC)
+            self.keyboardWill(show: false)
+        }
     }
 }
 

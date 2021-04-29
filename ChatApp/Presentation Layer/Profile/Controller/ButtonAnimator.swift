@@ -11,7 +11,7 @@ protocol Animator {
     var view: UIView {get set}
     var isAnimating: Bool {get}
     func animate()
-    func stop()
+    func stop(completion: @escaping () -> Void)
 }
 
 class WigglingAnimator: Animator {
@@ -59,13 +59,14 @@ class WigglingAnimator: Animator {
         CATransaction.commit()
     }
     
-    func stop() {
+    func stop(completion: @escaping () -> Void) {
         isAnimating = false
         
         guard let currentPos: CGPoint = view.layer.presentation()?.value(forKey: #keyPath(CALayer.position)) as? CGPoint
         else { return }
         
         guard let angle = view.layer.presentation()?.value(forKeyPath: "transform.rotation") as? CGFloat else { return }
+        let rad = .pi / 180.0 * angle
         
         view.layer.position = currentPos
         
@@ -75,10 +76,10 @@ class WigglingAnimator: Animator {
 //                self.myButtonView?.transform = CGAffineTransform(translationX: 0, y: 0)
 //                self.myButtonView?.transform = CGAffineTransform(rotationAngle: .zero)
             self.view.layer.position = self.initialPosition
-            self.view.transform = CGAffineTransform(rotationAngle: angle)
+            self.view.transform = CGAffineTransform(rotationAngle: rad)
 //                print(self.myButtonView?.transform, CGAffineTransform.identity)
         }, completion: { (_) in
-            print(self.view.layer.position)
+            completion()
         })
     }
 }
