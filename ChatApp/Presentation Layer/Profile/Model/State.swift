@@ -103,7 +103,6 @@ class SavingState: State {
         UIHelper.changeButtonText(buttonView: profileVC.editButtonView, text: "Cancel")
         makeFields(enabled: false)
         profileVC.saveData()
-        profileVC.state = SavedState(profileVC: profileVC)
     }
     
     func saveTapped() {

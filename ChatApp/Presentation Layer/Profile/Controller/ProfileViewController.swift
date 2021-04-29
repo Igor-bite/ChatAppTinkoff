@@ -27,7 +27,7 @@ class ProfileViewController: UIViewController {
     private let buttonCornerRadius: CGFloat = 14
     private let userImageViewCornerRadius: CGFloat = 120
     var theme: Theme = .classic
-    var isEditingUserData = false
+    var isUserDetailsChanged = false
     var isImageChanged = false
     weak var delegate: ConversationsListViewController?
     var isAvatarGenerated = true
@@ -144,11 +144,20 @@ class ProfileViewController: UIViewController {
     private let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
 
     fileprivate func saveUser() {
-        if isEditingUserData || isImageChanged {
-            if isEditingUserData {
+        guard let userNameText = userNameTextField?.text,
+              let userName = userToRecover?.getName()
+        else { return }
+        let isUserNameChanged = userNameText != userName
+        if self.userDetailsTextView?.text == userToRecover?.getDescription() {
+            isUserDetailsChanged = false
+        } else {
+            isUserDetailsChanged = true
+        }
+        if isUserDetailsChanged || isUserNameChanged || isImageChanged {
+            if isUserDetailsChanged || isUserNameChanged {
                 userDetailsTextView?.isEditable = false
                 userNameTextField?.isUserInteractionEnabled = false
-                isEditingUserData = false
+                isUserDetailsChanged = false
                 changeUserImageLabel()
             }
             guard let name = userNameTextField?.text else { return }
@@ -157,6 +166,7 @@ class ProfileViewController: UIViewController {
                                      description: description,
                                      isOnline: true,
                                      prefersGeneratedAvatar: isAvatarGenerated)
+            
             dataService?.saveUser(user: curUser) { [weak self] (error) in
                 if let error = error {
                     self?.showFailureAlert()
@@ -238,8 +248,8 @@ class ProfileViewController: UIViewController {
     fileprivate func saveSuccessfullyCompleted() {
         DispatchQueue.main.async { [weak self] in
             if let vc = self {
-                vc.state = SavedState(profileVC: vc)
                 vc.showSuccessAlert()
+                vc.state = SavedState(profileVC: vc)
             }
         }
     }
@@ -257,7 +267,6 @@ class ProfileViewController: UIViewController {
         if !isChanged {
             saveUser()
             saveImage()
-            self.state = SavedState(profileVC: self)
         } else {
             self.state = SavedState(profileVC: self)
         }

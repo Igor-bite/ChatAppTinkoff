@@ -55,7 +55,7 @@ class AlertPresenter {
                                              handler: { [weak self] _ in
                                                 guard let profileVC = self?.profileVC else { return }
                                                 profileVC.isImageChanged = true
-                                                profileVC.isEditingUserData = true
+                                                profileVC.isUserDetailsChanged = true
                                                 profileVC.setUpUserData()
                                                 profileVC.state = SavedState(profileVC: profileVC)
                                                 profileVC.saveGCDTapped()
