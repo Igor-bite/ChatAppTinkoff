@@ -87,9 +87,55 @@ class ProfileViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
         self.userImage?.contentMode = .scaleAspectFill
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(sender:)))
+        self.view.addGestureRecognizer(longPressRecognizer)
     }
     
 // MARK: - OnTapFunctions
+    lazy var crestCell: CAEmitterCell = {
+        var crest = CAEmitterCell()
+        crest.contents = UIImage(named: "Crest")?.cgImage
+        crest.scale = 0.2
+        crest.scaleRange = 0.2
+        crest.emissionRange = 0.0
+        crest.lifetime = 2
+        crest.birthRate = 10
+        crest.velocity = 50
+        crest.emissionRange = .pi / 2.0
+        crest.velocityRange = 30
+        crest.yAcceleration = 30
+        crest.xAcceleration = -30
+        crest.spin = -0.5
+        crest.spinRange = 1.0
+        return crest
+    }()
+
+    private var crestLayer: CAEmitterLayer?
+    
+    @objc func longPressed(sender: UILongPressGestureRecognizer) {
+        let location = sender.location(in: self.view)
+        switch sender.state {
+        case .ended:
+            crestLayer?.removeFromSuperlayer()
+            crestLayer?.emitterCells = []
+            crestLayer?.lifetime = 0
+            crestLayer = nil
+        case .began:
+            crestLayer = CAEmitterLayer()
+            crestLayer?.emitterSize = CGSize(width: 0, height: 0)
+            crestLayer?.emitterShape = .circle
+            crestLayer?.beginTime = CACurrentMediaTime()
+            crestLayer?.timeOffset = CFTimeInterval(arc4random_uniform(6) + 5)
+            crestLayer?.emitterCells = [crestCell]
+            crestLayer?.position = location
+            if let crestLayer = self.crestLayer {
+                self.view.layer.addSublayer(crestLayer)
+            }
+        default:
+            crestLayer?.position = location
+        }
+    }
     
     private let concurrentSaveQueue = DispatchQueue(label: "ru.tinkoff.save", attributes: .concurrent)
 
