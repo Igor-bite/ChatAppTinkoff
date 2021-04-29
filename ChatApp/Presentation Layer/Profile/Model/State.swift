@@ -28,22 +28,31 @@ extension State {
 
     fileprivate func keyboardWill(show: Bool) {
         if show {
+            var topSafeArea: CGFloat?
+            if #available(iOS 13.0, *) {
+                let window = UIApplication.shared.windows[0]
+                topSafeArea = window.safeAreaInsets.top
+            }
+            
             let originalTransform = self.profileVC?.userImageView?.transform
             let scaledTransform = originalTransform?.scaledBy(x: 0.7, y: 0.7)
             guard let heightParent = profileVC?.delegate?.view.frame.height,
                   let height = profileVC?.view.frame.height,
                   let userImageHeight = profileVC?.userImageView?.frame.height
             else { return }
-            let gap = heightParent - height + userImageHeight * 0.7 + 5
+            var gap: CGFloat = heightParent - height + userImageHeight * 0.7 + 5
+            if let topSafeArea = topSafeArea {
+                gap += topSafeArea * 2
+            }
             guard let scaledAndTranslatedTransform = scaledTransform?.translatedBy(x: 0.0, y: gap) else { return }
             
             let originalDetailsView = self.profileVC?.userDetailsTextView?.transform
             let scaledDetailsView = originalDetailsView?.scaledBy(x: 1, y: 0.9)
-            let textFieldsOffset = userImageHeight * 0.7 / 2.0 + 20
-            guard let scaledAndTranslatedDetailsView = scaledDetailsView?.translatedBy(x: 0.0, y: textFieldsOffset) else { return }
+            let textFieldsOffset = gap / 2.0
+            guard let scaledAndTranslatedDetailsView = scaledDetailsView?.translatedBy(x: 0.0, y: textFieldsOffset + 5) else { return }
             UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
                 self.profileVC?.userImageView?.transform = scaledAndTranslatedTransform
-                self.profileVC?.userNameTextField?.transform = CGAffineTransform(translationX: 0, y: textFieldsOffset)
+                self.profileVC?.userNameTextField?.transform = CGAffineTransform(translationX: 0, y: textFieldsOffset + 10)
                 self.profileVC?.userDetailsTextView?.transform = scaledAndTranslatedDetailsView
             })
         } else {
