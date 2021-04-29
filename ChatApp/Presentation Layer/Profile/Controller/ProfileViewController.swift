@@ -49,9 +49,6 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let saveGCDButtonView = saveGCDButtonView {
-            self.buttonAnimator = WigglingAnimator(view: saveGCDButtonView)
-        }
         state = SavedState(profileVC: self)
         UIHelper.viewControl = self
         self.setUpUserData()
@@ -90,6 +87,13 @@ class ProfileViewController: UIViewController {
         
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(sender:)))
         self.view.addGestureRecognizer(longPressRecognizer)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if let saveGCDButtonView = saveGCDButtonView {
+            self.buttonAnimator = WigglingAnimator(view: saveGCDButtonView)
+        }
     }
     
 // MARK: - OnTapFunctions

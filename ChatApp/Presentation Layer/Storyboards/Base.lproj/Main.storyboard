@@ -136,11 +136,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="740" showsHorizontalScrollIndicator="NO" editable="NO" text="Bio" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gje-1n-dug">
-                                <rect key="frame" x="94" y="431.33333333333331" width="240" height="150.66666666666669"/>
+                                <rect key="frame" x="94" y="431.33333333333331" width="240" height="58"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="51" id="l8P-rs-Iqm"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="51" id="ljx-aY-5TQ"/>
                                 </constraints>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
@@ -237,7 +236,7 @@
                                 <textInputTraits key="textInputTraits" textContentType="name"/>
                             </textField>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oi2-ik-jNh">
-                                <rect key="frame" x="174.66666666666666" y="752" width="78.666666666666657" height="40"/>
+                                <rect key="frame" x="174.66666666666666" y="757" width="78.666666666666657" height="40"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zea-M1-2h9">
                                         <rect key="frame" x="18" y="8.6666666666666288" width="43" height="23"/>
@@ -258,11 +257,11 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ed5-aY-cP7" firstAttribute="top" secondItem="0ym-aU-4cm" secondAttribute="bottom" constant="20" id="1ru-vv-7ES"/>
+                            <constraint firstItem="Gje-1n-dug" firstAttribute="height" secondItem="xsM-hk-Okl" secondAttribute="height" multiplier="2" id="2mN-KR-VAZ"/>
                             <constraint firstItem="Gje-1n-dug" firstAttribute="leading" secondItem="ed5-aY-cP7" secondAttribute="leading" id="6LU-2h-Hup"/>
                             <constraint firstItem="0ym-aU-4cm" firstAttribute="top" secondItem="V3o-Ff-Lti" secondAttribute="top" constant="37" id="AwJ-5t-R1F"/>
                             <constraint firstItem="Gje-1n-dug" firstAttribute="top" secondItem="xsM-hk-Okl" secondAttribute="bottom" constant="15" id="D6a-i6-Nfw"/>
-                            <constraint firstItem="Oi2-ik-jNh" firstAttribute="top" secondItem="Gje-1n-dug" secondAttribute="bottom" constant="170" id="GIM-aH-E5h"/>
-                            <constraint firstItem="lp3-3o-tmW" firstAttribute="top" secondItem="Oi2-ik-jNh" secondAttribute="bottom" constant="30" id="Hj5-Aq-R3S"/>
+                            <constraint firstItem="lp3-3o-tmW" firstAttribute="top" secondItem="Oi2-ik-jNh" secondAttribute="bottom" constant="25" id="Hj5-Aq-R3S"/>
                             <constraint firstItem="0ym-aU-4cm" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Lt1-bb-z9T"/>
                             <constraint firstItem="Oi2-ik-jNh" firstAttribute="width" secondItem="lp3-3o-tmW" secondAttribute="width" multiplier="0.3" id="RmH-Oz-HMt"/>
                             <constraint firstItem="xsM-hk-Okl" firstAttribute="leading" secondItem="V3o-Ff-Lti" secondAttribute="leading" constant="16" id="Svw-ae-wVS"/>
@@ -285,7 +284,6 @@
                         <outlet property="saveGCDButtonView" destination="Oi2-ik-jNh" id="n94-xR-DQm"/>
                         <outlet property="saveImageCheckmark" destination="dpL-Ps-it8" id="txW-QX-J9r"/>
                         <outlet property="userDetailsHeightEquals" destination="l8P-rs-Iqm" id="uVZ-ia-0Hp"/>
-                        <outlet property="userDetailsHeightGreater" destination="ljx-aY-5TQ" id="dn9-VZ-fBb"/>
                         <outlet property="userDetailsTextView" destination="Gje-1n-dug" id="rhO-Xw-I8N"/>
                         <outlet property="userImage" destination="Hcx-5l-lV0" id="JJA-w6-qWr"/>
                         <outlet property="userImageLabel" destination="eGb-uo-O7c" id="eWR-8w-rLq"/>
