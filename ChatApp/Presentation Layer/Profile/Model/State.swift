@@ -40,7 +40,7 @@ extension State {
                   let height = profileVC?.view.frame.height,
                   let userImageHeight = profileVC?.userImageView?.frame.height
             else { return }
-            var gap: CGFloat = heightParent - height + userImageHeight * 0.7 + 5
+            var gap: CGFloat = heightParent - height + userImageHeight * 0.7 + 25
             if let topSafeArea = topSafeArea {
                 gap += topSafeArea * 2
             }
@@ -48,7 +48,7 @@ extension State {
             
             let originalDetailsView = self.profileVC?.userDetailsTextView?.transform
             let scaledDetailsView = originalDetailsView?.scaledBy(x: 1, y: 0.9)
-            let textFieldsOffset = gap / 2.0
+            let textFieldsOffset = gap / 2.0 + 25
             guard let scaledAndTranslatedDetailsView = scaledDetailsView?.translatedBy(x: 0.0, y: textFieldsOffset + 5) else { return }
             UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
                 self.profileVC?.userImageView?.transform = scaledAndTranslatedTransform
@@ -56,7 +56,7 @@ extension State {
                 self.profileVC?.userDetailsTextView?.transform = scaledAndTranslatedDetailsView
             })
         } else {
-            UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 2, options: .curveEaseInOut, animations: {
                 self.profileVC?.userImageView?.transform = CGAffineTransform.identity
                 self.profileVC?.userNameTextField?.transform = CGAffineTransform.identity
                 self.profileVC?.userDetailsTextView?.transform = CGAffineTransform.identity
