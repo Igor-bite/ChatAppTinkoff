@@ -51,15 +51,26 @@
 		A5D666F825F197BC00FC4AA0 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */; };
 		A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */; };
 		A5D666FD25F19BC300FC4AA0 /* MessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */; };
+		A5E18C8826434FC800F2AA11 /* ChatAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E18C8726434FC800F2AA11 /* ChatAppUITests.swift */; };
+		A5E18C98264363DB00F2AA11 /* MockDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E18C97264363DB00F2AA11 /* MockDatabase.swift */; };
 		A5E83451260D536B001975EC /* SavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83450260D536B001975EC /* SavingService.swift */; };
 		A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83453260D55D8001975EC /* ImagePickerManager.swift */; };
 		A5EB0DB5263630D700EA8CE0 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB0DB4263630D700EA8CE0 /* State.swift */; };
+		A5F0F25D2642B7E90031F253 /* MockSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0F25C2642B7E90031F253 /* MockSavingService.swift */; };
+		A5F0F25F2642BAD50031F253 /* SavingServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0F25E2642BAD50031F253 /* SavingServiceTest.swift */; };
 		A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */; };
 		A5FCE1AE26292C3A0011FCE5 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		A5C9547B2641AC98003A562E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5A5B93725DA85D500F61A26 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A5A5B93E25DA85D500F61A26;
+			remoteInfo = ChatApp;
+		};
+		A5E18C8A26434FC800F2AA11 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A5A5B93725DA85D500F61A26 /* Project object */;
 			proxyType = 1;
@@ -119,9 +130,15 @@
 		A5D666F725F197BC00FC4AA0 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageTableViewCell.xib; sourceTree = "<group>"; };
+		A5E18C8526434FC800F2AA11 /* ChatAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5E18C8726434FC800F2AA11 /* ChatAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppUITests.swift; sourceTree = "<group>"; };
+		A5E18C8926434FC800F2AA11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5E18C97264363DB00F2AA11 /* MockDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDatabase.swift; sourceTree = "<group>"; };
 		A5E83450260D536B001975EC /* SavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingService.swift; sourceTree = "<group>"; };
 		A5E83453260D55D8001975EC /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
 		A5EB0DB4263630D700EA8CE0 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
+		A5F0F25C2642B7E90031F253 /* MockSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSavingService.swift; sourceTree = "<group>"; };
+		A5F0F25E2642BAD50031F253 /* SavingServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingServiceTest.swift; sourceTree = "<group>"; };
 		A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -136,6 +153,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A5C954732641AC98003A562E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5E18C8226434FC800F2AA11 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -459,6 +483,7 @@
 			children = (
 				A5A5B94125DA85D500F61A26 /* ChatApp */,
 				A5C954772641AC98003A562E /* ChatAppTests */,
+				A5E18C8626434FC800F2AA11 /* ChatAppUITests */,
 				A5A5B94025DA85D500F61A26 /* Products */,
 				7EA3080E0D788BF49C657766 /* Pods */,
 				0FC2A24FED29C5A01F836668 /* Frameworks */,
@@ -470,6 +495,7 @@
 			children = (
 				A5A5B93F25DA85D500F61A26 /* ChatApp.app */,
 				A5C954762641AC98003A562E /* ChatAppTests.xctest */,
+				A5E18C8526434FC800F2AA11 /* ChatAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -506,10 +532,30 @@
 		A5C954772641AC98003A562E /* ChatAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				A5F0F25B2642B7400031F253 /* Mocks */,
 				A5C954782641AC98003A562E /* ChatAppTests.swift */,
 				A5C9547A2641AC98003A562E /* Info.plist */,
+				A5F0F25E2642BAD50031F253 /* SavingServiceTest.swift */,
 			);
 			path = ChatAppTests;
+			sourceTree = "<group>";
+		};
+		A5E18C8626434FC800F2AA11 /* ChatAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				A5E18C8726434FC800F2AA11 /* ChatAppUITests.swift */,
+				A5E18C8926434FC800F2AA11 /* Info.plist */,
+			);
+			path = ChatAppUITests;
+			sourceTree = "<group>";
+		};
+		A5F0F25B2642B7400031F253 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				A5F0F25C2642B7E90031F253 /* MockSavingService.swift */,
+				A5E18C97264363DB00F2AA11 /* MockDatabase.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -553,6 +599,24 @@
 			productReference = A5C954762641AC98003A562E /* ChatAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		A5E18C8426434FC800F2AA11 /* ChatAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A5E18C8C26434FC800F2AA11 /* Build configuration list for PBXNativeTarget "ChatAppUITests" */;
+			buildPhases = (
+				A5E18C8126434FC800F2AA11 /* Sources */,
+				A5E18C8226434FC800F2AA11 /* Frameworks */,
+				A5E18C8326434FC800F2AA11 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A5E18C8B26434FC800F2AA11 /* PBXTargetDependency */,
+			);
+			name = ChatAppUITests;
+			productName = ChatAppUITests;
+			productReference = A5E18C8526434FC800F2AA11 /* ChatAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -566,6 +630,10 @@
 						CreatedOnToolsVersion = 12.3;
 					};
 					A5C954752641AC98003A562E = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = A5A5B93E25DA85D500F61A26;
+					};
+					A5E18C8426434FC800F2AA11 = {
 						CreatedOnToolsVersion = 12.4;
 						TestTargetID = A5A5B93E25DA85D500F61A26;
 					};
@@ -586,6 +654,7 @@
 			targets = (
 				A5A5B93E25DA85D500F61A26 /* ChatApp */,
 				A5C954752641AC98003A562E /* ChatAppTests */,
+				A5E18C8426434FC800F2AA11 /* ChatAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -606,6 +675,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A5C954742641AC98003A562E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5E18C8326434FC800F2AA11 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -725,7 +801,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5F0F25F2642BAD50031F253 /* SavingServiceTest.swift in Sources */,
+				A5E18C98264363DB00F2AA11 /* MockDatabase.swift in Sources */,
 				A5C954792641AC98003A562E /* ChatAppTests.swift in Sources */,
+				A5F0F25D2642B7E90031F253 /* MockSavingService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5E18C8126434FC800F2AA11 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5E18C8826434FC800F2AA11 /* ChatAppUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -736,6 +823,11 @@
 			isa = PBXTargetDependency;
 			target = A5A5B93E25DA85D500F61A26 /* ChatApp */;
 			targetProxy = A5C9547B2641AC98003A562E /* PBXContainerItemProxy */;
+		};
+		A5E18C8B26434FC800F2AA11 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A5A5B93E25DA85D500F61A26 /* ChatApp */;
+			targetProxy = A5E18C8A26434FC800F2AA11 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -923,6 +1015,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
+				HEADER_SEARCH_PATHS = " ${SRCROOT}/Pods/Firebase/CoreOnly/Sources";
 				INFOPLIST_FILE = ChatAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -944,6 +1037,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
+				HEADER_SEARCH_PATHS = " ${SRCROOT}/Pods/Firebase/CoreOnly/Sources";
 				INFOPLIST_FILE = ChatAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -956,6 +1050,46 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatApp.app/ChatApp";
+			};
+			name = Release;
+		};
+		A5E18C8D26434FC800F2AA11 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
+				INFOPLIST_FILE = ChatAppUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ChatApp;
+			};
+			name = Debug;
+		};
+		A5E18C8E26434FC800F2AA11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
+				INFOPLIST_FILE = ChatAppUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.IgorKlyuzhev.ChatAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ChatApp;
 			};
 			name = Release;
 		};
@@ -985,6 +1119,15 @@
 			buildConfigurations = (
 				A5C9547E2641AC98003A562E /* Debug */,
 				A5C9547F2641AC98003A562E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A5E18C8C26434FC800F2AA11 /* Build configuration list for PBXNativeTarget "ChatAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A5E18C8D26434FC800F2AA11 /* Debug */,
+				A5E18C8E26434FC800F2AA11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

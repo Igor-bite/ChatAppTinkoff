@@ -23,7 +23,6 @@ protocol IDatabase {
 class FirestoreDatabase: IDatabase {
     lazy var dbInstance = Firestore.firestore()
     lazy var reference = dbInstance.collection("channels")
-    weak var coreDataService: CoreDataService?
 
     func addListenerForChannels(completion: @escaping (Result<QuerySnapshot, Error>) -> Void) {
         reference.addSnapshotListener { snapshot, error in
