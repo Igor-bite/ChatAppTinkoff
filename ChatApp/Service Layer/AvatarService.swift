@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol AvatarService: class {
+protocol AvatarService: Any {
     var imageLoader: ImageLoader { get }
     func getDataSource() -> UICollectionViewDataSource
     func getPreviewImage(for indexPath: IndexPath) -> UIImage?
