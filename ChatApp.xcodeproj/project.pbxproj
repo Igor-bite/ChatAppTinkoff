@@ -23,8 +23,7 @@
 		A5484D4726136E77008AF909 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4526136E77008AF909 /* Chat.xcdatamodeld */; };
 		A5484D4B261374C7008AF909 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4A261374C7008AF909 /* CoreDataStack.swift */; };
 		A5484D4E2613766F008AF909 /* ObjectsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5484D4D2613766F008AF909 /* ObjectsExtension.swift */; };
-		A557D82126436CE0006888A3 /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A557D82026436CE0006888A3 /* ParserTest.swift */; };
-		A557D82326437354006888A3 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A557D82226437354006888A3 /* MockURLSession.swift */; };
+		A557D82326437354006888A3 /* URLSessionStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = A557D82226437354006888A3 /* URLSessionStub.swift */; };
 		A557D82C26441A09006888A3 /* PixabayJson.json in Resources */ = {isa = PBXBuildFile; fileRef = A557D82926441745006888A3 /* PixabayJson.json */; };
 		A559F4082630EA130005A5FC /* AvatarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A559F4072630EA130005A5FC /* AvatarService.swift */; };
 		A55A16442608D701004749E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A55A16432608D700004749E2 /* GoogleService-Info.plist */; };
@@ -55,12 +54,10 @@
 		A5D666FC25F19BC300FC4AA0 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666FA25F19BC300FC4AA0 /* MessageTableViewCell.swift */; };
 		A5D666FD25F19BC300FC4AA0 /* MessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666FB25F19BC300FC4AA0 /* MessageTableViewCell.xib */; };
 		A5E18C8826434FC800F2AA11 /* ChatAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E18C8726434FC800F2AA11 /* ChatAppUITests.swift */; };
-		A5E18C98264363DB00F2AA11 /* MockDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E18C97264363DB00F2AA11 /* MockDatabase.swift */; };
 		A5E83451260D536B001975EC /* SavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83450260D536B001975EC /* SavingService.swift */; };
 		A5E83454260D55D8001975EC /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E83453260D55D8001975EC /* ImagePickerManager.swift */; };
 		A5EB0DB5263630D700EA8CE0 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB0DB4263630D700EA8CE0 /* State.swift */; };
-		A5F0F25D2642B7E90031F253 /* MockSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0F25C2642B7E90031F253 /* MockSavingService.swift */; };
-		A5F0F25F2642BAD50031F253 /* DatabaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0F25E2642BAD50031F253 /* DatabaseTest.swift */; };
+		A5F0F25F2642BAD50031F253 /* NetworkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0F25E2642BAD50031F253 /* NetworkTest.swift */; };
 		A5F84F0025E6EB4000ED2490 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */; };
 		A5FCE1AE26292C3A0011FCE5 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */; };
 /* End PBXBuildFile section */
@@ -101,8 +98,7 @@
 		A5484D4626136E77008AF909 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		A5484D4A261374C7008AF909 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		A5484D4D2613766F008AF909 /* ObjectsExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsExtension.swift; sourceTree = "<group>"; };
-		A557D82026436CE0006888A3 /* ParserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTest.swift; sourceTree = "<group>"; };
-		A557D82226437354006888A3 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		A557D82226437354006888A3 /* URLSessionStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionStub.swift; sourceTree = "<group>"; };
 		A557D82926441745006888A3 /* PixabayJson.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PixabayJson.json; sourceTree = "<group>"; };
 		A559F4072630EA130005A5FC /* AvatarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarService.swift; sourceTree = "<group>"; };
 		A55A16432608D700004749E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -139,12 +135,10 @@
 		A5E18C8526434FC800F2AA11 /* ChatAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5E18C8726434FC800F2AA11 /* ChatAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppUITests.swift; sourceTree = "<group>"; };
 		A5E18C8926434FC800F2AA11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A5E18C97264363DB00F2AA11 /* MockDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDatabase.swift; sourceTree = "<group>"; };
 		A5E83450260D536B001975EC /* SavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingService.swift; sourceTree = "<group>"; };
 		A5E83453260D55D8001975EC /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
 		A5EB0DB4263630D700EA8CE0 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
-		A5F0F25C2642B7E90031F253 /* MockSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSavingService.swift; sourceTree = "<group>"; };
-		A5F0F25E2642BAD50031F253 /* DatabaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTest.swift; sourceTree = "<group>"; };
+		A5F0F25E2642BAD50031F253 /* NetworkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTest.swift; sourceTree = "<group>"; };
 		A5F84EFF25E6EB4000ED2490 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		A5FCE1AD26292C3A0011FCE5 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -447,6 +441,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		A557D82E2644255A006888A3 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				A557D82926441745006888A3 /* PixabayJson.json */,
+			);
+			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
 		A55F4B5F2616413900613C1E /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
@@ -538,12 +540,11 @@
 		A5C954772641AC98003A562E /* ChatAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				A557D82926441745006888A3 /* PixabayJson.json */,
+				A557D82E2644255A006888A3 /* SupportingFiles */,
 				A5F0F25B2642B7400031F253 /* Mocks */,
 				A5C954782641AC98003A562E /* ChatAppTests.swift */,
+				A5F0F25E2642BAD50031F253 /* NetworkTest.swift */,
 				A5C9547A2641AC98003A562E /* Info.plist */,
-				A5F0F25E2642BAD50031F253 /* DatabaseTest.swift */,
-				A557D82026436CE0006888A3 /* ParserTest.swift */,
 			);
 			path = ChatAppTests;
 			sourceTree = "<group>";
@@ -560,9 +561,7 @@
 		A5F0F25B2642B7400031F253 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				A5F0F25C2642B7E90031F253 /* MockSavingService.swift */,
-				A5E18C97264363DB00F2AA11 /* MockDatabase.swift */,
-				A557D82226437354006888A3 /* MockURLSession.swift */,
+				A557D82226437354006888A3 /* URLSessionStub.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -811,12 +810,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A557D82326437354006888A3 /* MockURLSession.swift in Sources */,
-				A5F0F25F2642BAD50031F253 /* DatabaseTest.swift in Sources */,
-				A5E18C98264363DB00F2AA11 /* MockDatabase.swift in Sources */,
-				A557D82126436CE0006888A3 /* ParserTest.swift in Sources */,
+				A557D82326437354006888A3 /* URLSessionStub.swift in Sources */,
+				A5F0F25F2642BAD50031F253 /* NetworkTest.swift in Sources */,
 				A5C954792641AC98003A562E /* ChatAppTests.swift in Sources */,
-				A5F0F25D2642B7E90031F253 /* MockSavingService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1027,7 +1023,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
-				HEADER_SEARCH_PATHS = " ${SRCROOT}/Pods/Firebase/CoreOnly/Sources";
+				HEADER_SEARCH_PATHS = "${SRCROOT}/Pods/Firebase/CoreOnly/Sources";
 				INFOPLIST_FILE = ChatAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1049,7 +1045,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D7YJ8BY8H;
-				HEADER_SEARCH_PATHS = " ${SRCROOT}/Pods/Firebase/CoreOnly/Sources";
+				HEADER_SEARCH_PATHS = "${SRCROOT}/Pods/Firebase/CoreOnly/Sources";
 				INFOPLIST_FILE = ChatAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
