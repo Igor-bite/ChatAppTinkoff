@@ -9,7 +9,11 @@ import UIKit
 
 class GCDSavingManager: ISavingManager {
     private let queue = DispatchQueue.global(qos: .utility)
-    private let saveService: ISavingService = SavingUserService()
+    private var saveService: ISavingService
+
+    init(saveService: ISavingService = SavingUserService()) {
+        self.saveService = saveService
+    }
 
     func saveUser(user: User, completion: @escaping (FileOperationError?) -> Void) {
         queue.async {

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class User: Codable {
+class User: Codable, Equatable {
     private var name: String?
     private var description: String?
     private var prefersGeneratedAvatar: Bool
@@ -86,6 +86,13 @@ class User: Codable {
         if user.getPrefersGeneratedAvatar() == self.prefersGeneratedAvatar &&
             user.getName() == self.name &&
             user.getDescription() == self.description {
+            return true
+        }
+        return false
+    }
+    
+    static func == (lhs: User, rhs: User) -> Bool {
+        if lhs.isEqual(to: rhs) {
             return true
         }
         return false

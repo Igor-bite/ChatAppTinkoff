@@ -29,6 +29,10 @@
 		A55A16442608D701004749E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A55A16432608D700004749E2 /* GoogleService-Info.plist */; };
 		A55F4B6E2616445E00613C1E /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F4B6D2616445E00613C1E /* CoreDataService.swift */; };
 		A56F761125FA1BB30080AC1F /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F761025FA1BB30080AC1F /* ThemesViewController.swift */; };
+		A57C50202644A47100F573C6 /* AvatarServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57C501F2644A47100F573C6 /* AvatarServiceTest.swift */; };
+		A57C50242644AA0700F573C6 /* WebImageLoaderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57C50232644AA0700F573C6 /* WebImageLoaderMock.swift */; };
+		A57C50262644AD9C00F573C6 /* SavingUserServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57C50252644AD9C00F573C6 /* SavingUserServiceMock.swift */; };
+		A57C50282644AF2B00F573C6 /* SavingUserServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57C50272644AF2B00F573C6 /* SavingUserServiceTest.swift */; };
 		A598A5FF263AC71C00FE3A68 /* CustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A598A5FE263AC71C00FE3A68 /* CustomTransition.swift */; };
 		A598A605263B3A7900FE3A68 /* ButtonAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A598A604263B3A7900FE3A68 /* ButtonAnimator.swift */; };
 		A599D8D42600F3410002D3B8 /* GCDSavingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */; };
@@ -104,6 +108,10 @@
 		A55A16432608D700004749E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A55F4B6D2616445E00613C1E /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CoreDataService.swift; path = "../Core Layer/DataAccessLayer/CoreData/CoreDataService.swift"; sourceTree = "<group>"; };
 		A56F761025FA1BB30080AC1F /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
+		A57C501F2644A47100F573C6 /* AvatarServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarServiceTest.swift; sourceTree = "<group>"; };
+		A57C50232644AA0700F573C6 /* WebImageLoaderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebImageLoaderMock.swift; sourceTree = "<group>"; };
+		A57C50252644AD9C00F573C6 /* SavingUserServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingUserServiceMock.swift; sourceTree = "<group>"; };
+		A57C50272644AF2B00F573C6 /* SavingUserServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingUserServiceTest.swift; sourceTree = "<group>"; };
 		A598A5FE263AC71C00FE3A68 /* CustomTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransition.swift; sourceTree = "<group>"; };
 		A598A604263B3A7900FE3A68 /* ButtonAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonAnimator.swift; sourceTree = "<group>"; };
 		A599D8D32600F3410002D3B8 /* GCDSavingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDSavingManager.swift; sourceTree = "<group>"; };
@@ -541,10 +549,12 @@
 			isa = PBXGroup;
 			children = (
 				A557D82E2644255A006888A3 /* SupportingFiles */,
-				A5F0F25B2642B7400031F253 /* Mocks */,
+				A5F0F25B2642B7400031F253 /* MocksAndStubs */,
+				A57C501F2644A47100F573C6 /* AvatarServiceTest.swift */,
 				A5C954782641AC98003A562E /* ChatAppTests.swift */,
 				A5F0F25E2642BAD50031F253 /* NetworkTest.swift */,
 				A5C9547A2641AC98003A562E /* Info.plist */,
+				A57C50272644AF2B00F573C6 /* SavingUserServiceTest.swift */,
 			);
 			path = ChatAppTests;
 			sourceTree = "<group>";
@@ -558,12 +568,14 @@
 			path = ChatAppUITests;
 			sourceTree = "<group>";
 		};
-		A5F0F25B2642B7400031F253 /* Mocks */ = {
+		A5F0F25B2642B7400031F253 /* MocksAndStubs */ = {
 			isa = PBXGroup;
 			children = (
 				A557D82226437354006888A3 /* URLSessionStub.swift */,
+				A57C50232644AA0700F573C6 /* WebImageLoaderMock.swift */,
+				A57C50252644AD9C00F573C6 /* SavingUserServiceMock.swift */,
 			);
-			path = Mocks;
+			path = MocksAndStubs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -811,7 +823,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A557D82326437354006888A3 /* URLSessionStub.swift in Sources */,
+				A57C50242644AA0700F573C6 /* WebImageLoaderMock.swift in Sources */,
+				A57C50282644AF2B00F573C6 /* SavingUserServiceTest.swift in Sources */,
 				A5F0F25F2642BAD50031F253 /* NetworkTest.swift in Sources */,
+				A57C50202644A47100F573C6 /* AvatarServiceTest.swift in Sources */,
+				A57C50262644AD9C00F573C6 /* SavingUserServiceMock.swift in Sources */,
 				A5C954792641AC98003A562E /* ChatAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

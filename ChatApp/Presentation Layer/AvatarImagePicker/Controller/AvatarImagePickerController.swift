@@ -45,7 +45,7 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
         view.addSubview(activityIndicator)
         activityIndicator.center = CGPoint(x: view.frame.size.width / 2, y: view.frame.size.height / 2 - 30)
         activityIndicator.startAnimating()
-        self.avatarService = AvatarImageService(updateView: { [weak self] error in
+        let loader = WebImageLoader { [weak self] error in
             if let error = error as? NetworkError {
                 self?.showErrorAlert(message: error.localizedDescription)
             } else {
@@ -54,7 +54,8 @@ class AvatarImagePickerController: UIViewController, UICollectionViewDelegate {
                 self?.activityIndicator.stopAnimating()
                 self?.collectionView?.isHidden = false
             }
-        })
+        }
+        self.avatarService = AvatarImageService(loader: loader)
         
         dataSource = avatarService?.getDataSource()
         let layout = UICollectionViewFlowLayout()
