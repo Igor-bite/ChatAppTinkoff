@@ -12,7 +12,7 @@ class SavingUserManagerTest: XCTestCase {
     var error: FileOperationError?
     var savingService: SavingUserServiceMock?
     var savingManager: GCDSavingManager?
-    
+
     override func setUp() {
         self.savingService = SavingUserServiceMock()
         guard let savingService = self.savingService else { fatalError() }
@@ -47,7 +47,7 @@ class SavingUserManagerTest: XCTestCase {
         XCTAssertNotNil(imageData)
         guard let imageData = imageData else { fatalError() }
         let promise = expectation(description: "Saved Image")
-        
+
     //        Act
         savingManager?.saveImage(of: imageData) { error in
             self.error = error
@@ -60,6 +60,4 @@ class SavingUserManagerTest: XCTestCase {
         XCTAssertEqual(self.savingService?.dataSaved, imageData)
         XCTAssertEqual(self.savingService?.saveCountCalls, 1)
     }
-    
-    
 }
