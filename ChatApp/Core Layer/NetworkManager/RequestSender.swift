@@ -8,12 +8,13 @@
 import UIKit
 
 protocol IRequestSender {
+    var session: URLSession { get set }
     func send<ImageListParser>(config: RequestConfig<ImageListParser>,
                                completionHandler: @escaping (Result<ImageListParser.Model, Error>) -> Void)
 }
 
-struct ImageListRequestSender: IRequestSender {
-    let session = URLSession.shared
+struct ImageListRequestSender: IRequestSender {    
+    var session = URLSession.shared
     
     func send<ImageListParser>(config: RequestConfig<ImageListParser>,
                                completionHandler: @escaping (Result<ImageListParser.Model, Error>) -> Void) where ImageListParser: IParser {
