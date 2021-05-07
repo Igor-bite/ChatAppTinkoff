@@ -67,7 +67,7 @@ class ImageListRequestSenderTest: XCTestCase {
         }
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
 
-        let json = Bundle(for: ChatAppTests.self).url(forResource: "PixabayJson",
+        let json = Bundle(for: ImageListRequestSenderTest.self).url(forResource: "PixabayJson",
                                                       withExtension: "json")
         XCTAssertNotNil(json, "There is no file with pixabay json")
         guard let json = json else { fatalError() }
@@ -100,7 +100,7 @@ class ImageListRequestSenderTest: XCTestCase {
 private func getValue(for key: String) -> String? {
     var resourceFileDictionary: NSDictionary?
 
-    if let path = Bundle(for: ChatAppTests.self).path(forResource: "Info", ofType: "plist") {
+    if let path = Bundle(for: ImageListRequestSenderTest.self).path(forResource: "Info", ofType: "plist") {
         resourceFileDictionary = NSDictionary(contentsOfFile: path)
     }
 

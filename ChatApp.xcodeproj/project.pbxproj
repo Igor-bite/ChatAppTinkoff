@@ -550,8 +550,8 @@
 				A5F0F25B2642B7400031F253 /* MocksAndStubs */,
 				A57C501F2644A47100F573C6 /* AvatarServiceTest.swift */,
 				A5F0F25E2642BAD50031F253 /* NetworkTest.swift */,
-				A5C9547A2641AC98003A562E /* Info.plist */,
 				A57C50272644AF2B00F573C6 /* SavingUserServiceTest.swift */,
+				A5C9547A2641AC98003A562E /* Info.plist */,
 			);
 			path = ChatAppTests;
 			sourceTree = "<group>";
