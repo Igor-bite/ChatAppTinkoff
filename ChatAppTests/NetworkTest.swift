@@ -13,7 +13,12 @@ class ImageListRequestSenderTest: XCTestCase {
     let expectedPreviewURL = getValue(for: "expectedPreviewURL")
     let expectedLargeImageURL = getValue(for: "expectedLargeImageURL")
 
-    override func setUp() {
+    override func tearDown() {
+        imageListRequestSender = nil
+    }
+
+    func testNoDataFailure() {
+//        Arrange
         let urlString = "https://pixabay.com/api/?key=token&q=cars&image_type=photo&pretty=true&per_page=3"
         guard let url = URL(string: urlString) else { assertionFailure("Check urlString...")
             return
@@ -24,15 +29,10 @@ class ImageListRequestSenderTest: XCTestCase {
                                     response: response,
                                     error: nil)
         )
-    }
-
-    override func tearDown() {
-        imageListRequestSender = nil
-    }
-
-    func testNoDataFailure() {
         let config = RequestConfig<ImageListParser>(request: ImageListRequest(), parser: ImageListParser())
+//        Act
         imageListRequestSender?.send(config: config, completionHandler: { res in
+//            Assert
             switch res {
             case .failure(let error):
                 let networkError = error as? NetworkError
@@ -44,12 +44,15 @@ class ImageListRequestSenderTest: XCTestCase {
     }
 
     func testNoResponseFailure() {
+//        Arrange
         imageListRequestSender = ImageListRequestSender(
             session: URLSessionStub(data: Data(),
                                     response: nil,
                                     error: nil))
         let config = RequestConfig<ImageListParser>(request: ImageListRequest(), parser: ImageListParser())
+//        Act
         imageListRequestSender?.send(config: config, completionHandler: { res in
+//        Assert
             switch res {
             case .failure(let error):
                 let networkError = error as? NetworkError
