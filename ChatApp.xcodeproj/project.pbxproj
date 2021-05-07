@@ -50,7 +50,6 @@
 		A5B77B6E2631B68500DB9856 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B77B6D2631B68500DB9856 /* Parser.swift */; };
 		A5B77B712631B6E200DB9856 /* RequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B77B702631B6E200DB9856 /* RequestConfig.swift */; };
 		A5B77B742631B74800DB9856 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B77B732631B74800DB9856 /* Models.swift */; };
-		A5C954792641AC98003A562E /* ChatAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C954782641AC98003A562E /* ChatAppTests.swift */; };
 		A5D666EE25F14C9D00FC4AA0 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */; };
 		A5D666F225F14F4900FC4AA0 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */; };
 		A5D666F325F14F4900FC4AA0 /* ConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5D666F125F14F4900FC4AA0 /* ConversationTableViewCell.xib */; };
@@ -132,7 +131,6 @@
 		A5B77B702631B6E200DB9856 /* RequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConfig.swift; sourceTree = "<group>"; };
 		A5B77B732631B74800DB9856 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A5C954762641AC98003A562E /* ChatAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A5C954782641AC98003A562E /* ChatAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppTests.swift; sourceTree = "<group>"; };
 		A5C9547A2641AC98003A562E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5D666ED25F14C9D00FC4AA0 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		A5D666F025F14F4900FC4AA0 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
@@ -551,7 +549,6 @@
 				A557D82E2644255A006888A3 /* SupportingFiles */,
 				A5F0F25B2642B7400031F253 /* MocksAndStubs */,
 				A57C501F2644A47100F573C6 /* AvatarServiceTest.swift */,
-				A5C954782641AC98003A562E /* ChatAppTests.swift */,
 				A5F0F25E2642BAD50031F253 /* NetworkTest.swift */,
 				A5C9547A2641AC98003A562E /* Info.plist */,
 				A57C50272644AF2B00F573C6 /* SavingUserServiceTest.swift */,
@@ -828,7 +825,6 @@
 				A5F0F25F2642BAD50031F253 /* NetworkTest.swift in Sources */,
 				A57C50202644A47100F573C6 /* AvatarServiceTest.swift in Sources */,
 				A57C50262644AD9C00F573C6 /* SavingUserServiceMock.swift in Sources */,
-				A5C954792641AC98003A562E /* ChatAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
