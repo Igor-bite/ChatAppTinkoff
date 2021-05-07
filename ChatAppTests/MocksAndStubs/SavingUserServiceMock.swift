@@ -18,6 +18,8 @@ class SavingUserServiceMock: ISavingService {
 
     var isSuccess: Bool
 
+    let stubbedUser = User(name: "User", description: "Desctiption", isOnline: true)
+
     init(isSuccess: Bool = true) {
         self.isSuccess = isSuccess
     }
@@ -47,8 +49,7 @@ class SavingUserServiceMock: ISavingService {
     func getAllUserData(completion: @escaping (User?, Data?, FileOperationError?) -> Void) {
         if isSuccess {
             getDataCountCalls += 1
-            let user = User(name: "User", description: "Description", isOnline: true)
-            completion(user, Data(), nil)
+            completion(self.stubbedUser, Data(), nil)
         } else {
             completion(nil, nil, FileOperationError.unspecified)
         }
@@ -67,12 +68,10 @@ class SavingUserServiceMock: ISavingService {
     func getUserOnly(completion: @escaping (User?, FileOperationError?) -> Void) {
         if isSuccess {
             getDataCountCalls += 1
-            let user = User(name: "User", description: "Description", isOnline: true)
-            completion(user, nil)
+            completion(self.stubbedUser, nil)
         } else {
             completion(nil, FileOperationError.unspecified)
         }
-        getDataCountCalls += 1
     }
 
     func getUserImage(completion: @escaping (Data?, FileOperationError?) -> Void) {
