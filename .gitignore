@@ -147,3 +147,5 @@ build_derived_data_folder/
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,macos,xcode,git
 GoogleService-Info.plist
+
+SecureConfig.xcconfig

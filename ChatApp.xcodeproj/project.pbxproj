@@ -86,6 +86,7 @@
 		00A41EEB192829EFF64BD012 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0294211437A3180C4DC43F1F /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
 		8F735FE4C435B1211CF7DA1E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A51675AD264DD3F800DE5C46 /* SecureConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SecureConfig.xcconfig; sourceTree = "<group>"; };
 		A5177B04262F8E1100E5CC8D /* AvatarImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImagePickerController.swift; sourceTree = "<group>"; };
 		A5177B07262F925E00E5CC8D /* AvatarImagePicker.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AvatarImagePicker.storyboard; sourceTree = "<group>"; };
 		A5177B0D262F986A00E5CC8D /* AvatarPickerDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPickerDataSource.swift; sourceTree = "<group>"; };
@@ -495,6 +496,7 @@
 		A5A5B93625DA85D500F61A26 = {
 			isa = PBXGroup;
 			children = (
+				A51675AD264DD3F800DE5C46 /* SecureConfig.xcconfig */,
 				A5A5B94125DA85D500F61A26 /* ChatApp */,
 				A5C954772641AC98003A562E /* ChatAppTests */,
 				A5E18C8626434FC800F2AA11 /* ChatAppUITests */,
@@ -989,7 +991,7 @@
 		};
 		A5A5B95425DA85D600F61A26 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F735FE4C435B1211CF7DA1E /* Pods-ChatApp.debug.xcconfig */;
+			baseConfigurationReference = A51675AD264DD3F800DE5C46 /* SecureConfig.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1010,7 +1012,7 @@
 		};
 		A5A5B95525DA85D600F61A26 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0294211437A3180C4DC43F1F /* Pods-ChatApp.release.xcconfig */;
+			baseConfigurationReference = A51675AD264DD3F800DE5C46 /* SecureConfig.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

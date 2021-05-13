@@ -23,7 +23,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera to take photo for your profile</string>
 	<key>PixabayToken</key>
-	<string>21196931-04a0b49401d2da8757328bf49</string>
+	<string>$(PIXABAY_TOKEN)</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
