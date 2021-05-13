@@ -17,4 +17,4 @@ jobs:
       env:
         DISCORD_KEY: ${{ secrets.WEBHOOK_URL }}
       run: |
-        bundle exec fastlane webhookTest
+        bundle exec fastlane scan_and_webhook
