@@ -20,7 +20,7 @@ desc "Build and test"
   lane :build_and_test do
     build_for_testing
     run_tests_from_build
-    notify_discord_success
+    # notify_discord_success
   end
   
 desc "Notify discord via webhook"
