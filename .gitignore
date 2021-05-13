@@ -133,8 +133,7 @@ iOSInjectionProject/
 # Xcode
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
-
-
+build_derived_data_folder/
 
 ## Gcc Patch
 /*.gcno

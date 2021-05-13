@@ -15,16 +15,21 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
-### build_and_run_tests
+### build_for_testing
 ```
-fastlane build_and_run_tests
+fastlane build_for_testing
 ```
-Building and running tests
-### scan_and_webhook
+Build for testing
+### run_tests_from_build
 ```
-fastlane scan_and_webhook
+fastlane run_tests_from_build
 ```
-Webhook test
+Run tests
+### build_and_test
+```
+fastlane build_and_test
+```
+Build and test
 ### notify_discord_success
 ```
 fastlane notify_discord_success
