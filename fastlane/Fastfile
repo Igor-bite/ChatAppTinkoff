@@ -7,6 +7,7 @@ desc "Building and running tests"
 
 desc "Webhook test"
   lane :scan_and_webhook do
+    xcversion(version: "~> 12.4")
     scan
     notify_discord_success
   end
