@@ -1,0 +1,53 @@
+default_platform(:ios)
+
+desc "Building and running tests"
+  lane :build_and_run_tests do
+    scan(clean: true)
+  end
+end
+
+desc "Webhook test"
+  lane :scan_and_webhook do
+    scan
+    notify_discord_success
+  end
+end
+
+desc "Notify discord via webhook"
+  lane :notify_discord_success do
+    discord_notifier(
+    webhook_url: ENV["DISCORD_KEY"],
+    title: "Succeeded",
+    description: "It's okay 👌",
+    success: true,
+    # thumbnail_url:"https://images.unsplash.com/photo-1620884463224-55e55b0ae83f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80",
+    # image_url:"https://images.unsplash.com/photo-1620842942009-04e46d162b7c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80",
+    fields:[
+      {
+        name:"Owner:", 
+        value:"Igor"
+      }
+    )
+  end
+end
+
+desc "Notify discord with error"
+  lane :notify_discord_error do
+    discord_notifier(
+    webhook_url: ENV["DISCORD_KEY"],
+    title: "ERROR",
+    description: "Some fixes needed",
+    success: false,
+    fields:[
+      {
+        name:"Owner:", 
+        value:"Igor"
+      }
+    )
+    )
+  end
+end
+
+error do
+  notify_discord_error
+end
