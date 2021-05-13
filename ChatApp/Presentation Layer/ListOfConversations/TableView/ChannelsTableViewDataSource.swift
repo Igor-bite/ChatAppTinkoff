@@ -25,7 +25,7 @@ class ChannelsTableViewDataSource: NSObject, UITableViewDataSource {
         cellIdentifier = cellId
         self.theme = theme
         self.fetchedResultsController = fetchedResultsController
-        self.fetchedResultsController.fetchRequest.fetchBatchSize = 16 // ToDo: calculations
+        self.fetchedResultsController.fetchRequest.fetchBatchSize = 16
         do {
             try self.fetchedResultsController.performFetch()
         } catch {

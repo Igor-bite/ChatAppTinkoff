@@ -18,8 +18,8 @@ protocol AvatarService: Any {
 class AvatarImageService: AvatarService {
     let imageLoader: ImageLoader
     
-    init(updateView: @escaping (Error?) -> Void) {
-        self.imageLoader = WebImageLoader(updateView: updateView)
+    init(loader: ImageLoader) {
+        self.imageLoader = loader
     }
     
     func getDataSource() -> UICollectionViewDataSource {

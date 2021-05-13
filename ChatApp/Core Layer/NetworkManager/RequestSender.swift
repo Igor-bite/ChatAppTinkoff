@@ -8,12 +8,17 @@
 import UIKit
 
 protocol IRequestSender {
+    var session: URLSessionProtocol { get set }
     func send<ImageListParser>(config: RequestConfig<ImageListParser>,
                                completionHandler: @escaping (Result<ImageListParser.Model, Error>) -> Void)
 }
 
 struct ImageListRequestSender: IRequestSender {
-    let session = URLSession.shared
+    var session: URLSessionProtocol
+    
+    init(session: URLSessionProtocol = URLSession.shared) {
+        self.session = session
+    }
     
     func send<ImageListParser>(config: RequestConfig<ImageListParser>,
                                completionHandler: @escaping (Result<ImageListParser.Model, Error>) -> Void) where ImageListParser: IParser {
@@ -54,3 +59,10 @@ struct ImageListRequestSender: IRequestSender {
         task.resume()
     }
 }
+
+protocol URLSessionProtocol {
+    func dataTask(with urlRequest: URLRequest,
+                  completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+}
+
+extension URLSession: URLSessionProtocol {}
