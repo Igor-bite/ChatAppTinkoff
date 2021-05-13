@@ -1,0 +1,20 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+        bundler-cache: true
+    - name: Run
+      env:
+        DISCORD_KEY: ${{ secrets.WEBHOOK_URL }}
+      run: |
+        bundle exec fastlane webhookTest
