@@ -13,10 +13,10 @@ jobs:
       with:
         ruby-version: 2.6
         bundler-cache: true
+    - name: Run
+      run: |
+        bundle exec fastlane build_and_test
     - uses: sarisia/actions-status-discord@v1
       if: always()
       with:
         webhook: ${{ secrets.WEBHOOK_URL }}
-    - name: Run
-      run: |
-        bundle exec fastlane build_and_test
