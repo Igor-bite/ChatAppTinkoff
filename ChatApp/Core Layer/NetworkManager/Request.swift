@@ -17,8 +17,9 @@ struct ImageListRequest: IRequest {
     init() {
         guard
             let token = getApiToken(),
+            let domain = getApiDomain(),
             let url = URL(string:
-                            "https://pixabay.com/api/?key=\(token)&q=cars&image_type=photo&pretty=true&per_page=\(AvatarPickerDataSource.numberOfImages)")
+                            "\(domain)\(token)&q=cars&image_type=photo&pretty=true&per_page=\(AvatarPickerDataSource.numberOfImages)")
         else { return }
         urlRequest = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 5)
     }
@@ -32,6 +33,18 @@ struct ImageListRequest: IRequest {
         
         if let resourceFileDictionaryContent = resourceFileDictionary {
             return resourceFileDictionaryContent.object(forKey: "PixabayToken") as? String
+        } else { return nil }
+    }
+    
+    private func getApiDomain() -> String? {
+        var resourceFileDictionary: NSDictionary?
+            
+        if let path = Bundle.main.path(forResource: "Info", ofType: "plist") {
+            resourceFileDictionary = NSDictionary(contentsOfFile: path)
+        }
+        
+        if let resourceFileDictionaryContent = resourceFileDictionary {
+            return resourceFileDictionaryContent.object(forKey: "PixabayDomain") as? String
         } else { return nil }
     }
 }
