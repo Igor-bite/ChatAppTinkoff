@@ -4,14 +4,12 @@ desc "Building and running tests"
   lane :build_and_run_tests do
     scan(clean: true)
   end
-end
 
 desc "Webhook test"
   lane :scan_and_webhook do
     scan
     notify_discord_success
   end
-end
 
 desc "Notify discord via webhook"
   lane :notify_discord_success do
@@ -27,9 +25,9 @@ desc "Notify discord via webhook"
         name:"Owner:", 
         value:"Igor"
       }
+    ]
     )
   end
-end
 
 desc "Notify discord with error"
   lane :notify_discord_error do
@@ -43,10 +41,9 @@ desc "Notify discord with error"
         name:"Owner:", 
         value:"Igor"
       }
-    )
+    ]
     )
   end
-end
 
 error do
   notify_discord_error
