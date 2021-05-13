@@ -1,17 +1,28 @@
 default_platform(:ios)
 
-desc "Building and running tests"
-  lane :build_and_run_tests do
-    scan(clean: true)
+desc "Build for testing"
+  lane :build_for_testing do
+    run_tests(
+      derived_data_path: "build_derived_data_folder",
+      build_for_testing: true
+    )
   end
 
-desc "Webhook test"
-  lane :scan_and_webhook do
-    xcversion(version: "~> 12.4")
-    scan
+desc "Run tests"
+  lane :run_tests do
+    run_tests(
+      derived_data_path: "build_derived_data_folder",
+      test_without_building: true
+    )
+  end
+
+desc "Build and test"
+  lane :build_and_test do
+    build_for_testing
+    run_tests
     notify_discord_success
   end
-
+  
 desc "Notify discord via webhook"
   lane :notify_discord_success do
     discord_notifier(
