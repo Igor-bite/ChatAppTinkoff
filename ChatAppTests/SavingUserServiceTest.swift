@@ -46,11 +46,11 @@ class SavingUserManagerTest: XCTestCase {
     //        Arrange
         let imageData = UIImage(named: "Crest")?.pngData()
         XCTAssertNotNil(imageData)
-        guard let imageData = imageData else { fatalError() }
+        guard let imageDataUnwrapped = imageData else { fatalError() }
         let promise = expectation(description: "Saved Image")
 
     //        Act
-        savingManager?.saveImage(of: imageData) { error in
+        savingManager?.saveImage(of: imageDataUnwrapped) { error in
             self.error = error
             promise.fulfill()
         }
@@ -58,7 +58,7 @@ class SavingUserManagerTest: XCTestCase {
     //        Assert
         waitForExpectations(timeout: 5, handler: nil)
         XCTAssertNil(self.error)
-        XCTAssertEqual(self.savingService?.dataSaved, imageData)
+        XCTAssertEqual(self.savingService?.dataSaved, imageDataUnwrapped)
         XCTAssertEqual(self.savingService?.saveCountCalls, 1)
     }
 

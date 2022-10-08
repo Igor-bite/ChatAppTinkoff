@@ -73,14 +73,14 @@ class ImageListRequestSenderTest: XCTestCase {
         let json = Bundle(for: ImageListRequestSenderTest.self).url(forResource: "PixabayJson",
                                                       withExtension: "json")
         XCTAssertNotNil(json, "There is no file with pixabay json")
-        guard let json = json else { fatalError() }
+        guard let jsonUnwrapped = json else { fatalError() }
 
-        let dataString = try? String(contentsOf: json, encoding: .utf8)
+        let dataString = try? String(contentsOf: jsonUnwrapped, encoding: .utf8)
         XCTAssertNotNil(dataString)
-        guard let dataString = dataString else { fatalError() }
+        guard let dataStringUnwrapped = dataString else { fatalError() }
 
         imageListRequestSender = ImageListRequestSender(
-            session: URLSessionStub(data: Data(dataString.utf8),
+            session: URLSessionStub(data: Data(dataStringUnwrapped.utf8),
                                     response: response,
                                     error: nil)
         )

@@ -1,0 +1,62 @@
+default_platform(:ios)
+
+desc "Build for testing"
+  lane :build_for_testing do
+    run_tests(
+      derived_data_path: "build_derived_data_folder",
+      build_for_testing: true
+    )
+  end
+
+desc "Run tests"
+  lane :run_tests_from_build do
+    run_tests(
+      derived_data_path: "build_derived_data_folder",
+      test_without_building: true
+    )
+  end
+
+desc "Build and test"
+  lane :build_and_test do
+    build_for_testing
+    run_tests_from_build
+    # notify_discord_success
+  end
+  
+desc "Notify discord via webhook"
+  lane :notify_discord_success do
+    discord_notifier(
+    webhook_url: ENV["DISCORD_KEY"],
+    title: "Succeeded",
+    description: "It's okay 👌",
+    success: true,
+    # thumbnail_url:"https://images.unsplash.com/photo-1620884463224-55e55b0ae83f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80",
+    # image_url:"https://images.unsplash.com/photo-1620842942009-04e46d162b7c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1234&q=80",
+    fields:[
+      {
+        name:"Owner:", 
+        value:"Igor"
+      }
+    ]
+    )
+  end
+
+desc "Notify discord with error"
+  lane :notify_discord_error do
+    discord_notifier(
+    webhook_url: ENV["DISCORD_KEY"],
+    title: "ERROR",
+    description: "Some fixes needed",
+    success: false,
+    fields:[
+      {
+        name:"Owner:", 
+        value:"Igor"
+      }
+    ]
+    )
+  end
+
+error do
+  notify_discord_error
+end
